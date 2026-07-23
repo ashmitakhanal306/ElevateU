@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Token: Light Mode CSS Variables ─────────────────────────────── */
+:root {
+  --color-primary: #1E3A8A;
+  --color-secondary: #2563EB;
+  --color-accent: #06B6D4;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B; /* slate-500 from palette */
+  --color-border: #E2E8F0;
+  --color-bg-page: #F1F5F9;
+  --color-bg-surface: #FFFFFF;
+  --color-header-bg: #FFFFFF;
+}
+
+/* ─── Design Token: Dark Mode CSS Variables ──────────────────────────────── */
+/* Applied when ThemeContext adds 'dark' class to <html> */
+html.dark {
+  --color-primary: #1E3A8A;
+  --color-secondary: #2563EB;
+  --color-accent: #22D3EE;
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-danger: #F87171;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8; /* slate-400 from palette */
+  --color-border: #334155;
+  --color-bg-page: #0F172A;
+  --color-bg-surface: #1E293B;
+  --color-header-bg: #0F172A;
+}
+
+/* ─── Base Typography & Background ───────────────────────────────────────── */
+html, body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
+  /* Smooth animated transition when switching between light and dark themes */
+  @apply transition-colors duration-300;
+}
+
+/* ─── Custom Scrollbar ────────────────────────────────────────────────────── */
+/* Used on the Sidebar nav list (.scrollbar-thin) — no plugin required */
+.scrollbar-thin {
+  scrollbar-width: thin;                        /* Firefox */
+  scrollbar-color: var(--color-border) transparent; /* Firefox thumb / track */
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 999px;
+}
+
+/* ─── Page Transitions ────────────────────────────────────────────────────── */
+@keyframes slideFade {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-page {
+  animation: slideFade 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

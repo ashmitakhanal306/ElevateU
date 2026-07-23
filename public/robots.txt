@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /assessment
+Disallow: /career-recommendations
+Disallow: /skill-gap
+Disallow: /resume-analysis
+Disallow: /courses
+Disallow: /roadmap
+
+# Pointer to the XML sitemap location
+Sitemap: https://elevateu.in/sitemap.xml
