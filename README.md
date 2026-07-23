@@ -17,7 +17,7 @@ Follow these steps to set up and run the project locally:
 
 1. Clone the repository:
    ```bash
-   git clone [repo URL]
+   git clone https://github.com/ashmitakhanal306/ElevateU.git
    ```
 2. Navigate into the project directory:
    ```bash
@@ -45,7 +45,7 @@ Follow these steps to set up and run the project locally:
 
 ## Live Demo
 
-Live demo: [add after deployment]
+Live demo: [https://ashmitakhanal306.github.io/ElevateU/](https://ashmitakhanal306.github.io/ElevateU/)
 
 ## Status
 
