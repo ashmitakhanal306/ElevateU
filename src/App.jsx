@@ -4,7 +4,7 @@ import AppRoutes from './routes/AppRoutes';
 
 /**
  * App root component.
- * Simplified component tree using Zustand stores for auth and theme state.
+ * Dynamic basename matches Vite's base URL environment parameter for seamless multi-platform deployment.
  */
 export default function App() {
   return (
