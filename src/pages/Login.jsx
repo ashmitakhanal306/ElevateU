@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Phone, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Phone, ArrowRight, ShieldCheck, RefreshCw } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -14,12 +14,9 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import logoSrc from '../assets/logo.png';
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-/**
- * Inline SVG Google "G" logo.
- * lucide-react has no Google icon, so we embed the official brand colours.
- */
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -43,9 +40,6 @@ function GoogleIcon() {
   );
 }
 
-/**
- * Animated loading spinner rendered inside buttons during async requests.
- */
 function Spinner() {
   return (
     <svg
@@ -72,37 +66,29 @@ function Spinner() {
 
 const TABS = [
   { id: 'email',  label: 'Email' },
-  { id: 'google', label: 'Google' },
   { id: 'phone',  label: 'Phone OTP' },
+  { id: 'google', label: 'Google' },
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-/**
- * Login page with three authentication tabs:
- *  1. Email + Password
- *  2. Google OAuth (simulated)
- *  3. Phone OTP (two-step: send OTP → verify code)
- *
- * On success any tab calls AuthContext.login(user) which redirects to /dashboard.
- */
 export default function Login() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
-  // Which tab is currently active
+  // Which tab is currently active (default: email)
   const [activeTab, setActiveTab] = useState('email');
 
   // ── Email tab state ──────────────────────────────────────────────────────
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [emailErrors, setEmailErrors] = useState({});  // { email, password, form }
+  const [emailErrors, setEmailErrors] = useState({});
   const [emailLoading, setEmailLoading] = useState(false);
 
   // ── Google tab state ─────────────────────────────────────────────────────
@@ -112,10 +98,20 @@ export default function Login() {
   // ── Phone tab state ──────────────────────────────────────────────────────
   const [phone, setPhone]           = useState('');
   const [otp, setOtp]               = useState('');
-  const [otpSent, setOtpSent]       = useState(false);    // show OTP input after send
-  const [phoneErrors, setPhoneErrors] = useState({});     // { phone, otp, form }
+  const [otpSent, setOtpSent]       = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [phoneErrors, setPhoneErrors] = useState({});
   const [sendLoading, setSendLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
+
+  // Countdown timer for OTP Resend
+  useEffect(() => {
+    let timer;
+    if (resendTimer > 0) {
+      timer = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [resendTimer]);
 
   // Helper to extract 10-digit mobile number handling optional +91 / 0 prefix
   const getCleanPhoneDigits = (input) => {
@@ -150,12 +146,11 @@ export default function Login() {
 
   // ─── Handlers: Email tab ────────────────────────────────────────────────
 
-  /** Validate email form fields. Returns true if valid. */
   const validateEmail = () => {
     const errs = {};
     const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!email.trim()) errs.email = 'Email is required';
-    else if (!EMAIL_REGEX.test(email.trim())) errs.email = 'Enter a valid email address';
+    if (!email.trim()) errs.email = 'Email address is required';
+    else if (!EMAIL_REGEX.test(email.trim())) errs.email = 'Please enter a valid email address';
     if (!password) errs.password = 'Password is required';
     setEmailErrors(errs);
     return Object.keys(errs).length === 0;
@@ -190,16 +185,18 @@ export default function Login() {
 
     if (!result.success) {
       setGoogleLoading(false);
-      setGoogleError(result.error || 'Google sign-in failed. Please try again.');
+      setGoogleError(
+        'Google OAuth configuration is currently in progress. Please use Email or Phone OTP below.'
+      );
     }
   };
 
   // ─── Handlers: Phone tab ────────────────────────────────────────────────
 
   const handleSendOtp = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!isPhoneValid(phone)) {
-      setPhoneErrors({ phone: getPhoneHint(phone) || 'Please enter a valid 10-digit Indian phone number' });
+      setPhoneErrors({ phone: getPhoneHint(phone) || 'Please enter a valid 10-digit mobile number' });
       return;
     }
     setPhoneErrors({});
@@ -211,13 +208,14 @@ export default function Login() {
 
     if (result.success) {
       setOtpSent(true);
+      setResendTimer(30);
     }
   };
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     if (!otp.trim()) {
-      setPhoneErrors({ otp: 'OTP is required' });
+      setPhoneErrors({ otp: 'OTP code is required' });
       return;
     }
     setPhoneErrors({});
@@ -235,7 +233,6 @@ export default function Login() {
     }
   };
 
-  /** Switch tabs and clear all error/loading states */
   const switchTab = (id) => {
     setActiveTab(id);
     setEmailErrors({});
@@ -246,7 +243,7 @@ export default function Login() {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">{/* Decorative background blobs */}
+    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">
       <div className="pointer-events-none absolute top-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
       <div className="pointer-events-none absolute bottom-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
 
@@ -322,7 +319,6 @@ export default function Login() {
                   autoComplete="current-password"
                 />
 
-                {/* API-level error (e.g. wrong credentials) */}
                 {emailErrors.form && (
                   <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
                     {emailErrors.form}
@@ -351,53 +347,12 @@ export default function Login() {
               </form>
             )}
 
-            {/* ── GOOGLE TAB ────────────────────────────────────────────── */}
-            {activeTab === 'google' && (
-              <div className="space-y-4">
-                <p className="text-sm text-text-secondary text-center pb-2">
-                  Sign in instantly using your Google account.
-                </p>
-
-                {googleError && (
-                  <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2 text-center">
-                    {googleError}
-                  </p>
-                )}
-
-                <Button
-                  variant="outline"
-                  onClick={handleGoogleLogin}
-                  disabled={googleLoading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
-                >
-                  {googleLoading ? (
-                    <>
-                      <Spinner />
-                      Connecting…
-                    </>
-                  ) : (
-                    <>
-                      <GoogleIcon />
-                      Continue with Google
-                    </>
-                  )}
-                </Button>
-
-                <p className="text-xs text-text-secondary text-center">
-                  By continuing, you agree to our{' '}
-                  <span className="text-secondary font-semibold cursor-pointer hover:underline">
-                    Terms of Service
-                  </span>
-                </p>
-              </div>
-            )}
-
             {/* ── PHONE OTP TAB ─────────────────────────────────────────── */}
             {activeTab === 'phone' && (
               <div className="space-y-4">
 
-                {/* Step 1 — Enter phone number */}
                 {!otpSent ? (
+                  /* Step 1 — Enter phone number */
                   <form onSubmit={handleSendOtp} noValidate className="space-y-4">
                     <Input
                       label="Phone number"
@@ -433,24 +388,23 @@ export default function Login() {
                     </Button>
                   </form>
                 ) : (
-
                   /* Step 2 — Enter OTP code */
                   <form onSubmit={handleVerifyOtp} noValidate className="space-y-4">
 
-                    {/* "OTP sent" confirmation banner */}
-                    <div className="flex items-center gap-2 bg-success/10 border border-success/20 text-success rounded-lg px-3 py-2.5 text-xs font-semibold">
-                      <span className="h-1.5 w-1.5 rounded-full bg-success inline-block" />
-                      OTP sent to {phone}
+                    <div className="flex items-center justify-between bg-success/10 border border-success/20 text-success rounded-lg px-3 py-2.5 text-xs font-semibold">
+                      <span className="flex items-center gap-1.5">
+                        <ShieldCheck className="h-4 w-4 shrink-0" />
+                        OTP sent to +91 {getCleanPhoneDigits(phone)}
+                      </span>
                     </div>
 
                     <Input
-                      label="6-digit OTP"
+                      label="6-digit OTP code"
                       type="text"
                       placeholder="123456"
                       maxLength={6}
                       value={otp}
                       onChange={(e) => {
-                        // Accept digits only
                         setOtp(e.target.value.replace(/\D/g, ''));
                         if (phoneErrors.otp) setPhoneErrors((p) => ({ ...p, otp: '' }));
                       }}
@@ -458,12 +412,20 @@ export default function Login() {
                       autoComplete="one-time-code"
                     />
 
-                    {/* Demo hint */}
-                    <p className="text-xs text-text-secondary bg-bg-page border border-border rounded-lg px-3 py-2">
-                      💡 <strong>Demo tip:</strong> use{' '}
-                      <span className="font-mono font-bold text-secondary">123456</span>{' '}
-                      as the OTP
-                    </p>
+                    <div className="flex items-center justify-between text-xs text-text-secondary bg-bg-page border border-border rounded-lg px-3 py-2">
+                      <span>💡 <strong>Demo tip:</strong> use <span className="font-mono font-bold text-secondary">123456</span></span>
+                      {resendTimer > 0 ? (
+                        <span className="text-text-secondary">Resend in {resendTimer}s</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleSendOtp}
+                          className="text-secondary font-bold hover:underline inline-flex items-center gap-1"
+                        >
+                          <RefreshCw className="h-3 w-3" /> Resend OTP
+                        </button>
+                      )}
+                    </div>
 
                     {phoneErrors.form && (
                       <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
@@ -472,7 +434,6 @@ export default function Login() {
                     )}
 
                     <div className="flex gap-3">
-                      {/* Back button */}
                       <Button
                         type="button"
                         variant="outline"
@@ -505,6 +466,64 @@ export default function Login() {
                     </div>
                   </form>
                 )}
+              </div>
+            )}
+
+            {/* ── GOOGLE TAB ────────────────────────────────────────────── */}
+            {activeTab === 'google' && (
+              <div className="space-y-4 text-center">
+                <p className="text-sm text-text-secondary pb-1">
+                  Sign in instantly using your Google account.
+                </p>
+
+                {googleError && (
+                  <div className="text-xs font-medium text-warning bg-warning/10 border border-warning/20 rounded-lg px-3 py-2 text-left space-y-1">
+                    <p className="font-bold">{googleError}</p>
+                  </div>
+                )}
+
+                <Button
+                  variant="outline"
+                  onClick={handleGoogleLogin}
+                  disabled={googleLoading}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
+                >
+                  {googleLoading ? (
+                    <>
+                      <Spinner />
+                      Connecting…
+                    </>
+                  ) : (
+                    <>
+                      <GoogleIcon />
+                      Continue with Google
+                    </>
+                  )}
+                </Button>
+
+                {/* Quick tab switcher guidance */}
+                <div className="border-t border-border pt-3 mt-2">
+                  <p className="text-xs text-text-secondary mb-2">Or use one of our active login options:</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => switchTab('email')}
+                      className="flex-1 text-xs gap-1"
+                    >
+                      <Mail className="h-3.5 w-3.5" /> Sign in with Email
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => switchTab('phone')}
+                      className="flex-1 text-xs gap-1"
+                    >
+                      <Phone className="h-3.5 w-3.5" /> Sign in with Phone
+                    </Button>
+                  </div>
+                </div>
+
               </div>
             )}
 

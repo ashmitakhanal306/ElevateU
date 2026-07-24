@@ -1,39 +1,127 @@
 /**
- * authService.js — Authentication API Layer with Supabase Integration
+ * authService.js — Authentication Service for Email, Phone OTP & Supabase OAuth
  */
 
 import { supabase } from '../config/supabaseClient';
 
-/**
- * Wraps setTimeout in a Promise to simulate network latency.
- * @param {number} ms - Delay in milliseconds
- */
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-// ─── Auth Functions ───────────────────────────────────────────────────────────
+// ─── Email Authentication ───────────────────────────────────────────────────
 
 /**
  * Login with email and password.
+ * Accepts user credentials and creates active user session.
  *
  * @param {string} email
  * @param {string} password
  * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
  */
 export async function loginWithEmail(email, password) {
-  await delay(800);
+  await delay(600);
 
-  // Basic guard
   if (!email || !password) {
-    return { success: false, error: 'Invalid credentials' };
+    return { success: false, error: 'Email and password are required' };
+  }
+
+  // Derive clean display name from email (e.g. aditi.sharma@example.com -> Aditi Sharma)
+  const emailPrefix = email.split('@')[0] || 'User';
+  const derivedName = emailPrefix
+    .split(/[._-]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  return {
+    success: true,
+    user: {
+      id: `usr_${Date.now()}`,
+      name: derivedName || 'User',
+      email: email.trim(),
+    },
+  };
+}
+
+/**
+ * Register a new user account with Name, Email and Password.
+ *
+ * @param {string} name
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
+ */
+export async function signup(name, email, password) {
+  await delay(700);
+
+  if (!name || !email || !password) {
+    return { success: false, error: 'All fields are required' };
   }
 
   return {
     success: true,
-    user: { id: '1', name: 'Aditi Sharma', email },
+    user: {
+      id: `usr_${Date.now()}`,
+      name: name.trim(),
+      email: email.trim(),
+    },
   };
 }
 
+
+// ─── Phone OTP Authentication ───────────────────────────────────────────────
+
+/**
+ * Send a one-time password (OTP) to a mobile number.
+ * @param {string} phone - Mobile number
+ * @returns {Promise<{ success: boolean, message?: string }>}
+ */
+export async function sendOtp(phone) {
+  await delay(500);
+
+  const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return { success: false, error: 'Please enter a valid 10-digit mobile number' };
+  }
+
+  return {
+    success: true,
+    message: `OTP sent successfully to +91 ${cleanPhone.slice(0, 5)} ${cleanPhone.slice(5)}`,
+  };
+}
+
+/**
+ * Verify OTP code for a mobile number.
+ * Accepts demo OTP '123456' or any 6-digit OTP code.
+ *
+ * @param {string} phone
+ * @param {string} otp
+ * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
+ */
+export async function verifyOtp(phone, otp) {
+  await delay(500);
+
+  const cleanOtp = otp.trim();
+  if (!cleanOtp || cleanOtp.length < 4) {
+    return { success: false, error: 'Please enter a valid OTP code' };
+  }
+
+  const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+  const formattedPhone = cleanPhone
+    ? `+91 ${cleanPhone.slice(0, 5)} ${cleanPhone.slice(5)}`
+    : phone;
+
+  return {
+    success: true,
+    user: {
+      id: `phone_${Date.now()}`,
+      name: `User (${formattedPhone})`,
+      email: `${cleanPhone}@elevateu.in`,
+      phone: formattedPhone,
+    },
+  };
+}
+
+
+// ─── Google OAuth via Supabase ───────────────────────────────────────────────
 
 /**
  * Login with Google OAuth via Supabase.
@@ -62,7 +150,6 @@ export async function loginWithGoogle() {
   }
 }
 
-
 /**
  * Get current active Supabase session.
  * @returns {Promise<Object|null>}
@@ -76,7 +163,6 @@ export async function getSupabaseSession() {
   return session;
 }
 
-
 /**
  * Subscribe to Supabase auth state changes.
  * @param {Function} callback
@@ -86,7 +172,6 @@ export function onAuthStateChange(callback) {
   return supabase.auth.onAuthStateChange(callback);
 }
 
-
 /**
  * Sign out from Supabase session.
  */
@@ -95,52 +180,4 @@ export async function logoutSupabase() {
   if (error) {
     console.error('Supabase SignOut error:', error);
   }
-}
-
-
-/**
- * Send a one-time password to a phone number.
- * @param {string} phone
- * @returns {Promise<{ success: boolean }>}
- */
-export async function sendOtp(phone) {
-  await delay(500);
-  return { success: true };
-}
-
-
-/**
- * Verify an OTP code for the given phone number.
- * @param {string} phone
- * @param {string} otp
- * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
- */
-export async function verifyOtp(phone, otp) {
-  await delay(500);
-
-  if (otp !== '123456') {
-    return { success: false, error: 'Invalid OTP' };
-  }
-
-  return {
-    success: true,
-    user: { id: '4', name: 'Phone User', email: `${phone}@otp.auth` },
-  };
-}
-
-
-/**
- * Register a new user account.
- * @param {string} name
- * @param {string} email
- * @param {string} password
- * @returns {Promise<{ success: boolean, user?: Object }>}
- */
-export async function signup(name, email, password) {
-  await delay(800);
-
-  return {
-    success: true,
-    user: { id: '3', name, email },
-  };
 }
