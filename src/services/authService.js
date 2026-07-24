@@ -1,14 +1,8 @@
 /**
- * authService.js — Mock Authentication API Layer
- *
- * All functions mirror the signature of real API calls:
- *   async fn(...args) → { success: boolean, user?: Object, error?: string }
- *
- * To switch to a real backend, replace only the body of each function.
- * The rest of the app (Login.jsx, Signup.jsx, etc.) needs no changes.
+ * authService.js — Authentication API Layer with Supabase Integration
  */
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
+import { supabase } from '../config/supabaseClient';
 
 /**
  * Wraps setTimeout in a Promise to simulate network latency.
@@ -21,7 +15,6 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Login with email and password.
- * Simulates an 800ms network round-trip.
  *
  * @param {string} email
  * @param {string} password
@@ -30,7 +23,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function loginWithEmail(email, password) {
   await delay(800);
 
-  // Basic guard — real API would validate credentials server-side
+  // Basic guard
   if (!email || !password) {
     return { success: false, error: 'Invalid credentials' };
   }
@@ -43,41 +36,81 @@ export async function loginWithEmail(email, password) {
 
 
 /**
- * Login with Google OAuth (simulated).
- * Simulates a 600ms redirect + token exchange.
+ * Login with Google OAuth via Supabase.
+ * Initiates the Google OAuth redirect flow.
  *
- * @returns {Promise<{ success: boolean, user?: Object }>}
+ * @returns {Promise<{ success: boolean, data?: Object, error?: string }>}
  */
 export async function loginWithGoogle() {
-  await delay(600);
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/login`,
+      },
+    });
 
-  return {
-    success: true,
-    user: { id: '2', name: 'Google User', email: 'user@gmail.com' },
-  };
+    if (error) {
+      console.error('Supabase Google OAuth Error:', error.message);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Google OAuth Exception:', err);
+    return { success: false, error: err.message || 'Failed to initiate Google authentication.' };
+  }
+}
+
+
+/**
+ * Get current active Supabase session.
+ * @returns {Promise<Object|null>}
+ */
+export async function getSupabaseSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) {
+    console.error('Error getting Supabase session:', error);
+    return null;
+  }
+  return session;
+}
+
+
+/**
+ * Subscribe to Supabase auth state changes.
+ * @param {Function} callback
+ * @returns {{ data: { subscription: Object } }}
+ */
+export function onAuthStateChange(callback) {
+  return supabase.auth.onAuthStateChange(callback);
+}
+
+
+/**
+ * Sign out from Supabase session.
+ */
+export async function logoutSupabase() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Supabase SignOut error:', error);
+  }
 }
 
 
 /**
  * Send a one-time password to a phone number.
- * Simulates a 500ms SMS dispatch.
- *
- * @param {string} phone - Phone number to send OTP to
+ * @param {string} phone
  * @returns {Promise<{ success: boolean }>}
  */
 export async function sendOtp(phone) {
   await delay(500);
-
-  // In production this would trigger an SMS gateway call
   return { success: true };
 }
 
 
 /**
  * Verify an OTP code for the given phone number.
- * Simulates a 500ms server-side check.
- * Demo shortcut: OTP must be '123456'.
- *
  * @param {string} phone
  * @param {string} otp
  * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
@@ -98,8 +131,6 @@ export async function verifyOtp(phone, otp) {
 
 /**
  * Register a new user account.
- * Simulates an 800ms server write + response.
- *
  * @param {string} name
  * @param {string} email
  * @param {string} password

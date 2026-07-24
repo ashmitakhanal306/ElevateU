@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, Sparkles, Check, X } from 'lucide-react';
+import { UserPlus, Check, X } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
-import { signup as signupService } from '../services/authService';
+import { signup as signupService, loginWithGoogle } from '../services/authService';
 
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import logoSrc from '../assets/logo.png';
 
+// ─── Inline Google SVG Icon ──────────────────────────────────────────────────
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+        fill="#4285F4"
+      />
+      <path
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+        fill="#34A853"
+      />
+      <path
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+        fill="#EA4335"
+      />
+    </svg>
+  );
+}
+
 // ─── Inline Spinner ────────────────────────────────────────────────────────────
 
-/**
- * Animated loading spinner for use inside buttons.
- */
 function Spinner() {
   return (
     <svg
@@ -39,9 +60,6 @@ function Spinner() {
 
 // ─── Password Strength Helper ──────────────────────────────────────────────────
 
-/**
- * Evaluates password strength returning a 3-level rating (Weak/Fair/Strong).
- */
 function getPasswordStrength(pass) {
   if (!pass) return null;
   const hasMinLength = pass.length >= 8;
@@ -57,26 +75,19 @@ function getPasswordStrength(pass) {
   return { label: 'Fair', colorClass: 'text-warning' };
 }
 
-// Robust email regex pattern
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-/**
- * Signup page.
- *
- * Fields: Name, Email, Password, Confirm Password.
- * Validation:
- *   - All fields are required
- *   - Robust email regex validated inline on blur and change
- *   - Live 3-level password strength feedback (Weak/Fair/Strong)
- *   - Live "passwords match" indicator with visual feedback
- *
- * On success: calls AuthContext.login(user) → auto-navigates to /dashboard.
- */
 export default function Signup() {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // ── Form field state ─────────────────────────────────────────────────────
   const [name, setName]                 = useState('');
@@ -85,8 +96,10 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // ── UI state ─────────────────────────────────────────────────────────────
-  const [errors, setErrors]     = useState({});  // field-level + form-level
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors]         = useState({});
+  const [isLoading, setIsLoading]   = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError]     = useState('');
 
   // ─── Validation ──────────────────────────────────────────────────────────
 
@@ -110,10 +123,6 @@ export default function Signup() {
     }
   };
 
-  /**
-   * Validate all fields.
-   * Returns true if the form is valid, false otherwise.
-   */
   const validate = () => {
     const errs = {};
 
@@ -142,12 +151,11 @@ export default function Signup() {
     return Object.keys(errs).length === 0;
   };
 
-  // ─── Submit Handler ───────────────────────────────────────────────────────
+  // ─── Handlers ─────────────────────────────────────────────────────────────
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Run validation; abort if any field fails
     if (!validate()) return;
 
     setIsLoading(true);
@@ -158,7 +166,6 @@ export default function Signup() {
     setIsLoading(false);
 
     if (result.success) {
-      // Log the new user in immediately after account creation
       login(result.user);
       navigate('/dashboard');
     } else {
@@ -166,7 +173,18 @@ export default function Signup() {
     }
   };
 
-  // Helper to clear a specific field error when the user starts typing
+  const handleGoogleSignup = async () => {
+    setGoogleLoading(true);
+    setGoogleError('');
+
+    const result = await loginWithGoogle();
+
+    if (!result.success) {
+      setGoogleLoading(false);
+      setGoogleError(result.error || 'Google sign-up failed. Please try again.');
+    }
+  };
+
   const clearError = (field) => {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
@@ -175,11 +193,8 @@ export default function Signup() {
 
   const passwordStrength = getPasswordStrength(password);
 
-  // ─── Render ───────────────────────────────────────────────────────────────
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">
-      {/* Decorative background blobs */}
       <div className="pointer-events-none absolute top-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
       <div className="pointer-events-none absolute bottom-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
 
@@ -203,6 +218,38 @@ export default function Signup() {
 
         {/* ── Main card ── */}
         <Card className="p-6 sm:p-8 space-y-5">
+
+          {/* Google Sign-up Option */}
+          <Button
+            variant="outline"
+            onClick={handleGoogleSignup}
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
+          >
+            {googleLoading ? (
+              <>
+                <Spinner />
+                Connecting…
+              </>
+            ) : (
+              <>
+                <GoogleIcon />
+                Sign up with Google
+              </>
+            )}
+          </Button>
+
+          {googleError && (
+            <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2 text-center">
+              {googleError}
+            </p>
+          )}
+
+          <div className="relative flex py-1 items-center">
+            <div className="flex-grow border-t border-border"></div>
+            <span className="flex-shrink mx-4 text-xs text-text-secondary uppercase">Or sign up with email</span>
+            <div className="flex-grow border-t border-border"></div>
+          </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
 
@@ -240,7 +287,6 @@ export default function Signup() {
                 error={errors.password}
                 autoComplete="new-password"
               />
-              {/* Real-time 3-level password strength feedback */}
               {password && passwordStrength && (
                 <div className="flex items-center justify-between text-xs mt-1.5 px-1 font-medium">
                   <span className="text-text-secondary">Password strength:</span>
@@ -262,7 +308,6 @@ export default function Signup() {
                 error={errors.confirmPassword}
                 autoComplete="new-password"
               />
-              {/* Real-time passwords match feedback */}
               {password && confirmPassword && (
                 <div className="flex items-center gap-1 text-xs font-semibold mt-1.5 px-1">
                   {password === confirmPassword ? (
@@ -278,14 +323,12 @@ export default function Signup() {
               )}
             </div>
 
-            {/* API-level error */}
             {errors.form && (
               <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
                 {errors.form}
               </p>
             )}
 
-            {/* Submit */}
             <Button
               type="submit"
               variant="primary"

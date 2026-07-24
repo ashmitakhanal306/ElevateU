@@ -87,8 +87,14 @@ const TABS = [
  * On success any tab calls AuthContext.login(user) which redirects to /dashboard.
  */
 export default function Login() {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Which tab is currently active
   const [activeTab, setActiveTab] = useState('email');
@@ -182,13 +188,9 @@ export default function Login() {
 
     const result = await loginWithGoogle();
 
-    setGoogleLoading(false);
-
-    if (result.success) {
-      login(result.user);
-      navigate('/dashboard');
-    } else {
-      setGoogleError('Google sign-in failed. Please try again.');
+    if (!result.success) {
+      setGoogleLoading(false);
+      setGoogleError(result.error || 'Google sign-in failed. Please try again.');
     }
   };
 
