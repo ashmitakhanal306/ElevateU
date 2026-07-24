@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Phone, ArrowRight, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Mail, Phone, ArrowRight, ShieldCheck, RefreshCw, UserPlus, AlertCircle } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -75,6 +75,7 @@ const TABS = [
 export default function Login() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -86,10 +87,11 @@ export default function Login() {
   const [activeTab, setActiveTab] = useState('email');
 
   // ── Email tab state ──────────────────────────────────────────────────────
-  const [email, setEmail]       = useState('');
+  const [email, setEmail]       = useState(location.state?.email || '');
   const [password, setPassword] = useState('');
   const [emailErrors, setEmailErrors] = useState({});
   const [emailLoading, setEmailLoading] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
 
   // ── Google tab state ─────────────────────────────────────────────────────
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -162,6 +164,7 @@ export default function Login() {
 
     setEmailLoading(true);
     setEmailErrors({});
+    setUserNotFound(false);
 
     const result = await loginWithEmail(email, password);
 
@@ -171,6 +174,9 @@ export default function Login() {
       login(result.user);
       navigate('/dashboard');
     } else {
+      if (result.notRegistered) {
+        setUserNotFound(true);
+      }
       setEmailErrors({ form: result.error });
     }
   };
@@ -319,11 +325,31 @@ export default function Login() {
                   autoComplete="current-password"
                 />
 
-                {emailErrors.form && (
+                {userNotFound ? (
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-3 text-left">
+                    <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                      Account Not Found
+                    </div>
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      No account exists for <strong className="text-text-primary">{email}</strong>. Please create a new account to sign up.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="md"
+                      className="w-full gap-2 text-xs font-semibold"
+                      onClick={() => navigate('/signup', { state: { email } })}
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      Create New Account
+                    </Button>
+                  </div>
+                ) : emailErrors.form ? (
                   <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
                     {emailErrors.form}
                   </p>
-                )}
+                ) : null}
 
                 <Button
                   type="submit"

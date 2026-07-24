@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, Check, X } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { UserPlus, Check, X, LogIn } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
 import { signup as signupService, loginWithGoogle } from '../services/authService';
@@ -82,6 +82,7 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export default function Signup() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -91,13 +92,14 @@ export default function Signup() {
 
   // ── Form field state ─────────────────────────────────────────────────────
   const [name, setName]                 = useState('');
-  const [email, setEmail]               = useState('');
+  const [email, setEmail]               = useState(location.state?.email || '');
   const [password, setPassword]         = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // ── UI state ─────────────────────────────────────────────────────────────
   const [errors, setErrors]         = useState({});
   const [isLoading, setIsLoading]   = useState(false);
+  const [alreadyExists, setAlreadyExists] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [googleError, setGoogleError]     = useState('');
 
@@ -160,6 +162,7 @@ export default function Signup() {
 
     setIsLoading(true);
     setErrors({});
+    setAlreadyExists(false);
 
     const result = await signupService(name, email, password);
 
@@ -169,7 +172,10 @@ export default function Signup() {
       login(result.user);
       navigate('/dashboard');
     } else {
-      setErrors({ form: 'Account creation failed. Please try again.' });
+      if (result.alreadyRegistered) {
+        setAlreadyExists(true);
+      }
+      setErrors({ form: result.error || 'Account creation failed. Please try again.' });
     }
   };
 
@@ -323,11 +329,31 @@ export default function Signup() {
               )}
             </div>
 
-            {errors.form && (
+            {alreadyExists ? (
+              <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
+                <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
+                  <LogIn className="h-4 w-4 shrink-0" />
+                  Account Already Exists
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  An account with <strong className="text-text-primary">{email}</strong> is already registered. Please sign in instead.
+                </p>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  className="w-full gap-2 text-xs font-semibold"
+                  onClick={() => navigate('/login', { state: { email } })}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign In with {email || 'this email'}
+                </Button>
+              </div>
+            ) : errors.form ? (
               <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
                 {errors.form}
               </p>
-            )}
+            ) : null}
 
             <Button
               type="submit"

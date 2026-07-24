@@ -18,52 +18,129 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
  */
 export async function loginWithEmail(email, password) {
-  await delay(600);
-
   if (!email || !password) {
     return { success: false, error: 'Email and password are required' };
   }
 
-  // Derive clean display name from email (e.g. aditi.sharma@example.com -> Aditi Sharma)
-  const emailPrefix = email.split('@')[0] || 'User';
-  const derivedName = emailPrefix
-    .split(/[._-]/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  const cleanEmail = email.trim();
 
-  return {
-    success: true,
-    user: {
-      id: `usr_${Date.now()}`,
-      name: derivedName || 'User',
-      email: email.trim(),
-    },
-  };
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: cleanEmail,
+      password,
+    });
+
+    if (error) {
+      console.warn('Supabase Email Login error:', error.message);
+      // Supabase returns "Invalid login credentials" or similar when user is not found or password incorrect
+      const isNotRegistered =
+        error.message?.toLowerCase().includes('invalid') ||
+        error.message?.toLowerCase().includes('not found') ||
+        error.status === 400 ||
+        error.status === 404;
+
+      return {
+        success: false,
+        notRegistered: isNotRegistered,
+        error: isNotRegistered
+          ? 'No account found with this email. Please create a new account.'
+          : error.message || 'Login failed. Please check your credentials.',
+      };
+    }
+
+    const name =
+      data.user?.user_metadata?.full_name ||
+      data.user?.user_metadata?.name ||
+      cleanEmail.split('@')[0];
+
+    return {
+      success: true,
+      user: {
+        id: data.user.id,
+        name,
+        email: data.user.email || cleanEmail,
+        avatar: data.user?.user_metadata?.avatar_url || '',
+      },
+    };
+  } catch (err) {
+    console.error('loginWithEmail exception:', err);
+    return {
+      success: false,
+      error: err.message || 'Failed to connect to authentication server.',
+    };
+  }
 }
 
 /**
- * Register a new user account with Name, Email and Password.
+ * Register a new user account with Name, Email and Password using Supabase Auth.
  *
  * @param {string} name
  * @param {string} email
  * @param {string} password
- * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
+ * @returns {Promise<{ success: boolean, user?: Object, alreadyRegistered?: boolean, error?: string }>}
  */
 export async function signup(name, email, password) {
-  await delay(700);
-
   if (!name || !email || !password) {
     return { success: false, error: 'All fields are required' };
   }
 
-  return {
-    success: true,
-    user: {
-      id: `usr_${Date.now()}`,
-      name: name.trim(),
-      email: email.trim(),
-    },
-  };
+  const cleanEmail = email.trim();
+  const cleanName = name.trim();
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: cleanEmail,
+      password,
+      options: {
+        data: {
+          full_name: cleanName,
+        },
+      },
+    });
+
+    if (error) {
+      console.warn('Supabase Signup error:', error.message);
+      const isAlreadyRegistered =
+        error.message?.toLowerCase().includes('already') ||
+        error.message?.toLowerCase().includes('registered') ||
+        error.message?.toLowerCase().includes('exists');
+
+      return {
+        success: false,
+        alreadyRegistered: isAlreadyRegistered,
+        error: isAlreadyRegistered
+          ? 'An account with this email already exists. Please sign in instead.'
+          : error.message || 'Account creation failed.',
+      };
+    }
+
+    // Supabase protection: if user exists, identities array may be empty []
+    if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      return {
+        success: false,
+        alreadyRegistered: true,
+        error: 'An account with this email already exists. Please sign in instead.',
+      };
+    }
+
+    const userObj = {
+      id: data.user?.id || `usr_${Date.now()}`,
+      name: cleanName,
+      email: cleanEmail,
+      avatar: data.user?.user_metadata?.avatar_url || '',
+    };
+
+    return {
+      success: true,
+      user: userObj,
+    };
+  } catch (err) {
+    console.error('signup exception:', err);
+    return {
+      success: false,
+      error: err.message || 'Failed to complete registration.',
+    };
+  }
 }
 
 
