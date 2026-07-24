@@ -6,6 +6,7 @@
  */
 
 const STORAGE_KEY = 'elevateu_user';
+const REGISTERED_EMAILS_KEY = 'elevateu_registered_emails';
 
 /**
  * Saves the user object to localStorage as a JSON string.
@@ -14,8 +15,45 @@ const STORAGE_KEY = 'elevateu_user';
 export function saveUserSession(user) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    if (user?.email) {
+      registerEmail(user.email);
+    }
   } catch (err) {
     console.warn('Failed to save user session to localStorage:', err);
+  }
+}
+
+/**
+ * Registers an email address in local persistence registry.
+ * @param {string} email
+ */
+export function registerEmail(email) {
+  if (!email) return;
+  try {
+    const clean = email.trim().toLowerCase();
+    const existing = JSON.parse(localStorage.getItem(REGISTERED_EMAILS_KEY) || '[]');
+    if (!existing.includes(clean)) {
+      existing.push(clean);
+      localStorage.setItem(REGISTERED_EMAILS_KEY, JSON.stringify(existing));
+    }
+  } catch (err) {
+    console.warn('Failed to register email in localStorage:', err);
+  }
+}
+
+/**
+ * Checks if an email address is registered in local persistence registry.
+ * @param {string} email
+ * @returns {boolean}
+ */
+export function isEmailRegistered(email) {
+  if (!email) return false;
+  try {
+    const clean = email.trim().toLowerCase();
+    const existing = JSON.parse(localStorage.getItem(REGISTERED_EMAILS_KEY) || '[]');
+    return existing.includes(clean);
+  } catch (err) {
+    return false;
   }
 }
 

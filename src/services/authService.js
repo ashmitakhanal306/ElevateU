@@ -3,6 +3,7 @@
  */
 
 import { supabase } from '../config/supabaseClient';
+import { registerEmail, isEmailRegistered } from '../utils/authStorage';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -15,14 +16,14 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  *
  * @param {string} email
  * @param {string} password
- * @returns {Promise<{ success: boolean, user?: Object, error?: string }>}
+ * @returns {Promise<{ success: boolean, user?: Object, notRegistered?: boolean, emailNotConfirmed?: boolean, invalidCredentials?: boolean, error?: string }>}
  */
 export async function loginWithEmail(email, password) {
   if (!email || !password) {
     return { success: false, error: 'Email and password are required' };
   }
 
-  const cleanEmail = email.trim();
+  const cleanEmail = email.trim().toLowerCase();
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -32,21 +33,35 @@ export async function loginWithEmail(email, password) {
 
     if (error) {
       console.warn('Supabase Email Login error:', error.message);
-      // Supabase returns "Invalid login credentials" or similar when user is not found or password incorrect
-      const isNotRegistered =
-        error.message?.toLowerCase().includes('invalid') ||
-        error.message?.toLowerCase().includes('not found') ||
-        error.status === 400 ||
-        error.status === 404;
+      const isConfirmedErr = error.message?.toLowerCase().includes('confirm');
+      const knownRegistered = isEmailRegistered(cleanEmail);
 
+      if (isConfirmedErr) {
+        return {
+          success: false,
+          emailNotConfirmed: true,
+          error: 'Your account is created! Please check your email to confirm registration.',
+        };
+      }
+
+      if (knownRegistered) {
+        return {
+          success: false,
+          invalidCredentials: true,
+          error: 'Incorrect password for this account. Please check your password and try again.',
+        };
+      }
+
+      // If not previously registered in local store and Supabase returns invalid/not found
       return {
         success: false,
-        notRegistered: isNotRegistered,
-        error: isNotRegistered
-          ? 'No account found with this email. Please create a new account.'
-          : error.message || 'Login failed. Please check your credentials.',
+        notRegistered: true,
+        error: 'No account found with this email. Please create a new account.',
       };
     }
+
+    // On successful login, persist in registered list
+    registerEmail(cleanEmail);
 
     const name =
       data.user?.user_metadata?.full_name ||
@@ -84,7 +99,7 @@ export async function signup(name, email, password) {
     return { success: false, error: 'All fields are required' };
   }
 
-  const cleanEmail = email.trim();
+  const cleanEmail = email.trim().toLowerCase();
   const cleanName = name.trim();
 
   try {
@@ -105,6 +120,10 @@ export async function signup(name, email, password) {
         error.message?.toLowerCase().includes('registered') ||
         error.message?.toLowerCase().includes('exists');
 
+      if (isAlreadyRegistered) {
+        registerEmail(cleanEmail);
+      }
+
       return {
         success: false,
         alreadyRegistered: isAlreadyRegistered,
@@ -116,12 +135,16 @@ export async function signup(name, email, password) {
 
     // Supabase protection: if user exists, identities array may be empty []
     if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      registerEmail(cleanEmail);
       return {
         success: false,
         alreadyRegistered: true,
         error: 'An account with this email already exists. Please sign in instead.',
       };
     }
+
+    // Register email in local registry as soon as user signs up
+    registerEmail(cleanEmail);
 
     const userObj = {
       id: data.user?.id || `usr_${Date.now()}`,
