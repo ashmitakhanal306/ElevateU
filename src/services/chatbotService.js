@@ -31,7 +31,7 @@ export async function getBotReply(rawUserMessage, sessionId = 'default') {
   if (!inputCheck.allowed) {
     return {
       agent: 'Security Guardrail',
-      reply: inputCheck.reason || 'Input safety violation detected.',
+      reply: "I can only help with career-related topics. Please ask about your resume, skills, jobs, or interview prep! 😊",
       isBlocked: true
     };
   }
@@ -85,8 +85,8 @@ export async function getBotReply(rawUserMessage, sessionId = 'default') {
         };
       } else {
         agentResponse = {
-          agent: 'ElevateU Assistant',
-          reply: "Hello! I am your ElevateU Agentic Career Assistant powered by Multi-Agent Swarm & MCP tooling.\n\nHow can I help you today?\n• **Resume ATS Score & Bullet Point Review**\n• **Skill Gap Analysis & Roadmaps**\n• **Internship & Job Search**\n• **STAR Behavioral Interview Practice**",
+          agent: 'ElevateU General Assistant',
+          reply: "I'm here to help! Here's what you can ask me:\n\n• **Resume review** — get an ATS score and improvement tips\n• **Skill gap analysis** — find what skills you need for your dream role\n• **Job & internship search** — discover opportunities that match your profile\n• **Interview practice** — prepare with STAR method coaching",
           toolsExecuted: []
         };
       }

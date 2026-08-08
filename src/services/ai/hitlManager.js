@@ -31,13 +31,13 @@ class HitlManager {
   getPromptMessage(actionType, payload) {
     switch (actionType) {
       case HITL_ACTION_TYPES.UPDATE_PROFILE:
-        return `Confirm updating your primary Target Role to **"${payload.targetRole}"**?`;
+        return `Would you like to update your target role to **"${payload.targetRole}"**?`;
       case HITL_ACTION_TYPES.APPLY_JOB:
-        return `Confirm submitting application to **${payload.company}** for **"${payload.roleTitle}"**?`;
+        return `Ready to apply to **${payload.company}** for **"${payload.roleTitle}"**?`;
       case HITL_ACTION_TYPES.SAVE_RESUME_SECTION:
-        return `Confirm saving optimized ATS bullet points into your profile resume?`;
+        return `Save the improved resume bullet points to your profile?`;
       default:
-        return `Confirm executing action "${actionType}"?`;
+        return `Confirm this action?`;
     }
   }
 
