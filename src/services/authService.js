@@ -92,7 +92,7 @@ export async function loginWithEmail(email, password) {
  * @param {string} name
  * @param {string} email
  * @param {string} password
- * @returns {Promise<{ success: boolean, user?: Object, alreadyRegistered?: boolean, error?: string }>}
+ * @returns {Promise<{ success: boolean, user?: Object, alreadyRegistered?: boolean, needsEmailConfirmation?: boolean, error?: string }>}
  */
 export async function signup(name, email, password) {
   if (!name || !email || !password) {
@@ -146,8 +146,24 @@ export async function signup(name, email, password) {
     // Register email in local registry as soon as user signs up
     registerEmail(cleanEmail);
 
+    // CRITICAL: Supabase returns a null session when email confirmation is required.
+    // Do NOT log the user in until the email is confirmed — doing so causes the
+    // "Your account is created, please confirm" error on the next login attempt.
+    const sessionExists = !!data.session;
+
+    if (!sessionExists) {
+      // Email confirmation is required — show confirmation screen, do NOT redirect.
+      return {
+        success: false,
+        needsEmailConfirmation: true,
+        email: cleanEmail,
+      };
+    }
+
+    // Session exists → email confirmation is disabled in Supabase settings (or
+    // autoconfirm is on). Safe to log the user in immediately.
     const userObj = {
-      id: data.user?.id || `usr_${Date.now()}`,
+      id: data.user?.id,
       name: cleanName,
       email: cleanEmail,
       avatar: data.user?.user_metadata?.avatar_url || '',
@@ -209,10 +225,13 @@ export async function verifyOtp(phone, otp) {
     ? `+91 ${cleanPhone.slice(0, 5)} ${cleanPhone.slice(5)}`
     : phone;
 
+  // Generate a deterministic valid UUID based on the 10-digit phone number
+  const mockUuid = `e1e8a7e0-9b4f-4d32-8418-${cleanPhone.padStart(12, '0')}`;
+
   return {
     success: true,
     user: {
-      id: `phone_${Date.now()}`,
+      id: mockUuid,
       name: `User (${formattedPhone})`,
       email: `${cleanPhone}@elevateu.in`,
       phone: formattedPhone,

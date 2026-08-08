@@ -19,6 +19,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { X, Plus, Trash2, GraduationCap, Briefcase, Zap, Heart, Target, User } from 'lucide-react';
 
 import { updateProfile } from '../../services/profileService';
+import { fetchAllRoadmaps } from '../../services/roadmapService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Badge from '../ui/Badge';
@@ -36,6 +37,79 @@ const LEVEL_VARIANT = {
 
 /** Simple unique ID for new array entries (no external lib needed) */
 const generateId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+
+/** Valid skills dictionary to restrict skills section input */
+const ALLOWED_SKILLS = [
+  'JavaScript', 'React.js', 'Python', 'Tailwind CSS', 'SQL',
+  'Machine Learning', 'Node.js', 'Git & GitHub', 'Figma',
+  'Prototyping', 'User Research', 'Agile Methodology',
+  'Data Analysis', 'Communication', 'SEO/SEM', 'Google Analytics',
+  'Copywriting', 'Linux', 'Docker', 'AWS / Azure', 'CI/CD',
+  'CSS', 'Sass', 'Responsive Design', 'Cloud Computing',
+  'AWS', 'System Architecture', 'Express', 'MongoDB',
+  'R', 'Tableau', 'Version Control', 'Database Design',
+  'PostgreSQL', 'UI/UX Design', 'TypeScript', 'C++',
+  'Java', 'HTML', 'Next.js', 'Vue.js', 'Redux', 'Kubernetes'
+].sort();
+
+// ─── Date Parsing and Formatting Helpers ─────────────────────────────────────
+
+const parseYearRange = (yearStr) => {
+  if (!yearStr) return { start: '', end: '' };
+  const parts = yearStr.split(/[–-]/).map(s => s.trim());
+  const getYearOnly = (p, defaultMonth = '01') => {
+    const m = p.match(/\b\d{4}\b/);
+    return m ? `${m[0]}-${defaultMonth}-01` : '';
+  };
+  const start = getYearOnly(parts[0], '01');
+  const end = parts[1] ? getYearOnly(parts[1], '12') : start;
+  return { start, end };
+};
+
+const parseDurationRange = (durationStr) => {
+  if (!durationStr) return { start: '', end: '' };
+  const parts = durationStr.split(/[–-]/).map(s => s.trim());
+  const parseSingle = (p, defaultMonth = '01', defaultYear = '2024') => {
+    const yearMatch = p.match(/\b\d{4}\b/);
+    const year = yearMatch ? yearMatch[0] : defaultYear;
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    let monthNum = defaultMonth;
+    const lower = p.toLowerCase();
+    for (let i = 0; i < 12; i++) {
+      if (lower.includes(months[i])) {
+        monthNum = String(i + 1).padStart(2, '0');
+        break;
+      }
+    }
+    return `${year}-${monthNum}-01`;
+  };
+  const start = parseSingle(parts[0], '01', '2024');
+  const end = parts[1] ? parseSingle(parts[1], '12', '2024') : start;
+  return { start, end };
+};
+
+const formatYearRange = (start, end) => {
+  if (!start) return '';
+  const startYear = start.split('-')[0];
+  if (!end) return startYear;
+  const endYear = end.split('-')[0];
+  return startYear === endYear ? startYear : `${startYear} – ${endYear}`;
+};
+
+const formatDurationRange = (start, end) => {
+  if (!start) return '';
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const formatSingle = (dateVal) => {
+    const parts = dateVal.split('-');
+    if (parts.length < 2) return '';
+    const mIdx = parseInt(parts[1], 10) - 1;
+    return `${months[mIdx] || 'Jan'} ${parts[0]}`;
+  };
+  const startFormatted = formatSingle(start);
+  if (!end) return startFormatted;
+  const endFormatted = formatSingle(end);
+  return `${startFormatted} – ${endFormatted}`;
+};
 
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -100,13 +174,34 @@ function Spinner() {
 
 export default function EditProfileModal({ profile, onClose, onSave }) {
   // ── Local edit state — deep-cloned from prop so we never mutate parent ──
-  const [editData, setEditData] = useState(() => JSON.parse(JSON.stringify(profile)));
+  const [editData, setEditData] = useState(() => {
+    const cloned = JSON.parse(JSON.stringify(profile));
+    
+    // Parse Year range into start_date and end_date date inputs
+    cloned.education = (cloned.education || []).map((edu) => {
+      const { start, end } = parseYearRange(edu.year);
+      return { ...edu, start_date: start, end_date: end };
+    });
+
+    // Parse Duration range into start_date and end_date date inputs
+    cloned.experience = (cloned.experience || []).map((exp) => {
+      const { start, end } = parseDurationRange(exp.duration);
+      return { ...exp, start_date: start, end_date: end };
+    });
+
+    return cloned;
+  });
 
   // ── Add-row local state (inputs for new items) ──────────────────────────
   const [newSkillName,  setNewSkillName]  = useState('');
   const [newSkillLevel, setNewSkillLevel] = useState('Beginner');
   const [newInterest,   setNewInterest]   = useState('');
   const [newGoal,       setNewGoal]       = useState('');
+
+  // ── Validation and alignment states ──────────────────────────────────────
+  const [validationErrors, setValidationErrors] = useState({});
+  const [skillError, setSkillError]             = useState('');
+  const [availableRoadmaps, setAvailableRoadmaps] = useState([]);
 
   // ── Async save state ────────────────────────────────────────────────────
   const [isSaving,   setIsSaving]   = useState(false);
@@ -124,6 +219,31 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
       document.body.style.overflow = '';
     };
   }, [handleClose]);
+
+  // ── Load roadmaps on mount for Career Goals dropdown alignment ─────────
+  useEffect(() => {
+    fetchAllRoadmaps()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setAvailableRoadmaps(data.map((r) => r.title));
+        } else {
+          setAvailableRoadmaps([
+            'Frontend Developer', 'Backend Developer', 'Data Scientist',
+            'Data Analyst', 'UI/UX Designer', 'Product Manager',
+            'Digital Marketer', 'DevOps Engineer', 'AI Engineer',
+            'Machine Learning', 'Cloud Computing', 'Database Design'
+          ]);
+        }
+      })
+      .catch(() => {
+        setAvailableRoadmaps([
+          'Frontend Developer', 'Backend Developer', 'Data Scientist',
+          'Data Analyst', 'UI/UX Designer', 'Product Manager',
+          'Digital Marketer', 'DevOps Engineer', 'AI Engineer',
+          'Machine Learning', 'Cloud Computing', 'Database Design'
+        ]);
+      });
+  }, []);
 
 
   // ─── Updaters: Personal ────────────────────────────────────────────────
@@ -148,7 +268,7 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
       ...p,
       education: [
         ...p.education,
-        { id: generateId(), degree: '', institution: '', year: '', grade: '' },
+        { id: generateId(), degree: '', institution: '', year: '', grade: '', start_date: '', end_date: '' },
       ],
     }));
 
@@ -161,12 +281,26 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
   const addSkill = () => {
     const name = newSkillName.trim();
     if (!name) return;
+    
+    // Find skill in allowed list case-insensitively
+    const matchedSkill = ALLOWED_SKILLS.find(s => s.toLowerCase() === name.toLowerCase());
+    if (!matchedSkill) {
+      setSkillError(`Only predefined skills are allowed. Please select one from the suggestions.`);
+      return;
+    }
+
+    if (editData.skills.some(s => s.name.toLowerCase() === matchedSkill.toLowerCase())) {
+      setSkillError("You have already added this skill.");
+      return;
+    }
+
     setEditData((p) => ({
       ...p,
-      skills: [...p.skills, { id: generateId(), name, level: newSkillLevel }],
+      skills: [...p.skills, { id: generateId(), name: matchedSkill, level: newSkillLevel }],
     }));
     setNewSkillName('');
     setNewSkillLevel('Beginner');
+    setSkillError('');
   };
 
 
@@ -212,7 +346,7 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
       ...p,
       experience: [
         ...p.experience,
-        { id: generateId(), role: '', organization: '', duration: '', description: '' },
+        { id: generateId(), role: '', organization: '', duration: '', description: '', start_date: '', end_date: '' },
       ],
     }));
 
@@ -220,10 +354,65 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
   // ─── Save Handler ─────────────────────────────────────────────────────
 
   const handleSave = async () => {
+    // ── Validation checks ──
+    const errors = {};
+    if (!editData.personal.name || !editData.personal.name.trim()) {
+      errors.name = 'Full name is required';
+    }
+    if (!editData.personal.phone || !editData.personal.phone.trim()) {
+      errors.phone = 'Phone number is required';
+    } else if (editData.personal.phone.replace(/\D/g, '').length !== 10) {
+      errors.phone = 'Phone number must be exactly 10 digits';
+    }
+    if (!editData.personal.location || !editData.personal.location.trim()) {
+      errors.location = 'Location is required';
+    }
+
+    if (!editData.education || editData.education.length === 0) {
+      errors.education = 'At least one education entry is required';
+    } else {
+      editData.education.forEach((edu, idx) => {
+        if (!edu.degree || !edu.degree.trim()) {
+          errors[`edu_${idx}_degree`] = 'Degree is required';
+        }
+        if (!edu.institution || !edu.institution.trim()) {
+          errors[`edu_${idx}_institution`] = 'Institution is required';
+        }
+        if (!edu.start_date) {
+          errors[`edu_${idx}_start`] = 'Start date is required';
+        }
+        if (!edu.end_date) {
+          errors[`edu_${idx}_end`] = 'End date is required';
+        }
+      });
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      setSaveError('Please fill in all mandatory elements and correct errors.');
+      return;
+    }
+
     setIsSaving(true);
     setSaveError('');
+    setValidationErrors({});
 
-    const result = await updateProfile(editData);
+    // Map start/end dates back to combined strings
+    const preparedData = {
+      ...editData,
+      education: editData.education.map(edu => {
+        const yearStr = formatYearRange(edu.start_date, edu.end_date);
+        const { start_date, end_date, ...rest } = edu;
+        return { ...rest, year: yearStr };
+      }),
+      experience: editData.experience.map(exp => {
+        const durationStr = formatDurationRange(exp.start_date, exp.end_date);
+        const { start_date, end_date, ...rest } = exp;
+        return { ...rest, duration: durationStr };
+      })
+    };
+
+    const result = await updateProfile(preparedData);
 
     setIsSaving(false);
 
@@ -244,9 +433,9 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
       className="fixed inset-0 z-[100] flex items-start justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      {/* Modal panel */}
+      {/* Modal panel with max-height to ensure internal scrollability and fit on any viewport */}
       <div
-        className="w-full max-w-2xl my-6 bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col"
+        className="w-full max-w-2xl my-6 bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col max-h-[90vh] md:max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -272,10 +461,11 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
             </SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Full name"
+                label="Full name *"
                 value={editData.personal.name}
-                onChange={(e) => setPersonal('name', e.target.value)}
-                placeholder="Your full name"
+                onChange={(e) => setPersonal('name', e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
+                placeholder="Your full name (alphabets only)"
+                error={validationErrors.name}
               />
               <Input
                 label="Email address"
@@ -285,17 +475,19 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
                 placeholder="you@example.com"
               />
               <Input
-                label="Phone number"
+                label="Phone number *"
                 type="tel"
                 value={editData.personal.phone}
-                onChange={(e) => setPersonal('phone', e.target.value)}
-                placeholder="+91 98765 43210"
+                onChange={(e) => setPersonal('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
+                placeholder="e.g. 9876543210 (10 digits numeric)"
+                error={validationErrors.phone}
               />
               <Input
-                label="Location"
+                label="Location *"
                 value={editData.personal.location}
                 onChange={(e) => setPersonal('location', e.target.value)}
                 placeholder="City, State"
+                error={validationErrors.location}
               />
             </div>
           </section>
@@ -303,10 +495,13 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
           {/* ── 2. Education ────────────────────────────────────────────── */}
           <section>
             <SectionTitle icon={GraduationCap} iconClass="text-primary">
-              Education
+              Education *
             </SectionTitle>
+            {validationErrors.education && (
+              <p className="text-xs font-semibold text-danger mb-3">{validationErrors.education}</p>
+            )}
             <div className="space-y-4">
-              {editData.education.map((edu) => (
+              {editData.education.map((edu, idx) => (
                 <div
                   key={edu.id}
                   className="relative border border-border rounded-xl p-4 space-y-3 bg-bg-page"
@@ -321,31 +516,41 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
                   </button>
 
                   <Input
-                    label="Degree / Qualification"
+                    label="Degree / Qualification *"
                     value={edu.degree}
                     onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                     placeholder="B.Tech in Computer Science"
+                    error={validationErrors[`edu_${idx}_degree`]}
                   />
                   <Input
-                    label="Institution"
+                    label="Institution *"
                     value={edu.institution}
                     onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
                     placeholder="University or School name"
+                    error={validationErrors[`edu_${idx}_institution`]}
                   />
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Input
-                      label="Year"
-                      value={edu.year}
-                      onChange={(e) => updateEducation(edu.id, 'year', e.target.value)}
-                      placeholder="2021 – 2025"
+                      label="Start Date *"
+                      type="date"
+                      value={edu.start_date || ''}
+                      onChange={(e) => updateEducation(edu.id, 'start_date', e.target.value)}
+                      error={validationErrors[`edu_${idx}_start`]}
                     />
                     <Input
-                      label="Grade / GPA"
-                      value={edu.grade}
-                      onChange={(e) => updateEducation(edu.id, 'grade', e.target.value)}
-                      placeholder="8.5 CGPA"
+                      label="End Date (or Expected) *"
+                      type="date"
+                      value={edu.end_date || ''}
+                      onChange={(e) => updateEducation(edu.id, 'end_date', e.target.value)}
+                      error={validationErrors[`edu_${idx}_end`]}
                     />
                   </div>
+                  <Input
+                    label="Grade / GPA"
+                    value={edu.grade}
+                    onChange={(e) => updateEducation(edu.id, 'grade', e.target.value)}
+                    placeholder="8.5 CGPA"
+                  />
                 </div>
               ))}
 
@@ -391,18 +596,26 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
                 <Input
                   label="Skill name"
                   value={newSkillName}
-                  onChange={(e) => setNewSkillName(e.target.value)}
-                  placeholder="e.g. TypeScript"
+                  onChange={(e) => { setNewSkillName(e.target.value); setSkillError(''); }}
+                  placeholder="Select a skill from list..."
+                  list="skills-list"
+                  error={skillError}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); }}}
                 />
+                <datalist id="skills-list">
+                  {ALLOWED_SKILLS.map((skill) => (
+                    <option key={skill} value={skill} />
+                  ))}
+                </datalist>
               </div>
               <div className="flex flex-col gap-1.5">
                 <span className="text-xs font-semibold text-text-secondary tracking-wide">Level</span>
                 <LevelSelect value={newSkillLevel} onChange={setNewSkillLevel} />
               </div>
               <button
+                type="button"
                 onClick={addSkill}
-                className="mb-0.5 h-[42px] px-3 rounded-xl border border-border bg-bg-surface hover:bg-secondary hover:text-white hover:border-secondary text-text-secondary transition-all duration-200 flex items-center justify-center"
+                className="mb-0.5 h-[42px] px-3 rounded-xl border border-border bg-bg-surface hover:bg-secondary hover:text-white hover:border-secondary text-text-secondary transition-all duration-200 flex items-center justify-center font-bold"
                 aria-label="Add skill"
               >
                 <Plus className="h-4 w-4" />
@@ -492,24 +705,35 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
 
             {/* Add goal row */}
             <div className="flex gap-2 items-end">
-              <div className="flex-1">
-                <Input
-                  label="Add career goal"
+              <div className="flex-1 text-left">
+                <label className="text-xs font-semibold text-text-secondary select-none tracking-wide mb-1.5 block">
+                  Select Career Goal (aligned with roadmaps)
+                </label>
+                <select
                   value={newGoal}
                   onChange={(e) => setNewGoal(e.target.value)}
-                  placeholder="e.g. Machine Learning Engineer"
                   disabled={editData.careerGoals.length >= 3}
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addGoal(); }}}
-                />
+                  className="w-full px-4 py-2.5 text-sm rounded-xl border border-border bg-bg-surface text-text-primary focus:outline-none focus:ring-4 focus:ring-secondary/25 focus:border-secondary transition-all duration-200 cursor-pointer disabled:opacity-50"
+                >
+                  <option value="">-- Choose a career goal --</option>
+                  {availableRoadmaps
+                    .filter((title) => !editData.careerGoals.includes(title))
+                    .map((title) => (
+                      <option key={title} value={title}>
+                        {title}
+                      </option>
+                    ))}
+                </select>
               </div>
-              <button
+              <Button
+                type="button"
+                variant="outline"
                 onClick={addGoal}
-                disabled={editData.careerGoals.length >= 3}
-                className="mb-0.5 h-[42px] px-3 rounded-xl border border-border bg-bg-surface hover:bg-secondary hover:text-white hover:border-secondary text-text-secondary transition-all duration-200 flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none"
-                aria-label="Add career goal"
+                disabled={editData.careerGoals.length >= 3 || !newGoal}
+                className="mb-0.5 h-[42px] px-4 rounded-xl border border-border hover:bg-secondary hover:text-white"
               >
-                <Plus className="h-4 w-4" />
-              </button>
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
             </div>
             {editData.careerGoals.length >= 3 && (
               <p className="text-xs text-text-secondary mt-2">
@@ -552,12 +776,20 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
                       placeholder="Company or Project name"
                     />
                   </div>
-                  <Input
-                    label="Duration"
-                    value={exp.duration}
-                    onChange={(e) => updateExperience(exp.id, 'duration', e.target.value)}
-                    placeholder="Jun 2024 – Aug 2024"
-                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Input
+                      label="Start Date"
+                      type="date"
+                      value={exp.start_date || ''}
+                      onChange={(e) => updateExperience(exp.id, 'start_date', e.target.value)}
+                    />
+                    <Input
+                      label="End Date"
+                      type="date"
+                      value={exp.end_date || ''}
+                      onChange={(e) => updateExperience(exp.id, 'end_date', e.target.value)}
+                    />
+                  </div>
                   <TextArea
                     label="Description"
                     value={exp.description}

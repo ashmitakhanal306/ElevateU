@@ -33,6 +33,8 @@ import { useAuth }  from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import { getDashboardData } from '../services/dashboardService';
 import { getOverallProgress } from '../services/roadmapService';
+import { getProfile } from '../services/profileService';
+import EditProfileModal from '../components/profile/EditProfileModal';
 import Card   from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge  from '../components/ui/Badge';
@@ -279,6 +281,9 @@ export default function Dashboard() {
 
   const [data,    setData]    = useState(null);
   const [roadmapProgress, setRoadmapProgress] = useState(0);
+  const [profile, setProfile] = useState(null);
+  const [isProfileSetupOpen, setIsProfileSetupOpen] = useState(false);
+  const [showSetupPrompt, setShowSetupPrompt] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(false);
 
@@ -287,15 +292,33 @@ export default function Dashboard() {
     setError(false);
     Promise.all([
       getDashboardData(),
-      getOverallProgress()
-    ]).then(([d, progress]) => {
+      getOverallProgress(),
+      getProfile().catch(() => null)
+    ]).then(([d, progress, prof]) => {
       setData(d);
       setRoadmapProgress(progress);
+      setProfile(prof);
       setLoading(false);
+
+      if (prof && prof.isCompleted === false && showSetupPrompt) {
+        setIsProfileSetupOpen(true);
+      }
     }).catch(() => {
       setError(true);
       setLoading(false);
     });
+  };
+
+  const handleProfileSave = (updatedProfile) => {
+    setProfile(updatedProfile);
+    setIsProfileSetupOpen(false);
+    setShowSetupPrompt(false);
+    fetchDashboard();
+  };
+
+  const handleProfileClose = () => {
+    setIsProfileSetupOpen(false);
+    setShowSetupPrompt(false);
   };
 
   // Fetch dashboard data on mount
@@ -592,6 +615,15 @@ export default function Dashboard() {
         </Card>
 
       </div>{/* end activity + actions */}
+
+      {/* ── PROFILE SETUP ONBOARDING MODAL ── */}
+      {isProfileSetupOpen && profile && (
+        <EditProfileModal
+          profile={profile}
+          onClose={handleProfileClose}
+          onSave={handleProfileSave}
+        />
+      )}
 
     </div>
   );

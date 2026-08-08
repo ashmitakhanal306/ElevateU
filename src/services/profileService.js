@@ -10,7 +10,10 @@
  * of each exported function — all callers remain unchanged.
  */
 
-import dummyProfile from '../data/dummyProfile.js';
+// dummyProfile is no longer used as a runtime fallback; an empty profile is returned instead.
+// It is retained as the canonical data shape reference for TypeScript-style documentation.
+import dummyProfile from '../data/dummyProfile.js'; // eslint-disable-line no-unused-vars
+import { useAuthStore } from '../store/authStore';
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -28,15 +31,49 @@ const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
  */
 const loadProfileStore = () => {
   try {
-    const stored = localStorage.getItem('elevateu_profile');
+    const user = useAuthStore.getState().user;
+    const key = user ? `elevateu_profile_${user.id}` : 'elevateu_profile';
+    const stored = localStorage.getItem(key);
     if (stored) {
       const parsed = JSON.parse(stored);
       if (parsed) return parsed;
     }
+
+    // If there is a logged-in user but no profile is stored, create a user-specific blank/initial profile
+    if (user) {
+      const initials = user.initials || '';
+      const newProfile = {
+        personal: {
+          name: user.name || '',
+          email: user.email || '',
+          phone: '',
+          location: '',
+          avatarInitials: initials,
+        },
+        education: [],
+        skills: [],
+        interests: [],
+        careerGoals: [],
+        experience: [],
+        isCompleted: false, // flag for triggering onboarding modal
+      };
+      localStorage.setItem(key, JSON.stringify(newProfile));
+      return newProfile;
+    }
   } catch (err) {
     console.warn('Failed to load profile store from localStorage:', err);
   }
-  return deepClone(dummyProfile);
+  // For signed-out/guest state, return an empty profile rather than Aditi Sharma's dummy data.
+  // Route protection means this branch should rarely be hit, but it's safer to return nothing.
+  return {
+    personal: { name: '', email: '', phone: '', location: '', avatarInitials: '' },
+    education: [],
+    skills: [],
+    interests: [],
+    careerGoals: [],
+    experience: [],
+    isCompleted: false,
+  };
 };
 
 let profileStore = loadProfileStore();
@@ -48,7 +85,7 @@ let profileStore = loadProfileStore();
  * Fetch the current user profile.
  * Returns a deep copy so callers cannot accidentally mutate the store.
  *
- * @returns {Promise<Object>} Profile data shaped like dummyProfile
+ * @returns {Promise<Object>} Profile data shaped like the profile schema
  */
 export async function getProfile() {
   await delay(500);
@@ -71,26 +108,42 @@ export async function getProfile() {
  * Each top-level section from updatedData fully replaces the matching section
  * in the store (arrays are replaced wholesale, not item-patched).
  *
- * @param {Partial<typeof dummyProfile>} updatedData - Sections to overwrite
+ * @param {Object} updatedData - Sections to overwrite
  * @returns {Promise<{ success: boolean, profile: Object }>}
  */
 export async function updateProfile(updatedData) {
   await delay(500);
 
+  // Load the current store first
+  profileStore = loadProfileStore();
+
   // Merge: keep existing sections not present in updatedData
   profileStore = {
     ...profileStore,
     ...updatedData,
-    // personal is a nested object — spread one level deeper so partial
-    // personal updates don't wipe untouched fields
     personal: {
       ...profileStore.personal,
       ...(updatedData.personal ?? {}),
     },
+    isCompleted: true, // mark profile as completed on update/save
   };
 
   try {
-    localStorage.setItem('elevateu_profile', JSON.stringify(profileStore));
+    const user = useAuthStore.getState().user;
+    const key = user ? `elevateu_profile_${user.id}` : 'elevateu_profile';
+    localStorage.setItem(key, JSON.stringify(profileStore));
+
+    // Synchronize changes to useAuthStore
+    if (updatedData.personal) {
+      const { name, email } = updatedData.personal;
+      const updateUser = useAuthStore.getState().updateUser;
+      if (updateUser) {
+        updateUser({
+          ...(name ? { name } : {}),
+          ...(email ? { email } : {}),
+        });
+      }
+    }
   } catch (err) {
     console.warn('Failed to save profile store to localStorage:', err);
   }

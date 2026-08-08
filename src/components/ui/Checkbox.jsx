@@ -25,7 +25,7 @@ export default function Checkbox({
 
   return (
     <div className={`flex items-start gap-2.5 text-left ${className}`}>
-      <div className="relative flex items-center h-5 mt-0.5 select-none shrink-0">
+      <label className="relative flex items-center h-5 mt-0.5 select-none shrink-0 cursor-pointer">
         <input
           ref={ref}
           id={id}
@@ -38,7 +38,7 @@ export default function Checkbox({
         />
         {/* Custom styled checkbox indicator */}
         <div 
-          className={`h-5 w-5 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
+          className={`h-5 w-5 rounded border-2 flex items-center justify-center transition-colors ${
             checked 
               ? 'bg-secondary border-secondary text-white' 
               : 'border-border bg-bg-surface hover:border-secondary/50 peer-focus-visible:border-secondary'
@@ -54,7 +54,7 @@ export default function Checkbox({
             </svg>
           )}
         </div>
-      </div>
+      </label>
       {label && (
         <label
           htmlFor={id}

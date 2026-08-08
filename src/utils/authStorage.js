@@ -1,8 +1,10 @@
 /**
- * authStorage.js — Utility helpers for managing dummy user session in localStorage.
+ * authStorage.js — Utility helpers for persisting the enriched Supabase auth session
+ * in localStorage between page loads.
  *
- * NOTE: For production, real session tokens MUST be stored in httpOnly cookies.
- * This localStorage helper is used for local mock persistence only.
+ * NOTE: This stores only the normalized user object (id, name, email, initials, avatar)
+ * — NOT the raw JWT or refresh token. Those are managed by @supabase/supabase-js internally.
+ * For production hardening, consider storing only the user ID here and re-fetching from Supabase.
  */
 
 const STORAGE_KEY = 'elevateu_user';

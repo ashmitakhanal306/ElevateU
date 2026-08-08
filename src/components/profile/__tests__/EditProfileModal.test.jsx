@@ -15,7 +15,7 @@ describe('EditProfileModal Component', () => {
     personal: {
       name: 'Alex Rivera',
       email: 'alex.rivera@example.com',
-      phone: '+1 555-0199',
+      phone: '9876543210',
       location: 'San Francisco, CA',
     },
     education: [
@@ -50,7 +50,7 @@ describe('EditProfileModal Component', () => {
     // Personal info
     expect(screen.getByLabelText(/full name/i)).toHaveValue('Alex Rivera');
     expect(screen.getByLabelText(/email address/i)).toHaveValue('alex.rivera@example.com');
-    expect(screen.getByLabelText(/phone number/i)).toHaveValue('+1 555-0199');
+    expect(screen.getByLabelText(/phone number/i)).toHaveValue('9876543210');
     expect(screen.getByLabelText(/location/i)).toHaveValue('San Francisco, CA');
 
     // Existing skill chips

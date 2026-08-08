@@ -1,13 +1,72 @@
-/**
- * assessmentService.js — Mock API layer for Skill Assessments.
- */
-
 import dummyAssessments from '../data/dummyAssessments.js';
+import { useAuthStore } from '../store/authStore';
+import { logUserActivity } from '../utils/activityLogger';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Mock completed state (in a real app, this comes from a database)
-const completedAssessments = new Set(['js-basics', 'comm-skills']);
+const getCompletedKey = () => {
+  const user = useAuthStore.getState().user;
+  return user ? `elevateu_completed_assessments_${user.id}` : 'elevateu_completed_assessments';
+};
+
+const getScoresKey = () => {
+  const user = useAuthStore.getState().user;
+  return user ? `elevateu_assessment_scores_${user.id}` : 'elevateu_assessment_scores';
+};
+
+export function getCompletedAssessments() {
+  const user = useAuthStore.getState().user;
+  try {
+    const key = getCompletedKey();
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) return new Set(parsed);
+    }
+  } catch (err) {
+    console.warn('Failed to load completed assessments:', err);
+  }
+  if (user) {
+    return new Set();
+  }
+  return new Set(['js-basics', 'comm-skills']);
+}
+
+export function getAssessmentScores() {
+  const user = useAuthStore.getState().user;
+  try {
+    const key = getScoresKey();
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed) return parsed;
+    }
+  } catch (err) {
+    console.warn('Failed to load assessment scores:', err);
+  }
+  if (user) {
+    return {};
+  }
+  return { 'js-basics': 83, 'comm-skills': 75 };
+}
+
+export function saveCompletedAssessments(completedSet) {
+  try {
+    const key = getCompletedKey();
+    localStorage.setItem(key, JSON.stringify(Array.from(completedSet)));
+  } catch (err) {
+    console.warn('Failed to save completed assessments:', err);
+  }
+}
+
+export function saveAssessmentScores(scoresObj) {
+  try {
+    const key = getScoresKey();
+    localStorage.setItem(key, JSON.stringify(scoresObj));
+  } catch (err) {
+    console.warn('Failed to save assessment scores:', err);
+  }
+}
 
 /**
  * Strips sensitive data (answers) from an assessment before sending to client.
@@ -27,9 +86,10 @@ const sanitizeAssessment = (assessment) => {
  */
 export async function getAssessments() {
   await delay(500);
+  const completed = getCompletedAssessments();
   return dummyAssessments.map((a) => ({
     ...sanitizeAssessment(a),
-    completed: completedAssessments.has(a.id),
+    completed: completed.has(a.id),
   }));
 }
 
@@ -41,9 +101,10 @@ export async function getAssessmentById(id) {
   const assessment = dummyAssessments.find((a) => a.id === id);
   if (!assessment) throw new Error('Assessment not found');
   
+  const completed = getCompletedAssessments();
   return {
     ...sanitizeAssessment(assessment),
-    completed: completedAssessments.has(id),
+    completed: completed.has(id),
   };
 }
 
@@ -104,7 +165,20 @@ export async function submitAssessment(id, answers) {
   const result = calculateScore(id, answers);
 
   // Mark as completed
-  completedAssessments.add(id);
+  const completed = getCompletedAssessments();
+  completed.add(id);
+  saveCompletedAssessments(completed);
+
+  const scores = getAssessmentScores();
+  scores[id] = result.score;
+  saveAssessmentScores(scores);
+
+  // Log activity
+  const user = useAuthStore.getState().user;
+  const assessment = dummyAssessments.find((a) => a.id === id);
+  if (user && assessment) {
+    logUserActivity(user.id, 'assessment', `Completed "${assessment.title}" quiz`);
+  }
 
   return result;
 }

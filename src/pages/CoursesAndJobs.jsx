@@ -66,6 +66,8 @@ export default function CoursesAndJobs() {
 
   const [activeTab, setActiveTab] = useState('courses'); // 'courses' or 'jobs'
   const [profileSkills, setProfileSkills] = useState([]);
+  const [profileInterests, setProfileInterests] = useState([]);
+  const [profileCareerGoals, setProfileCareerGoals] = useState([]);
 
   // Data states
   const [courses, setCourses] = useState([]);
@@ -95,6 +97,8 @@ export default function CoursesAndJobs() {
       setCourses(courseData);
       setOpportunities(oppData);
       setProfileSkills(profileData.skills?.map(s => s.name.toLowerCase()) || []);
+      setProfileInterests(profileData.interests?.map(i => i.toLowerCase()) || []);
+      setProfileCareerGoals(profileData.careerGoals?.map(g => g.toLowerCase()) || []);
     } catch (err) {
       console.error(err);
       setError(true);
@@ -112,8 +116,31 @@ export default function CoursesAndJobs() {
   // Memoize filtered course list so we only recalculate when course list or filters change
   const filteredCourses = useMemo(() => {
     return courses.filter(c => {
+      // 1. Type & Level filters
       if (courseType !== 'All' && c.type !== courseType) return false;
       if (courseLevel !== 'All' && c.level !== courseLevel) return false;
+
+      // 2. User profile matching (Skills, Interests, and Career Goals)
+      const hasMatchingSkill = c.skillsTaught.some(s => profileSkills.includes(s.toLowerCase()));
+
+      const hasMatchingInterest = profileInterests.some(interest => {
+        const interestClean = interest.toLowerCase().trim();
+        if (!interestClean) return false;
+        return c.title.toLowerCase().includes(interestClean) ||
+               c.skillsTaught.some(s => s.toLowerCase().includes(interestClean) || interestClean.includes(s.toLowerCase()));
+      });
+
+      const hasMatchingGoal = profileCareerGoals.some(goal => {
+        const goalClean = goal.toLowerCase().replace(/developer|engineer|designer|manager/g, '').trim();
+        if (!goalClean) return false;
+        return c.title.toLowerCase().includes(goalClean) ||
+               c.skillsTaught.some(s => s.toLowerCase().includes(goalClean) || goalClean.includes(s.toLowerCase()));
+      });
+
+      // Show ONLY the courses user had mentioned in form
+      if (!hasMatchingSkill && !hasMatchingInterest && !hasMatchingGoal) return false;
+
+      // 3. Search query filter
       if (courseSearch) {
         const searchLower = courseSearch.toLowerCase();
         const matchesSkill = c.skillsTaught.some(s => s.toLowerCase().includes(searchLower));
@@ -122,7 +149,7 @@ export default function CoursesAndJobs() {
       }
       return true;
     });
-  }, [courses, courseType, courseLevel, courseSearch]);
+  }, [courses, courseType, courseLevel, courseSearch, profileSkills, profileInterests, profileCareerGoals]);
 
   // Memoize filtered job list so we only recalculate when job list or filters change
   const filteredJobs = useMemo(() => {
@@ -269,7 +296,17 @@ export default function CoursesAndJobs() {
                       <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {course.durationWeeks} Weeks</span>
                       <span className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5" /> {course.level}</span>
                     </div>
-                    <Button variant="outline" size="sm">View Course</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        if (course.url && course.url !== '#') {
+                          window.open(course.url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                    >
+                      View Course
+                    </Button>
                   </div>
                 </Card>
               ))}

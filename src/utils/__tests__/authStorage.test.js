@@ -3,7 +3,8 @@ import { saveUserSession, loadUserSession, clearUserSession } from '../authStora
 
 describe('authStorage session helpers', () => {
   const mockUser = {
-    id: 'usr_123',
+    // Use a valid UUID format to match the shape produced by authStore.login()
+    id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
     name: 'Jane Doe',
     email: 'jane@example.com',
     initials: 'JD',

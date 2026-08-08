@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Phone, ArrowRight, ShieldCheck, RefreshCw, UserPlus, AlertCircle } from 'lucide-react';
+import { Mail, Phone, ArrowRight, ShieldCheck, RefreshCw, UserPlus, AlertCircle, MailCheck } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -92,6 +92,7 @@ export default function Login() {
   const [emailErrors, setEmailErrors] = useState({});
   const [emailLoading, setEmailLoading] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
 
   // ── Google tab state ─────────────────────────────────────────────────────
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -165,6 +166,7 @@ export default function Login() {
     setEmailLoading(true);
     setEmailErrors({});
     setUserNotFound(false);
+    setEmailNotConfirmed(false);
 
     const result = await loginWithEmail(email, password);
 
@@ -176,8 +178,14 @@ export default function Login() {
     } else {
       if (result.notRegistered) {
         setUserNotFound(true);
+      } else if (result.emailNotConfirmed) {
+        setEmailNotConfirmed(true);
       }
-      setEmailErrors({ form: result.error });
+      // Only show generic error when it's not a notRegistered or emailNotConfirmed case
+      // (those have dedicated UI panels)
+      if (!result.notRegistered && !result.emailNotConfirmed) {
+        setEmailErrors({ form: result.error });
+      }
     }
   };
 
@@ -244,6 +252,8 @@ export default function Login() {
     setEmailErrors({});
     setGoogleError('');
     setPhoneErrors({});
+    setEmailNotConfirmed(false);
+    setUserNotFound(false);
   };
 
   // ─── Render ─────────────────────────────────────────────────────────────
@@ -344,6 +354,20 @@ export default function Login() {
                       <UserPlus className="h-4 w-4" />
                       Create New Account
                     </Button>
+                  </div>
+                ) : emailNotConfirmed ? (
+                  <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
+                    <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
+                      <MailCheck className="h-4 w-4 shrink-0" />
+                      Email Not Confirmed Yet
+                    </div>
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      Your account exists but you haven't confirmed your email.
+                      Please check <strong className="text-text-primary">{email}</strong> for the confirmation link we sent you when you signed up.
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Can't find it? Check your spam/junk folder.
+                    </p>
                   </div>
                 ) : emailErrors.form ? (
                   <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">

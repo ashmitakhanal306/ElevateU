@@ -1,12 +1,14 @@
-/**
- * careerService.js — Mock API layer for the Career Recommendation Engine.
- */
-
 import dummyCareers from '../data/dummyCareers.js';
 import { getProfile } from './profileService.js';
 import { getAssessments } from './assessmentService.js';
+import { supabase } from '../config/supabaseClient';
+import { computeRoadmapProgress } from './roadmapService';
+import { useAuthStore } from '../store/authStore';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUuid = (id) => typeof id === 'string' && UUID_REGEX.test(id);
+
 
 /**
  * Helper to compare proficiency levels.
@@ -51,8 +53,8 @@ function calculateMatchScore(career, profileInterests, profileSkills) {
     }
   });
 
-  // Apply floor and ceiling
-  return Math.max(30, Math.min(100, score));
+  // Apply ceiling (no floor)
+  return Math.min(100, score);
 }
 
 /**
@@ -126,45 +128,156 @@ export async function getCareerDetail(id) {
  * Perform a detailed skill gap analysis for a specific career path.
  * Maps current skills to required skills with a scoring system.
  */
-export async function getSkillGapAnalysis(careerId) {
+export async function getSkillGapAnalysis(roadmapId) {
   await delay(500);
 
-  const career = dummyCareers.find(c => c.id === careerId);
-  if (!career) throw new Error('Career not found');
+  // 1. Fetch current user from authStore
+  const user = useAuthStore.getState().user;
+  if (!user) throw new Error('User not authenticated');
 
-  const profile = await getProfile();
-  const profileSkills = profile.skills || [];
+  // 2. Fetch the roadmap from database
+  const { data: roadmap, error: rmErr } = await supabase
+    .from('roadmaps')
+    .select('id, title, category')
+    .eq('id', roadmapId)
+    .single();
 
-  const levelScores = { 'Beginner': 33, 'Intermediate': 66, 'Advanced': 100 };
-
-  const skillComparison = career.requiredSkills.map(reqSkill => {
-    const studentSkill = profileSkills.find(s => 
-      s.name.toLowerCase() === reqSkill.name.toLowerCase()
-    );
-
-    const currentLevel = studentSkill ? studentSkill.level : 'None';
-    const currentScore = studentSkill ? (levelScores[studentSkill.level] || 0) : 0;
-    const requiredScore = levelScores[reqSkill.level] || 0;
-    
-    // Gap is zero if student meets or exceeds requirement
-    const gap = Math.max(0, requiredScore - currentScore);
-
+  // Fallback to static dummy career lookup if not in DB
+  if (rmErr || !roadmap) {
+    const career = dummyCareers.find(c => c.id === roadmapId) || dummyCareers[0];
+    const levelScores = { 'Beginner': 33, 'Intermediate': 66, 'Advanced': 100 };
+    const skillComparison = career.requiredSkills.map(reqSkill => {
+      const requiredScore = levelScores[reqSkill.level] || 0;
+      return {
+        skill: reqSkill.name,
+        currentLevel: 'None',
+        requiredLevel: reqSkill.level,
+        currentScore: 0,
+        requiredScore,
+        gap: requiredScore
+      };
+    });
     return {
-      skill: reqSkill.name,
-      currentLevel,
-      requiredLevel: reqSkill.level,
-      currentScore,
-      requiredScore,
-      gap
+      careerTitle: career.title,
+      overallReadiness: 0,
+      skillComparison,
+      recommendedFocus: skillComparison.slice(0, 3).map(s => s.skill)
     };
-  });
+  }
 
-  // Overall readiness: weighted average of coverage
+  // 3. Fetch topics ordered
+  const { data: topics, error: topErr } = await supabase
+    .from('roadmap_topics')
+    .select('id, title, order_index')
+    .eq('roadmap_id', roadmapId)
+    .order('order_index');
+
+  if (topErr) throw topErr;
+
+  let skillComparison = [];
+
+  if (topics && topics.length > 0) {
+    const topicIds = topics.map(t => t.id);
+
+    // 4. Fetch all subtopics for these topics
+    const { data: subtopics, error: subErr } = await supabase
+      .from('roadmap_subtopics')
+      .select('id, topic_id, title, order_index')
+      .in('topic_id', topicIds)
+      .order('order_index');
+
+    if (subErr) throw subErr;
+
+    // 5. Fetch completed subtopics for this user
+    const subtopicIds = (subtopics || []).map(s => s.id);
+    let completedSubtopicIds = new Set();
+
+    if (subtopicIds.length > 0) {
+      if (!isUuid(user.id)) {
+        const progressKey = `elevateu_subtopic_progress_${user.id}`;
+        try {
+          const progressMap = JSON.parse(localStorage.getItem(progressKey) || '{}');
+          subtopicIds.forEach(sid => {
+            if (progressMap[sid] === 'completed') {
+              completedSubtopicIds.add(sid);
+            }
+          });
+        } catch (e) {}
+      } else {
+        const { data: progress, error: progErr } = await supabase
+          .from('user_subtopic_progress')
+          .select('subtopic_id')
+          .eq('user_id', user.id)
+          .eq('status', 'completed')
+          .in('subtopic_id', subtopicIds);
+
+        if (progErr) throw progErr;
+        (progress || []).forEach(p => completedSubtopicIds.add(p.subtopic_id));
+      }
+    }
+
+    // Group subtopics by topic_id
+    const subtopicsByTopic = {};
+    (subtopics || []).forEach(s => {
+      if (!subtopicsByTopic[s.topic_id]) subtopicsByTopic[s.topic_id] = [];
+      subtopicsByTopic[s.topic_id].push(s);
+    });
+
+    const totalTopics = topics.length;
+
+    skillComparison = topics.map((topic, index) => {
+      const subs = subtopicsByTopic[topic.id] || [];
+      const totalSubs = subs.length;
+      const completedSubs = subs.filter(s => completedSubtopicIds.has(s.id)).length;
+
+      // Calculate progress of this specific topic
+      const topicProgressPercent = totalSubs === 0 ? 0 : (completedSubs / totalSubs) * 100;
+
+      // Determine required level dynamically based on order index (later topics require more advanced knowledge)
+      const pct = index / Math.max(1, totalTopics - 1);
+      let requiredLevel = 'Intermediate';
+      let requiredScore = 66;
+      if (pct < 0.25) {
+        requiredLevel = 'Beginner';
+        requiredScore = 33;
+      } else if (pct > 0.75) {
+        requiredLevel = 'Advanced';
+        requiredScore = 100;
+      }
+
+      // Calculate current level dynamically from topic progress
+      let currentScore = 0;
+      let currentLevel = 'None';
+      if (topicProgressPercent >= 100) {
+        currentLevel = 'Advanced';
+        currentScore = 100;
+      } else if (topicProgressPercent >= 50) {
+        currentLevel = 'Intermediate';
+        currentScore = 66;
+      } else if (topicProgressPercent > 0) {
+        currentLevel = 'Beginner';
+        currentScore = 33;
+      }
+
+      const gap = Math.max(0, requiredScore - currentScore);
+
+      return {
+        skill: topic.title, // Topic title is the skill name
+        currentLevel,
+        requiredLevel,
+        currentScore,
+        requiredScore,
+        gap
+      };
+    });
+  }
+
+  // Calculate overall readiness (average of coverage)
   const totalRequired = skillComparison.reduce((sum, s) => sum + s.requiredScore, 0);
   const totalCovered = skillComparison.reduce((sum, s) => sum + Math.min(s.currentScore, s.requiredScore), 0);
-  const overallReadiness = totalRequired > 0 ? Math.round((totalCovered / totalRequired) * 100) : 100;
+  const overallReadiness = totalRequired > 0 ? Math.round((totalCovered / totalRequired) * 100) : 0;
 
-  // Focus areas: sort by gap descending, take top 3 with a gap > 0
+  // Recommended Focus (sort by gap descending, up to 3)
   const recommendedFocus = skillComparison
     .filter(s => s.gap > 0)
     .sort((a, b) => b.gap - a.gap)
@@ -172,10 +285,11 @@ export async function getSkillGapAnalysis(careerId) {
     .map(s => s.skill);
 
   return {
-    careerTitle: career.title,
+    careerTitle: roadmap.title,
     overallReadiness,
     skillComparison,
     recommendedFocus
   };
 }
+
 

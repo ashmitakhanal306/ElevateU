@@ -60,4 +60,32 @@ export const useAuthStore = create((set) => ({
     clearUserSession();
     set({ user: null, isAuthenticated: false });
   },
+
+  /**
+   * Update active user details (e.g. name, email) and sync to storage.
+   * @param {Object} updatedFields - Fields to update on the user object
+   */
+  updateUser: (updatedFields) => {
+    set((state) => {
+      if (!state.user) return {};
+      const updatedUser = {
+        ...state.user,
+        ...updatedFields,
+      };
+
+      if (updatedFields.name) {
+        const initials = updatedFields.name
+          .split(' ')
+          .filter(Boolean)
+          .map((part) => part[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2) || 'U';
+        updatedUser.initials = initials;
+      }
+
+      saveUserSession(updatedUser);
+      return { user: updatedUser };
+    });
+  },
 }));

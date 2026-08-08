@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { UserPlus, Check, X, LogIn } from 'lucide-react';
+import { UserPlus, Check, X, LogIn, Mail, MailCheck, RefreshCw } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth';
 import { signup as signupService, loginWithGoogle } from '../services/authService';
@@ -102,6 +102,8 @@ export default function Signup() {
   const [alreadyExists, setAlreadyExists] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [googleError, setGoogleError]     = useState('');
+  // Stores the email address that needs to be confirmed
+  const [confirmationEmail, setConfirmationEmail] = useState('');
 
   // ─── Validation ──────────────────────────────────────────────────────────
 
@@ -171,6 +173,9 @@ export default function Signup() {
     if (result.success) {
       login(result.user);
       navigate('/dashboard');
+    } else if (result.needsEmailConfirmation) {
+      // Email confirmation required — show the confirmation screen
+      setConfirmationEmail(result.email || email);
     } else {
       if (result.alreadyRegistered) {
         setAlreadyExists(true);
@@ -198,6 +203,69 @@ export default function Signup() {
   };
 
   const passwordStrength = getPasswordStrength(password);
+
+  // ── Email Confirmation Screen ─────────────────────────────────────────────
+  if (confirmationEmail) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">
+        <div className="pointer-events-none absolute top-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
+
+        <div className="w-full max-w-md relative z-10 text-center">
+          <div className="mb-6">
+            <img src={logoSrc} alt="ElevateU Logo" className="h-16 w-auto mx-auto object-contain" />
+          </div>
+
+          {/* Animated envelope icon */}
+          <div className="w-24 h-24 rounded-full bg-secondary/10 border-2 border-secondary/30 flex items-center justify-center mx-auto mb-6 animate-bounce" style={{ animationDuration: '2s' }}>
+            <MailCheck className="h-12 w-12 text-secondary" />
+          </div>
+
+          <h1 className="text-2xl font-black tracking-tight text-text-primary mb-2">
+            Check your inbox!
+          </h1>
+          <p className="text-text-secondary text-sm mb-6 leading-relaxed">
+            We sent a confirmation link to{' '}
+            <span className="font-bold text-text-primary">{confirmationEmail}</span>.
+            <br />Click the link in that email to activate your account, then come back and sign in.
+          </p>
+
+          <div className="bg-bg-surface border border-border rounded-2xl p-5 mb-6 text-left space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">1</div>
+              <p className="text-sm text-text-secondary">Open your email at <span className="text-text-primary font-semibold">{confirmationEmail}</span></p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">2</div>
+              <p className="text-sm text-text-secondary">Click <span className="text-text-primary font-semibold">"Confirm your email"</span> in the message from ElevateU</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">3</div>
+              <p className="text-sm text-text-secondary">Return here and sign in with your email and password</p>
+            </div>
+          </div>
+
+          <Link
+            to="/login"
+            state={{ email: confirmationEmail }}
+            className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl bg-secondary text-white font-bold text-sm hover:opacity-90 transition-opacity duration-200 mb-3"
+          >
+            <Mail className="h-4 w-4" />
+            Go to Sign In
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setConfirmationEmail('')}
+            className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors font-medium"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Use a different email
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">

@@ -1,19 +1,22 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import SEO from '../components/SEO';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
-  ResponsiveContainer, Legend, Cell 
+import { useNavigate } from 'react-router-dom';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Legend
 } from 'recharts';
-import { Target, CheckCircle2, AlertCircle, ArrowRight, BookOpen } from 'lucide-react';
+import { Target, CheckCircle2, AlertCircle, ArrowRight, BookOpen, Map } from 'lucide-react';
 
-import { getRecommendations, getSkillGapAnalysis } from '../services/careerService';
+import { getSkillGapAnalysis } from '../services/careerService';
+import { fetchUserRoadmaps, setActiveRoadmap } from '../services/roadmapService';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Skeleton from '../components/ui/Skeleton';
 import ErrorState from '../components/ui/ErrorState';
+import EmptyState from '../components/ui/EmptyState';
 
 
 
@@ -21,7 +24,8 @@ import ErrorState from '../components/ui/ErrorState';
 
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
-  return (<div
+  return (
+    <div
       style={{
         backgroundColor: 'var(--color-bg-surface)',
         border: '1px solid var(--color-border)',
@@ -91,55 +95,72 @@ function ReadinessRing({ value, size = 120, stroke = 12 }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function SkillGapAnalysis() {
-  const location = useLocation();
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { user } = useAuth();
 
-  // Memoize the chart color variables configuration so it is only recalculated
-  // when the theme toggles (light <-> dark), preventing unnecessary re-renders.
-  const C = useMemo(() => {
-    return {
-      text:      'var(--color-text-secondary)',
-      grid:      'var(--color-border)',
-      primary:   'var(--color-primary)',
-      secondary: 'var(--color-secondary)',
-      warning:   'var(--color-warning)',
-      surface:   'var(--color-bg-surface)',
-    };
-  }, [theme]);
+  const C = useMemo(() => ({
+    text:      'var(--color-text-secondary)',
+    grid:      'var(--color-border)',
+    primary:   'var(--color-primary)',
+    secondary: 'var(--color-secondary)',
+    warning:   'var(--color-warning)',
+    surface:   'var(--color-bg-surface)',
+  }), [theme]);
 
-  // Selected career ID (from router state or dropdown)
-  const [selectedCareerId, setSelectedCareerId] = useState(location.state?.careerId || null);
-  
-  // Data state
-  const [careersList, setCareersList] = useState([]);
+  // ── User's roadmap selections ─────────────────────────────────────────────
+  const [userRoadmaps, setUserRoadmaps] = useState([]);
+  const [loadingRoadmaps, setLoadingRoadmaps] = useState(true);
+
+  // The currently selected selection row id (not roadmap_id)
+  const [selectedSelectionId, setSelectedSelectionId] = useState(null);
+  const [activatingId, setActivatingId] = useState(null);
+
+  // ── Skill gap analysis (static careerService, kept for chart data) ────────
   const [analysis, setAnalysis] = useState(null);
-  
-  // Loading states
-  const [loadingList, setLoadingList] = useState(true);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [errorAnalysis, setErrorAnalysis] = useState(false);
 
-  // 1. Fetch the list of careers to populate the dropdown
-  useEffect(() => {
-    getRecommendations().then((data) => {
-      setCareersList(data);
-      setLoadingList(false);
-      
-      // Auto-select top match if nothing is pre-selected
-      if (!selectedCareerId && data.length > 0) {
-        setSelectedCareerId(data[0].id);
-      }
-    });
-  }, []); // Only run once on mount
+  // 1. Load user's roadmaps
+  const loadUserRoadmaps = useCallback(async () => {
+    if (!user) return;
+    setLoadingRoadmaps(true);
+    try {
+      const rows = await fetchUserRoadmaps(user.id);
+      setUserRoadmaps(rows);
 
-  // 2. Fetch the analysis whenever selectedCareerId changes
-  const fetchAnalysis = () => {
-    if (!selectedCareerId) return;
-    
+      // Auto-select the active one (if any); otherwise pick the first
+      const active = rows.find((r) => r.is_active);
+      if (active) {
+        setSelectedSelectionId(active.id);
+      } else if (rows.length > 0) {
+        setSelectedSelectionId(rows[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load user roadmaps', err);
+    } finally {
+      setLoadingRoadmaps(false);
+    }
+  }, [user]);
+
+  useEffect(() => { loadUserRoadmaps(); }, [loadUserRoadmaps]);
+
+  // 2. Fetch skill gap analysis whenever the selected roadmap changes.
+  //    We reuse the existing careerService mapping the selected roadmap
+  //    to the closest dummy career in dummyCareers.js.
+  const fetchAnalysis = useCallback(() => {
+    if (!selectedSelectionId) return;
     setLoadingAnalysis(true);
     setErrorAnalysis(false);
-    getSkillGapAnalysis(selectedCareerId)
+
+    // Find the selected row to grab a career title and roadmap_id
+    const row = userRoadmaps.find((r) => r.id === selectedSelectionId);
+    if (!row) return;
+
+    const title = row?.roadmaps?.title || 'Full Stack';
+    const roadmapId = row?.roadmap_id;
+
+    getSkillGapAnalysis(roadmapId)
       .then((data) => {
         setAnalysis(data);
         setLoadingAnalysis(false);
@@ -149,16 +170,34 @@ export default function SkillGapAnalysis() {
         setErrorAnalysis(true);
         setLoadingAnalysis(false);
       });
-  };
+  }, [selectedSelectionId, userRoadmaps]);
 
   useEffect(() => {
-    fetchAnalysis();
-  }, [selectedCareerId]);
+    if (selectedSelectionId && userRoadmaps.length > 0) {
+      fetchAnalysis();
+    }
+  }, [selectedSelectionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle dropdown change
-  const handleCareerChange = (e) => {
-    setSelectedCareerId(e.target.value);
+  // 3. Handle dropdown change → set as active in DB
+  const handleRoadmapChange = async (e) => {
+    const newSelId = e.target.value;
+    setSelectedSelectionId(newSelId);
+
+    if (!user) return;
+    setActivatingId(newSelId);
+    try {
+      await setActiveRoadmap(user.id, newSelId);
+      // Update local state to reflect new active
+      setUserRoadmaps((prev) =>
+        prev.map((r) => ({ ...r, is_active: r.id === newSelId }))
+      );
+    } catch (err) {
+      console.error('Failed to set active roadmap', err);
+    } finally {
+      setActivatingId(null);
+    }
   };
+
 
   // ── Render Helpers ──────────────────────────────────────────────────────────
 
@@ -172,11 +211,41 @@ export default function SkillGapAnalysis() {
     </div>
   );
 
+  // No roadmaps added yet
+  if (!loadingRoadmaps && userRoadmaps.length === 0) {
+    return (
+      <div className="space-y-6 pt-4 text-left">
+        <SEO title="Skill Gap Analysis" noIndex={true} />
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
+            Skill Gap Analysis
+          </h1>
+          <p className="text-sm text-text-secondary mt-1">
+            Compare your current skills against career requirements.
+          </p>
+        </div>
+        <EmptyState
+          title="No roadmaps added yet"
+          message="Go to Learning Roadmap, add at least one roadmap, then come back here to activate it and run your skill gap analysis."
+          action={
+            <Button
+              variant="primary"
+              className="gap-2 mt-2"
+              onClick={() => navigate('/roadmap')}
+            >
+              <Map className="h-4 w-4" /> Go to Learning Roadmap
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pt-4 text-left">
       <SEO title="Skill Gap Analysis" noIndex={true} />
-      
-      {/* ── Header & Dropdown ──────────────────────────────────────────────── */}
+
+      {/* ── Header & Dropdown ─────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
@@ -186,36 +255,51 @@ export default function SkillGapAnalysis() {
             Compare your current skills against career requirements.
           </p>
         </div>
-        
-        {/* Career Selector */}
-        <div className="w-full sm:w-64">
-          <select
-            value={selectedCareerId || ''}
-            onChange={handleCareerChange}
-            disabled={loadingList}
-            className="w-full bg-bg-surface border border-border text-text-primary text-sm rounded-xl focus:ring-secondary focus:border-secondary block p-2.5 transition-colors duration-200 shadow-sm"
-          >
-            {loadingList && <option>Loading careers...</option>}
-            {!loadingList && careersList.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.title} ({c.matchPercent}% Match)
-              </option>
-            ))}
-          </select>
+
+        {/* Roadmap Selector */}
+        <div className="w-full sm:w-72">
+          <label className="block text-xs font-semibold text-text-secondary mb-1.5 uppercase tracking-wide">
+            Active Roadmap
+          </label>
+          <div className="relative">
+            <select
+              id="roadmap-selector"
+              value={selectedSelectionId || ''}
+              onChange={handleRoadmapChange}
+              disabled={loadingRoadmaps || activatingId !== null}
+              className="w-full bg-bg-surface border border-border text-text-primary text-sm rounded-xl focus:ring-secondary focus:border-secondary block p-2.5 transition-colors duration-200 shadow-sm pr-8"
+            >
+              {loadingRoadmaps && <option>Loading your roadmaps…</option>}
+              {!loadingRoadmaps && userRoadmaps.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.roadmaps?.title || r.roadmap_id}
+                  {r.is_active ? ' ✓ Active' : ''}
+                </option>
+              ))}
+            </select>
+            {activatingId && (
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                <div className="h-4 w-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
+          <p className="text-[11px] text-text-secondary mt-1">
+            Selecting a roadmap sets it as your active roadmap.
+          </p>
         </div>
       </div>
 
       {/* ── Main Content ───────────────────────────────────────────────────── */}
-      {loadingAnalysis || !analysis ? (
-        renderSkeleton()
-      ) : errorAnalysis ? (
+      {errorAnalysis ? (
         <ErrorState onRetry={fetchAnalysis} />
+      ) : loadingAnalysis || !analysis ? (
+        renderSkeleton()
       ) : (
         <div className="space-y-6 mt-6">
-          
+
           {/* Top Row: Overall Readiness & Chart */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             {/* Overall Readiness Ring */}
             <Card className="p-6 col-span-1 flex flex-col items-center justify-center text-center">
               <h3 className="font-bold text-sm text-text-secondary uppercase tracking-wide mb-6">
@@ -240,19 +324,19 @@ export default function SkillGapAnalysis() {
                     barGap={0}
                   >
                     <CartesianGrid strokeDasharray="4 4" stroke={C.grid} vertical={false} />
-                    <XAxis 
-                      dataKey="skill" 
-                      stroke={C.text} 
+                    <XAxis
+                      dataKey="skill"
+                      stroke={C.text}
                       tick={{ fill: C.text, fontSize: 11 }}
-                      axisLine={false} 
-                      tickLine={false} 
+                      axisLine={false}
+                      tickLine={false}
                     />
-                    <YAxis 
-                      domain={[0, 100]} 
-                      stroke={C.text} 
+                    <YAxis
+                      domain={[0, 100]}
+                      stroke={C.text}
                       tick={{ fill: C.text, fontSize: 11 }}
-                      axisLine={false} 
-                      tickLine={false} 
+                      axisLine={false}
+                      tickLine={false}
                       tickFormatter={(v) => {
                         if (v === 33) return 'Beg';
                         if (v === 66) return 'Int';
@@ -262,7 +346,7 @@ export default function SkillGapAnalysis() {
                     />
                     <Tooltip content={<ChartTooltip />} cursor={{ fill: C.grid, opacity: 0.4 }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: C.text }} />
-                    
+
                     <Bar dataKey="currentScore" name="Current Level" fill={C.secondary} radius={[4, 4, 0, 0]} barSize={16} />
                     <Bar dataKey="requiredScore" name="Required Level" fill={C.warning} radius={[4, 4, 0, 0]} barSize={16} />
                   </BarChart>
@@ -274,7 +358,7 @@ export default function SkillGapAnalysis() {
 
           {/* Bottom Row: Detailed Table & Focus Areas */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             {/* Detailed Table */}
             <Card className="p-0 overflow-hidden col-span-1 lg:col-span-2 border border-border">
               <div className="p-5 border-b border-border bg-bg-surface">
@@ -346,7 +430,7 @@ export default function SkillGapAnalysis() {
                       <span className="font-semibold text-text-primary text-sm group-hover:text-warning transition-colors">
                         {skill}
                       </span>
-                      <Button 
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={() => navigate('/courses', { state: { filterSkill: skill } })}
@@ -359,10 +443,10 @@ export default function SkillGapAnalysis() {
                   ))}
                 </div>
               )}
-              
+
               <div className="mt-6 pt-4 border-t border-border">
-                <Button 
-                  variant="primary" 
+                <Button
+                  variant="primary"
                   className="w-full gap-2"
                   onClick={() => navigate('/courses')}
                 >
