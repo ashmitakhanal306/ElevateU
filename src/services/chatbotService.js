@@ -1,43 +1,110 @@
 /**
- * chatbotService.js — Mock API layer for the AI Career Chatbot.
+ * chatbotService.js — Central Agentic AI Orchestrator for ElevateU Assistant.
+ * Integrates Kaggle 5-Day Agentic Principles:
+ * - Day 1: Function Calling & Tool Registry
+ * - Day 2: Multi-Agent Swarm Router
+ * - Day 3: Memory Manager & Context Window Truncation
+ * - Day 4: Model Context Protocol (MCP) Standard Client & Tools
+ * - Day 5: Security Guardrails & Human-in-the-Loop (HITL) Workflows
  */
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { validateInputGuardrails, validateOutputGuardrails } from './ai/securityGuardrails';
+import { routeMessage, AGENT_TYPES } from './ai/agents/routerAgent';
+import { handleCareerCoachTask } from './ai/agents/careerCoachAgent';
+import { handleResumeSpecialistTask } from './ai/agents/resumeSpecialistAgent';
+import { handleOpportunityMatcherTask } from './ai/agents/opportunityMatcherAgent';
+import { handleInterviewPrepTask } from './ai/agents/interviewPrepAgent';
+import { memoryManager } from './ai/memoryManager';
+import { generateContent } from './ai/geminiClient';
+import { hitlManager, HITL_ACTION_TYPES } from './ai/hitlManager';
 
 /**
- * Simulates a response from an AI backend.
- * Uses simple keyword matching to provide helpful, mentor-like advice.
+ * Primary entry point for ElevateU Assistant chat messages.
  * 
- * @param {string} userMessage - The text sent by the user.
- * @returns {Promise<string>} The bot's response.
+ * @param {string} rawUserMessage - Raw text from user.
+ * @param {string} [sessionId='default'] - Chat session identifier.
+ * @returns {Promise<Object>} Formatted agent response object for ChatWidget UI.
  */
-export async function getBotReply(userMessage) {
-  // Simulate network / AI processing delay
-  await delay(900);
-
-  const msg = userMessage.toLowerCase();
-
-  // Keyword Matching Logic
-  if (msg.includes('resume') || msg.includes('cv')) {
-    return "When it comes to your resume, make sure you're optimizing for ATS (Applicant Tracking Systems). I recommend keeping the formatting simple, using clear headings, and naturally including keywords from the job description. Why not try our Resume Analysis tool? It can give you a personalized score and actionable feedback.";
-  }
-  
-  if (msg.includes('interview')) {
-    return "Interviews can be stressful, but preparation is key! A great framework to use for behavioral questions is the STAR method (Situation, Task, Action, Result). Make sure your answers are structured and highlight the impact of your actions. Let me know if you want to practice specific questions!";
-  }
-  
-  if (msg.includes('skill') || msg.includes('learn') || msg.includes('course')) {
-    return "Identifying the right skills to learn is half the battle. I suggest checking out our Skill Gap Analysis tool to see exactly what you need for your target roles. Once you know your gaps, you can browse the Courses section to find tailored learning resources.";
-  }
-  
-  if (msg.includes('career') || msg.includes('job') || msg.includes('role')) {
-    return "Navigating your career path takes time and exploration. Based on your profile and assessments, we have some curated Career Recommendations that might fit you perfectly. Take a look and see if any of those roles spark your interest!";
+export async function getBotReply(rawUserMessage, sessionId = 'default') {
+  // ─── Step 1: Security Guardrail Input Check (Day 5) ──────────────────────────
+  const inputCheck = validateInputGuardrails(rawUserMessage);
+  if (!inputCheck.allowed) {
+    return {
+      agent: 'Security Guardrail',
+      reply: inputCheck.reason || 'Input safety violation detected.',
+      isBlocked: true
+    };
   }
 
-  if (msg.includes('hi') || msg.includes('hello') || msg.includes('hey')) {
-    return "Hello there! I'm the ElevateU Assistant. Think of me as your personal career mentor. You can ask me for advice on improving your resume, preparing for interviews, discovering career paths, or finding the right skills to learn. How can I help you today?";
+  const userMessage = inputCheck.sanitizedInput;
+
+  // ─── Step 2: Multi-Agent Swarm Router (Day 2) ───────────────────────────────
+  const history = memoryManager.getShortTermHistory(sessionId);
+  const targetAgentType = routeMessage(userMessage, history);
+
+  // Save user turn into memory manager (Day 3)
+  memoryManager.addSessionMessage(sessionId, { sender: 'user', text: userMessage });
+
+  let agentResponse = null;
+
+  // ─── Step 3: Sub-Agent Dispatch & Tool Execution (Days 1 & 4) ────────────────
+  switch (targetAgentType) {
+    case AGENT_TYPES.CAREER_COACH:
+      agentResponse = await handleCareerCoachTask({ userMessage, memory: memoryManager, generateFn: generateContent });
+      break;
+
+    case AGENT_TYPES.RESUME_SPECIALIST:
+      agentResponse = await handleResumeSpecialistTask({ userMessage, memory: memoryManager, generateFn: generateContent });
+      break;
+
+    case AGENT_TYPES.OPPORTUNITY_MATCHER:
+      agentResponse = await handleOpportunityMatcherTask({ userMessage, memory: memoryManager, generateFn: generateContent });
+      break;
+
+    case AGENT_TYPES.INTERVIEW_PREP:
+      agentResponse = await handleInterviewPrepTask({ userMessage, memory: memoryManager, generateFn: generateContent });
+      break;
+
+    case AGENT_TYPES.GENERAL_ASSISTANT:
+    default: {
+      // General Gemini call or fallback reply
+      const enrichedSystemPrompt = memoryManager.buildEnrichedContext(
+        "You are the ElevateU General Career Assistant. Be warm, structured, and helpful."
+      );
+
+      const llmRes = await generateContent({
+        systemInstruction: enrichedSystemPrompt,
+        contents: [{ role: 'user', parts: [{ text: userMessage }] }]
+      });
+
+      if (llmRes && llmRes.text) {
+        agentResponse = {
+          agent: 'ElevateU General Assistant',
+          reply: llmRes.text,
+          toolsExecuted: []
+        };
+      } else {
+        agentResponse = {
+          agent: 'ElevateU Assistant',
+          reply: "Hello! I am your ElevateU Agentic Career Assistant powered by Multi-Agent Swarm & MCP tooling.\n\nHow can I help you today?\n• **Resume ATS Score & Bullet Point Review**\n• **Skill Gap Analysis & Roadmaps**\n• **Internship & Job Search**\n• **STAR Behavioral Interview Practice**",
+          toolsExecuted: []
+        };
+      }
+      break;
+    }
   }
 
-  // Default / Fallback
-  return "That's an interesting point! I'm still learning, but I'm here to help guide you. You can ask me for tips on building your resume, nailing your next interview, bridging your skill gaps, or exploring new career recommendations. What would you like to focus on first?";
+  // ─── Step 4: Human-in-the-Loop (HITL) Check (Day 5) ───────────────────────
+  if (userMessage.toLowerCase().includes('update role') || userMessage.toLowerCase().includes('change target role')) {
+    const hitlCard = hitlManager.createPendingAction(HITL_ACTION_TYPES.UPDATE_PROFILE, { targetRole: 'Frontend Developer' });
+    agentResponse.hitlAction = hitlCard;
+  }
+
+  // ─── Step 5: Security Guardrail Output Check (Day 5) ─────────────────────────
+  agentResponse.reply = validateOutputGuardrails(agentResponse.reply);
+
+  // Save bot turn into memory manager (Day 3)
+  memoryManager.addSessionMessage(sessionId, { sender: 'bot', text: agentResponse.reply });
+
+  return agentResponse;
 }
