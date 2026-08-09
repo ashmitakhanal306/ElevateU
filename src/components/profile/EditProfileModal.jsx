@@ -430,14 +430,15 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
   return (
     /* Backdrop — click outside to close */
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      {/* Modal panel with max-height to ensure internal scrollability and fit on any viewport */}
+      {/* Modal panel */}
       <div
-        className="w-full max-w-2xl my-6 bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col max-h-[90vh] md:max-h-[85vh]"
+        className="relative w-full max-w-2xl my-auto bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col max-h-[calc(100vh-48px)] sm:max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
+
 
         {/* ── Modal header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
