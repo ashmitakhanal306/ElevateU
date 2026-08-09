@@ -16,6 +16,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Plus, Trash2, GraduationCap, Briefcase, Zap, Heart, Target, User } from 'lucide-react';
 
 import { updateProfile } from '../../services/profileService';
@@ -427,22 +428,24 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
 
   // ─── Render ───────────────────────────────────────────────────────────
 
-  return (
-    /* Outer layer: fixed backdrop that scrolls when modal is too tall */
+  return createPortal(
+    /* Outer layer: fixed backdrop covering whole page, with dark premium shadow */
     <div
-      className="fixed inset-0 z-[100] overflow-y-auto bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] overflow-y-auto bg-black/60 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      {/* Inner layer: centering wrapper — min-h-full makes items-center work even when scrolling */}
+      {/* Inner layer: centering wrapper shifted upward using items-start and top padding */}
       <div
-        className="flex min-h-full items-center justify-center p-4 sm:p-6"
+        className="flex min-h-full items-start justify-center p-4 sm:p-6 pt-10 pb-10 sm:pt-16 sm:pb-16"
         onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
       >
-        {/* Modal panel */}
+        {/* Modal panel — capped at 80vh of viewport for clean spacing */}
         <div
-          className="relative w-full max-w-2xl bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-2xl bg-bg-surface rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden"
+          style={{ maxHeight: '80vh' }}
           onClick={(e) => e.stopPropagation()}
         >
+
 
 
         {/* ── Modal header ── */}
@@ -457,8 +460,8 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
           </button>
         </div>
 
-        {/* ── Scrollable body ── */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin">
+        {/* ── Scrollable body — min-h-0 is required so flex-1 can actually shrink and scroll ── */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-8 scrollbar-thin">
 
           {/* ── 1. Personal Information ─────────────────────────────────── */}
           <section>
@@ -841,10 +844,10 @@ export default function EditProfileModal({ profile, onClose, onSave }) {
               )}
             </Button>
           </div>
-        </div>
-
-      </div>{/* end modal panel */}
-      </div>{/* end centering wrapper */}
-    </div>{/* end backdrop */}
+      </div>
+      </div>
+      </div>
+    </div>,
+    document.body
   );
 }
