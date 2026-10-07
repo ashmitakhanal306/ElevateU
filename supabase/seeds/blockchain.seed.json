@@ -1,0 +1,32 @@
+{
+  "slug": "blockchain",
+  "title": "Blockchain",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Blockchain Basics", "order_index": 0, "subtopics": [
+      { "title": "What is Blockchain?", "order_index": 0 },
+      { "title": "Distributed Ledgers", "order_index": 1 },
+      { "title": "Consensus Mechanisms", "order_index": 2 }
+    ]},
+    { "title": "Cryptography", "order_index": 1, "subtopics": [
+      { "title": "Hash Functions", "order_index": 0 },
+      { "title": "Public/Private Key", "order_index": 1 },
+      { "title": "Digital Signatures", "order_index": 2 }
+    ]},
+    { "title": "Smart Contracts", "order_index": 2, "subtopics": [
+      { "title": "Solidity Basics", "order_index": 0 },
+      { "title": "ERC-20 / ERC-721 Tokens", "order_index": 1 },
+      { "title": "Hardhat / Truffle", "order_index": 2 }
+    ]},
+    { "title": "Ethereum", "order_index": 3, "subtopics": [
+      { "title": "EVM Architecture", "order_index": 0 },
+      { "title": "Gas and Fees", "order_index": 1 },
+      { "title": "Metamask Integration", "order_index": 2 }
+    ]},
+    { "title": "DeFi & Web3", "order_index": 4, "subtopics": [
+      { "title": "DeFi Protocols", "order_index": 0 },
+      { "title": "Web3.js / Ethers.js", "order_index": 1 },
+      { "title": "IPFS", "order_index": 2 }
+    ]}
+  ]
+}

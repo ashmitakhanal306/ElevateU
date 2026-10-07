@@ -1,0 +1,62 @@
+{
+  "slug": "backend",
+  "title": "Backend",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Internet Basics", "order_index": 0, "subtopics": [
+      { "title": "How does the internet work?", "order_index": 0 },
+      { "title": "HTTP / HTTPS", "order_index": 1 },
+      { "title": "APIs", "order_index": 2 }
+    ]},
+    { "title": "Pick a Language", "order_index": 1, "subtopics": [
+      { "title": "Node.js / JavaScript", "order_index": 0 },
+      { "title": "Python", "order_index": 1 },
+      { "title": "Java", "order_index": 2 },
+      { "title": "Go", "order_index": 3 },
+      { "title": "Ruby", "order_index": 4 }
+    ]},
+    { "title": "Version Control", "order_index": 2, "subtopics": [
+      { "title": "Git", "order_index": 0 },
+      { "title": "GitHub / GitLab", "order_index": 1 }
+    ]},
+    { "title": "Databases", "order_index": 3, "subtopics": [
+      { "title": "Relational — PostgreSQL", "order_index": 0 },
+      { "title": "Relational — MySQL", "order_index": 1 },
+      { "title": "NoSQL — MongoDB", "order_index": 2 },
+      { "title": "NoSQL — Redis", "order_index": 3 }
+    ]},
+    { "title": "APIs", "order_index": 4, "subtopics": [
+      { "title": "REST", "order_index": 0 },
+      { "title": "GraphQL", "order_index": 1 },
+      { "title": "gRPC", "order_index": 2 }
+    ]},
+    { "title": "Authentication", "order_index": 5, "subtopics": [
+      { "title": "JWT", "order_index": 0 },
+      { "title": "OAuth 2.0", "order_index": 1 },
+      { "title": "Session-based Auth", "order_index": 2 }
+    ]},
+    { "title": "Caching", "order_index": 6, "subtopics": [
+      { "title": "Redis Caching", "order_index": 0 },
+      { "title": "CDN", "order_index": 1 }
+    ]},
+    { "title": "Message Queues", "order_index": 7, "subtopics": [
+      { "title": "RabbitMQ", "order_index": 0 },
+      { "title": "Kafka", "order_index": 1 }
+    ]},
+    { "title": "Testing", "order_index": 8, "subtopics": [
+      { "title": "Unit Testing", "order_index": 0 },
+      { "title": "Integration Testing", "order_index": 1 },
+      { "title": "E2E Testing", "order_index": 2 }
+    ]},
+    { "title": "Deployment", "order_index": 9, "subtopics": [
+      { "title": "Docker", "order_index": 0 },
+      { "title": "CI/CD Pipelines", "order_index": 1 },
+      { "title": "Cloud Deployment", "order_index": 2 }
+    ]},
+    { "title": "Security", "order_index": 10, "subtopics": [
+      { "title": "OWASP Top 10", "order_index": 0 },
+      { "title": "HTTPS / TLS", "order_index": 1 },
+      { "title": "Rate Limiting", "order_index": 2 }
+    ]}
+  ]
+}

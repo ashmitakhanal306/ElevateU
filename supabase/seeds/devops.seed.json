@@ -1,0 +1,367 @@
+{
+  "slug": "devops",
+  "title": "DevOps",
+  "topics": [
+    {
+      "title": "Learn a Programming Language",
+      "order_index": 0,
+      "subtopics": [
+        {
+          "title": "Python",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Go",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "JavaScript / Node.js",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Operating System",
+      "order_index": 1,
+      "subtopics": [
+        {
+          "title": "Windows",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Terminal Knowledge",
+      "order_index": 2,
+      "subtopics": [
+        {
+          "title": "Power Shell",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Process Monitoring",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Performance Monitoring",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Networking Tools",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        },
+        {
+          "title": "Text Manipulation",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 4
+        },
+        {
+          "title": "Vim / Nano /  Emacs",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 5
+        }
+      ]
+    },
+    {
+      "title": "Version Control Systems",
+      "order_index": 3,
+      "subtopics": [
+        {
+          "title": "Git",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "VCS Hosting",
+      "order_index": 4,
+      "subtopics": [
+        {
+          "title": "GitHub",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "GitLab",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Bitbucket",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "What is and how to setup X ?",
+      "order_index": 5,
+      "subtopics": []
+    },
+    {
+      "title": "Containers",
+      "order_index": 6,
+      "subtopics": [
+        {
+          "title": "LXC",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Networking & Protocols",
+      "order_index": 7,
+      "subtopics": []
+    },
+    {
+      "title": "Cloud Providers",
+      "order_index": 8,
+      "subtopics": []
+    },
+    {
+      "title": "Serverless",
+      "order_index": 9,
+      "subtopics": []
+    },
+    {
+      "title": "Provisioning",
+      "order_index": 10,
+      "subtopics": [
+        {
+          "title": "AWS CDK",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Configuration Management",
+      "order_index": 11,
+      "subtopics": [
+        {
+          "title": "Ansible",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Chef",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Puppet",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "CI / CD Tools",
+      "order_index": 12,
+      "subtopics": [
+        {
+          "title": "Jenkins",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Circle CI",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Drone",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "GitHub Actions",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    },
+    {
+      "title": "Logs Management",
+      "order_index": 13,
+      "subtopics": [
+        {
+          "title": "Graylog",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Secret Management",
+      "order_index": 14,
+      "subtopics": [
+        {
+          "title": "Sealed Secrets",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Vault",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Cloud Specific Tools",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Infrastructure Monitoring",
+      "order_index": 15,
+      "subtopics": [
+        {
+          "title": "Prometheus",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Container Orchestration",
+      "order_index": 16,
+      "subtopics": []
+    },
+    {
+      "title": "Artifact Management",
+      "order_index": 17,
+      "subtopics": [
+        {
+          "title": "Cloud Smith",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "GitOps",
+      "order_index": 18,
+      "subtopics": [
+        {
+          "title": "FluxCD",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Application Monitoring",
+      "order_index": 19,
+      "subtopics": [
+        {
+          "title": "Jaeger",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Service Mesh",
+      "order_index": 20,
+      "subtopics": [
+        {
+          "title": "Istio",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Consul",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Linkerd",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Envoy",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    },
+    {
+      "title": "Cloud Design Patterns",
+      "order_index": 21,
+      "subtopics": [
+        {
+          "title": "Availability",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Data Management",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Design and Implementation",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Management and Monitoring",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    }
+  ]
+}

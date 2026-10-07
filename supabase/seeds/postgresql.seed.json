@@ -1,0 +1,44 @@
+{
+  "slug": "postgresql",
+  "title": "PostgreSQL",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Getting Started", "order_index": 0, "subtopics": [
+      { "title": "Installation & Setup", "order_index": 0 },
+      { "title": "psql CLI", "order_index": 1 },
+      { "title": "pgAdmin", "order_index": 2 }
+    ]},
+    { "title": "SQL Basics", "order_index": 1, "subtopics": [
+      { "title": "SELECT, INSERT, UPDATE, DELETE", "order_index": 0 },
+      { "title": "Filtering & Sorting", "order_index": 1 },
+      { "title": "Aggregations", "order_index": 2 }
+    ]},
+    { "title": "Advanced SQL", "order_index": 2, "subtopics": [
+      { "title": "JOINs", "order_index": 0 },
+      { "title": "Window Functions", "order_index": 1 },
+      { "title": "CTEs", "order_index": 2 },
+      { "title": "Subqueries", "order_index": 3 }
+    ]},
+    { "title": "Indexes", "order_index": 3, "subtopics": [
+      { "title": "B-Tree Index", "order_index": 0 },
+      { "title": "GIN / GiST Index", "order_index": 1 },
+      { "title": "Partial Indexes", "order_index": 2 },
+      { "title": "EXPLAIN ANALYZE", "order_index": 3 }
+    ]},
+    { "title": "Transactions", "order_index": 4, "subtopics": [
+      { "title": "ACID Properties", "order_index": 0 },
+      { "title": "BEGIN / COMMIT / ROLLBACK", "order_index": 1 },
+      { "title": "Isolation Levels", "order_index": 2 }
+    ]},
+    { "title": "Functions & Triggers", "order_index": 5, "subtopics": [
+      { "title": "PL/pgSQL", "order_index": 0 },
+      { "title": "Stored Procedures", "order_index": 1 },
+      { "title": "Triggers", "order_index": 2 }
+    ]},
+    { "title": "Administration", "order_index": 6, "subtopics": [
+      { "title": "Users & Roles", "order_index": 0 },
+      { "title": "Backup & Restore", "order_index": 1 },
+      { "title": "Replication", "order_index": 2 }
+    ]}
+  ]
+}

@@ -1,0 +1,675 @@
+{
+  "slug": "product-manager",
+  "title": "Product Manager",
+  "topics": [
+    {
+      "title": "Introduction",
+      "order_index": 0,
+      "subtopics": [
+        {
+          "title": "What is Product Management?",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Product vs Project Management",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Roles and Responsibilities",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Key Skills",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    },
+    {
+      "title": "Product Identification",
+      "order_index": 1,
+      "subtopics": [
+        {
+          "title": "Brainstorming Techniques",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Iterative Process",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Blue Ocean Strategy",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Market Analysis",
+      "order_index": 2,
+      "subtopics": [
+        {
+          "title": "Identifying Market Needs",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Competitive Analysis",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Emerging Market Trends",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "User Research",
+      "order_index": 3,
+      "subtopics": [
+        {
+          "title": "User Personas",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "User Interviews",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Surveys and Questionnaires",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Ethnographic Research",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    },
+    {
+      "title": "Positioning",
+      "order_index": 4,
+      "subtopics": [
+        {
+          "title": "USP (Unique Selling Point)",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Market Segmentation",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Case Studies",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Vision & Mission",
+      "order_index": 5,
+      "subtopics": [
+        {
+          "title": "Statement",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Proposition",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Capabilities",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Solved Constraints",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        },
+        {
+          "title": "Future Constraints",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 4
+        },
+        {
+          "title": "Reference Materials",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 5
+        },
+        {
+          "title": "Narrative",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 6
+        }
+      ]
+    },
+    {
+      "title": "Value vs Features",
+      "order_index": 6,
+      "subtopics": [
+        {
+          "title": "Finding Balance",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Strategic Thinking",
+      "order_index": 7,
+      "subtopics": [
+        {
+          "title": "Competitive Strategy",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Value Proposition",
+      "order_index": 8,
+      "subtopics": [
+        {
+          "title": "Defining Value Proposition",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Defining Goals",
+      "order_index": 9,
+      "subtopics": []
+    },
+    {
+      "title": "Product Requirements",
+      "order_index": 10,
+      "subtopics": [
+        {
+          "title": "Writing PRDs",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "User Stories",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Job Stories",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Product Roadmap",
+      "order_index": 11,
+      "subtopics": [
+        {
+          "title": "Communicating the Roadmap",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Backlog Management",
+      "order_index": 12,
+      "subtopics": [
+        {
+          "title": "User Story Mapping",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Release Strategies",
+      "order_index": 13,
+      "subtopics": []
+    },
+    {
+      "title": "UX / UI Design",
+      "order_index": 14,
+      "subtopics": [
+        {
+          "title": "Principles of UX Design",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Wireframing and Prototyping",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Design Thinking",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Service Design",
+      "order_index": 15,
+      "subtopics": []
+    },
+    {
+      "title": "Interaction Design",
+      "order_index": 16,
+      "subtopics": []
+    },
+    {
+      "title": "Go-to-Market Strategy",
+      "order_index": 17,
+      "subtopics": []
+    },
+    {
+      "title": "User Testing",
+      "order_index": 18,
+      "subtopics": [
+        {
+          "title": "Usability Testing",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "A/B Testing",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Remote User Testing",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Working with Engineering Teams",
+      "order_index": 19,
+      "subtopics": []
+    },
+    {
+      "title": "Agile Methodology",
+      "order_index": 20,
+      "subtopics": [
+        {
+          "title": "Kanban Basics",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Key Product Metrics",
+      "order_index": 21,
+      "subtopics": [
+        {
+          "title": "DAU (Daily Active Users)",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "MAU (Monthly Active Users)",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Conversion Rate",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Retention Rate",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        },
+        {
+          "title": "Churn Rate",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 4
+        },
+        {
+          "title": "LTV (Lifetime Value)",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 5
+        },
+        {
+          "title": "CAC (Customer Acquisition Cost)",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 6
+        },
+        {
+          "title": "North Star Metric",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 7
+        }
+      ]
+    },
+    {
+      "title": "Data-Driven Decision Making",
+      "order_index": 22,
+      "subtopics": [
+        {
+          "title": "A/B Testing",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Cohort Analysis",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Predictive Analytics",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Feedback Loops",
+      "order_index": 23,
+      "subtopics": []
+    },
+    {
+      "title": "Communication Skills",
+      "order_index": 24,
+      "subtopics": []
+    },
+    {
+      "title": "Managing Stakeholders",
+      "order_index": 25,
+      "subtopics": [
+        {
+          "title": "Identifying Stakeholders",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Roadmapping Tools",
+      "order_index": 26,
+      "subtopics": [
+        {
+          "title": "Product Board",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Aha",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Notion",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Project Management Tools",
+      "order_index": 27,
+      "subtopics": [
+        {
+          "title": "Jira",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Linear",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Trello",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Analytics Tools",
+      "order_index": 28,
+      "subtopics": [
+        {
+          "title": "Amplitude",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Heap",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Looker",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Communication Tools",
+      "order_index": 29,
+      "subtopics": [
+        {
+          "title": "Slack",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Teams",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Discord",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Identifying Risks",
+      "order_index": 30,
+      "subtopics": [
+        {
+          "title": "Risk Identification Techniques",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Risk Register",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        }
+      ]
+    },
+    {
+      "title": "Risk Assessment",
+      "order_index": 31,
+      "subtopics": [
+        {
+          "title": "Qualitative Risk Assessment",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Risk Mitigation",
+      "order_index": 32,
+      "subtopics": [
+        {
+          "title": "Contingency Planning",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Monitoring and Controlling Risks",
+      "order_index": 33,
+      "subtopics": [
+        {
+          "title": "Risk Monitoring Tools",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Scaling Products",
+      "order_index": 34,
+      "subtopics": [
+        {
+          "title": "Platform Thinking",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Advanced Analysis",
+      "order_index": 35,
+      "subtopics": [
+        {
+          "title": "Predictive Analytics",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "ML in Product Mgmt.",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "AI in Product Mgmt.",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Portfolio Management",
+      "order_index": 36,
+      "subtopics": []
+    },
+    {
+      "title": "Leadership and Influence",
+      "order_index": 37,
+      "subtopics": [
+        {
+          "title": "Building and Leading Teams",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Influencing without Authority",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Emotional Intelligence",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    }
+  ]
+}

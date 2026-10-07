@@ -1,0 +1,45 @@
+{
+  "slug": "ai-engineer",
+  "title": "AI Engineer",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Mathematics for AI", "order_index": 0, "subtopics": [
+      { "title": "Linear Algebra", "order_index": 0 },
+      { "title": "Calculus", "order_index": 1 },
+      { "title": "Probability & Statistics", "order_index": 2 }
+    ]},
+    { "title": "Python for AI", "order_index": 1, "subtopics": [
+      { "title": "NumPy", "order_index": 0 },
+      { "title": "Pandas", "order_index": 1 },
+      { "title": "Scikit-Learn", "order_index": 2 }
+    ]},
+    { "title": "Machine Learning", "order_index": 2, "subtopics": [
+      { "title": "Supervised Learning", "order_index": 0 },
+      { "title": "Unsupervised Learning", "order_index": 1 },
+      { "title": "Model Evaluation", "order_index": 2 },
+      { "title": "Feature Engineering", "order_index": 3 }
+    ]},
+    { "title": "Deep Learning", "order_index": 3, "subtopics": [
+      { "title": "Neural Networks", "order_index": 0 },
+      { "title": "CNNs", "order_index": 1 },
+      { "title": "RNNs / LSTMs", "order_index": 2 },
+      { "title": "Transformers", "order_index": 3 }
+    ]},
+    { "title": "LLMs & Generative AI", "order_index": 4, "subtopics": [
+      { "title": "Prompt Engineering", "order_index": 0 },
+      { "title": "Fine-tuning LLMs", "order_index": 1 },
+      { "title": "RAG (Retrieval Augmented Generation)", "order_index": 2 },
+      { "title": "LangChain / LlamaIndex", "order_index": 3 }
+    ]},
+    { "title": "MLOps", "order_index": 5, "subtopics": [
+      { "title": "Model Serving", "order_index": 0 },
+      { "title": "ML Pipelines", "order_index": 1 },
+      { "title": "Model Monitoring", "order_index": 2 }
+    ]},
+    { "title": "AI Ethics", "order_index": 6, "subtopics": [
+      { "title": "Bias and Fairness", "order_index": 0 },
+      { "title": "Explainability", "order_index": 1 },
+      { "title": "Responsible AI", "order_index": 2 }
+    ]}
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "slug": "devsecops",
+  "title": "DevSecOps",
+  "category": "Engineering",
+  "topics": [
+    { "title": "DevOps Fundamentals", "order_index": 0, "subtopics": [
+      { "title": "CI/CD Concepts", "order_index": 0 },
+      { "title": "Infrastructure as Code", "order_index": 1 },
+      { "title": "Containerization", "order_index": 2 }
+    ]},
+    { "title": "Security Fundamentals", "order_index": 1, "subtopics": [
+      { "title": "CIA Triad", "order_index": 0 },
+      { "title": "Zero Trust Architecture", "order_index": 1 },
+      { "title": "OWASP Top 10", "order_index": 2 }
+    ]},
+    { "title": "Secure Coding Practices", "order_index": 2, "subtopics": [
+      { "title": "Input Validation", "order_index": 0 },
+      { "title": "Secrets Management", "order_index": 1 },
+      { "title": "Dependency Scanning", "order_index": 2 }
+    ]},
+    { "title": "SAST / DAST", "order_index": 3, "subtopics": [
+      { "title": "Static Analysis Tools", "order_index": 0 },
+      { "title": "Dynamic Analysis Tools", "order_index": 1 },
+      { "title": "SonarQube", "order_index": 2 }
+    ]},
+    { "title": "Container Security", "order_index": 4, "subtopics": [
+      { "title": "Docker Security", "order_index": 0 },
+      { "title": "Kubernetes Security", "order_index": 1 },
+      { "title": "Image Scanning", "order_index": 2 }
+    ]},
+    { "title": "Cloud Security", "order_index": 5, "subtopics": [
+      { "title": "IAM Policies", "order_index": 0 },
+      { "title": "Security Groups", "order_index": 1 },
+      { "title": "Encryption at Rest / Transit", "order_index": 2 }
+    ]},
+    { "title": "Compliance & Governance", "order_index": 6, "subtopics": [
+      { "title": "SOC 2", "order_index": 0 },
+      { "title": "ISO 27001", "order_index": 1 },
+      { "title": "GDPR", "order_index": 2 }
+    ]}
+  ]
+}

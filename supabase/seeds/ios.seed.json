@@ -1,0 +1,43 @@
+{
+  "slug": "ios",
+  "title": "iOS",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Swift Basics", "order_index": 0, "subtopics": [
+      { "title": "Variables & Constants", "order_index": 0 },
+      { "title": "Optionals", "order_index": 1 },
+      { "title": "Closures", "order_index": 2 },
+      { "title": "Protocols & Generics", "order_index": 3 }
+    ]},
+    { "title": "Xcode & Tooling", "order_index": 1, "subtopics": [
+      { "title": "Xcode IDE", "order_index": 0 },
+      { "title": "Simulators", "order_index": 1 },
+      { "title": "Instruments (Profiling)", "order_index": 2 }
+    ]},
+    { "title": "UI Frameworks", "order_index": 2, "subtopics": [
+      { "title": "SwiftUI", "order_index": 0 },
+      { "title": "UIKit", "order_index": 1 },
+      { "title": "Auto Layout", "order_index": 2 }
+    ]},
+    { "title": "Data Persistence", "order_index": 3, "subtopics": [
+      { "title": "UserDefaults", "order_index": 0 },
+      { "title": "Core Data", "order_index": 1 },
+      { "title": "Swift Data", "order_index": 2 }
+    ]},
+    { "title": "Networking", "order_index": 4, "subtopics": [
+      { "title": "URLSession", "order_index": 0 },
+      { "title": "Codable / JSON Parsing", "order_index": 1 },
+      { "title": "Async/Await in Swift", "order_index": 2 }
+    ]},
+    { "title": "App Architecture", "order_index": 5, "subtopics": [
+      { "title": "MVC", "order_index": 0 },
+      { "title": "MVVM", "order_index": 1 },
+      { "title": "Clean Architecture", "order_index": 2 }
+    ]},
+    { "title": "App Store Deployment", "order_index": 6, "subtopics": [
+      { "title": "TestFlight", "order_index": 0 },
+      { "title": "App Store Connect", "order_index": 1 },
+      { "title": "Code Signing", "order_index": 2 }
+    ]}
+  ]
+}

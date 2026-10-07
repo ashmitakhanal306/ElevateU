@@ -1,0 +1,43 @@
+{
+  "slug": "data-engineer",
+  "title": "Data Engineer",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Programming", "order_index": 0, "subtopics": [
+      { "title": "Python", "order_index": 0 },
+      { "title": "SQL", "order_index": 1 },
+      { "title": "Scala (optional)", "order_index": 2 }
+    ]},
+    { "title": "Databases", "order_index": 1, "subtopics": [
+      { "title": "PostgreSQL", "order_index": 0 },
+      { "title": "MySQL", "order_index": 1 },
+      { "title": "Cassandra", "order_index": 2 },
+      { "title": "MongoDB", "order_index": 3 }
+    ]},
+    { "title": "Data Warehousing", "order_index": 2, "subtopics": [
+      { "title": "Snowflake", "order_index": 0 },
+      { "title": "BigQuery", "order_index": 1 },
+      { "title": "Redshift", "order_index": 2 }
+    ]},
+    { "title": "Batch Processing", "order_index": 3, "subtopics": [
+      { "title": "Apache Spark", "order_index": 0 },
+      { "title": "Apache Hadoop", "order_index": 1 },
+      { "title": "dbt", "order_index": 2 }
+    ]},
+    { "title": "Stream Processing", "order_index": 4, "subtopics": [
+      { "title": "Apache Kafka", "order_index": 0 },
+      { "title": "Apache Flink", "order_index": 1 },
+      { "title": "Spark Streaming", "order_index": 2 }
+    ]},
+    { "title": "Data Pipelines & Orchestration", "order_index": 5, "subtopics": [
+      { "title": "Apache Airflow", "order_index": 0 },
+      { "title": "Prefect", "order_index": 1 },
+      { "title": "Dagster", "order_index": 2 }
+    ]},
+    { "title": "Cloud Platforms", "order_index": 6, "subtopics": [
+      { "title": "AWS Data Services", "order_index": 0 },
+      { "title": "GCP Data Services", "order_index": 1 },
+      { "title": "Azure Data Services", "order_index": 2 }
+    ]}
+  ]
+}

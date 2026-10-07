@@ -1,0 +1,177 @@
+{
+  "slug": "ux-design",
+  "title": "UX Design",
+  "topics": [
+    {
+      "title": "Human Decision Making",
+      "order_index": 0,
+      "subtopics": [
+        {
+          "title": "Nudge Theory",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "BJ Fogg's Behavior Model",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Persuasive Technology",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "CREATE Action Funnel",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        },
+        {
+          "title": "Behavioral Science",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 4
+        },
+        {
+          "title": "Spectrum of Thinking Interventions",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 5
+        },
+        {
+          "title": "Behavioral Economics",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 6
+        },
+        {
+          "title": "Dual Process Theory",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 7
+        },
+        {
+          "title": "Behavior Design",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 8
+        }
+      ]
+    },
+    {
+      "title": "Behavior Change Strategies",
+      "order_index": 1,
+      "subtopics": [
+        {
+          "title": "BJ Fogg's Behavior Grid",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Cheating",
+      "order_index": 2,
+      "subtopics": [
+        {
+          "title": "Defaulting",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Making it Incidental",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Automate the Act of Repetition",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Make or Change Habits",
+      "order_index": 3,
+      "subtopics": []
+    },
+    {
+      "title": "Support Conscious Action",
+      "order_index": 4,
+      "subtopics": [
+        {
+          "title": "Educate & Encourage User",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Understanding the Product",
+      "order_index": 5,
+      "subtopics": [
+        {
+          "title": "Clarify Product",
+          "resource_url": "",
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Define Target Users",
+          "resource_url": "",
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Business Model",
+          "resource_url": "",
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    },
+    {
+      "title": "Conceptual Design",
+      "order_index": 6,
+      "subtopics": []
+    },
+    {
+      "title": "Prototyping",
+      "order_index": 7,
+      "subtopics": [
+        {
+          "title": "Good Layout Rules",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "UX Best Practices",
+      "order_index": 8,
+      "subtopics": []
+    },
+    {
+      "title": "Measuring the Impact",
+      "order_index": 9,
+      "subtopics": [
+        {
+          "title": "Testing",
+          "resource_url": "",
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "slug": "software-architect",
+  "title": "Software Architect",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Design Patterns", "order_index": 0, "subtopics": [
+      { "title": "Creational Patterns", "order_index": 0 },
+      { "title": "Structural Patterns", "order_index": 1 },
+      { "title": "Behavioral Patterns", "order_index": 2 }
+    ]},
+    { "title": "Architecture Styles", "order_index": 1, "subtopics": [
+      { "title": "Monolithic", "order_index": 0 },
+      { "title": "Microservices", "order_index": 1 },
+      { "title": "Event-Driven", "order_index": 2 },
+      { "title": "Serverless", "order_index": 3 }
+    ]},
+    { "title": "System Design", "order_index": 2, "subtopics": [
+      { "title": "Scalability", "order_index": 0 },
+      { "title": "Load Balancing", "order_index": 1 },
+      { "title": "Caching Strategies", "order_index": 2 },
+      { "title": "CAP Theorem", "order_index": 3 }
+    ]},
+    { "title": "API Design", "order_index": 3, "subtopics": [
+      { "title": "REST Best Practices", "order_index": 0 },
+      { "title": "GraphQL", "order_index": 1 },
+      { "title": "API Versioning", "order_index": 2 }
+    ]},
+    { "title": "Security Architecture", "order_index": 4, "subtopics": [
+      { "title": "Authentication & Authorization", "order_index": 0 },
+      { "title": "Data Encryption", "order_index": 1 },
+      { "title": "Secure by Design", "order_index": 2 }
+    ]},
+    { "title": "Documentation", "order_index": 5, "subtopics": [
+      { "title": "Architecture Decision Records", "order_index": 0 },
+      { "title": "C4 Model", "order_index": 1 },
+      { "title": "Technical Specs", "order_index": 2 }
+    ]}
+  ]
+}

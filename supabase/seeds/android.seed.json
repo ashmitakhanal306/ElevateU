@@ -1,0 +1,197 @@
+{
+  "slug": "android",
+  "title": "Android",
+  "topics": [
+    {
+      "title": "Pick a Language",
+      "order_index": 0,
+      "subtopics": [
+        {
+          "title": "Kotlin",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Java",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        }
+      ]
+    },
+    {
+      "title": "The Fundamentals",
+      "order_index": 1,
+      "subtopics": [
+        {
+          "title": "Development IDE",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Basics of Kotlin",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Basics of OOP",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "Data Structures and Algorithms",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        },
+        {
+          "title": "What is and how to use Gradle?",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 4
+        },
+        {
+          "title": "Create a Basic Hello World App",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 5
+        }
+      ]
+    },
+    {
+      "title": "Version Control",
+      "order_index": 2,
+      "subtopics": []
+    },
+    {
+      "title": "App Components",
+      "order_index": 3,
+      "subtopics": [
+        {
+          "title": "Activity",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Interface & Navigation",
+      "order_index": 4,
+      "subtopics": [
+        {
+          "title": "Jetpack Compose",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "App Shortcuts",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        }
+      ]
+    },
+    {
+      "title": "Design & Architecture",
+      "order_index": 5,
+      "subtopics": []
+    },
+    {
+      "title": "Storage",
+      "order_index": 6,
+      "subtopics": [
+        {
+          "title": "Shared Preferences",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "DataStore",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Room Database",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        },
+        {
+          "title": "File System",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 3
+        }
+      ]
+    },
+    {
+      "title": "Network",
+      "order_index": 7,
+      "subtopics": []
+    },
+    {
+      "title": "Asynchronism",
+      "order_index": 8,
+      "subtopics": []
+    },
+    {
+      "title": "Common Services",
+      "order_index": 9,
+      "subtopics": []
+    },
+    {
+      "title": "Linting",
+      "order_index": 10,
+      "subtopics": []
+    },
+    {
+      "title": "Testing",
+      "order_index": 11,
+      "subtopics": []
+    },
+    {
+      "title": "Debugging",
+      "order_index": 12,
+      "subtopics": [
+        {
+          "title": "Jetpack Benchmark",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        }
+      ]
+    },
+    {
+      "title": "Distribution",
+      "order_index": 13,
+      "subtopics": [
+        {
+          "title": "Firebase Distribution",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 0
+        },
+        {
+          "title": "Signed APK",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 1
+        },
+        {
+          "title": "Google Playstore",
+          "resource_url": null,
+          "resource_type": null,
+          "order_index": 2
+        }
+      ]
+    }
+  ]
+}

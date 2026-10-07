@@ -1,0 +1,44 @@
+{
+  "slug": "ai-data-scientist",
+  "title": "AI and Data Scientist",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Mathematics", "order_index": 0, "subtopics": [
+      { "title": "Linear Algebra", "order_index": 0 },
+      { "title": "Calculus & Optimization", "order_index": 1 },
+      { "title": "Probability Theory", "order_index": 2 },
+      { "title": "Statistics", "order_index": 3 }
+    ]},
+    { "title": "Python & R", "order_index": 1, "subtopics": [
+      { "title": "Python Basics", "order_index": 0 },
+      { "title": "Pandas & NumPy", "order_index": 1 },
+      { "title": "R for Statistics", "order_index": 2 }
+    ]},
+    { "title": "Machine Learning", "order_index": 2, "subtopics": [
+      { "title": "Regression", "order_index": 0 },
+      { "title": "Classification", "order_index": 1 },
+      { "title": "Clustering", "order_index": 2 },
+      { "title": "Ensemble Methods", "order_index": 3 }
+    ]},
+    { "title": "Deep Learning", "order_index": 3, "subtopics": [
+      { "title": "TensorFlow / PyTorch", "order_index": 0 },
+      { "title": "Computer Vision", "order_index": 1 },
+      { "title": "NLP", "order_index": 2 }
+    ]},
+    { "title": "Data Engineering", "order_index": 4, "subtopics": [
+      { "title": "Data Pipelines", "order_index": 0 },
+      { "title": "Feature Stores", "order_index": 1 },
+      { "title": "Data Lakes", "order_index": 2 }
+    ]},
+    { "title": "Model Deployment", "order_index": 5, "subtopics": [
+      { "title": "Flask / FastAPI for ML", "order_index": 0 },
+      { "title": "Docker for Models", "order_index": 1 },
+      { "title": "MLflow", "order_index": 2 }
+    ]},
+    { "title": "Experimentation", "order_index": 6, "subtopics": [
+      { "title": "A/B Testing", "order_index": 0 },
+      { "title": "Causal Inference", "order_index": 1 },
+      { "title": "Bayesian Experimentation", "order_index": 2 }
+    ]}
+  ]
+}

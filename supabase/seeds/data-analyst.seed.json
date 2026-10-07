@@ -1,0 +1,44 @@
+{
+  "slug": "data-analyst",
+  "title": "Data Analyst",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Statistics & Probability", "order_index": 0, "subtopics": [
+      { "title": "Descriptive Statistics", "order_index": 0 },
+      { "title": "Probability Distributions", "order_index": 1 },
+      { "title": "Hypothesis Testing", "order_index": 2 },
+      { "title": "Correlation vs Causation", "order_index": 3 }
+    ]},
+    { "title": "Excel / Spreadsheets", "order_index": 1, "subtopics": [
+      { "title": "Pivot Tables", "order_index": 0 },
+      { "title": "VLOOKUP / INDEX-MATCH", "order_index": 1 },
+      { "title": "Charts and Graphs", "order_index": 2 }
+    ]},
+    { "title": "SQL", "order_index": 2, "subtopics": [
+      { "title": "SELECT, WHERE, GROUP BY", "order_index": 0 },
+      { "title": "JOINs", "order_index": 1 },
+      { "title": "Window Functions", "order_index": 2 },
+      { "title": "CTEs", "order_index": 3 }
+    ]},
+    { "title": "Python for Analysis", "order_index": 3, "subtopics": [
+      { "title": "Pandas", "order_index": 0 },
+      { "title": "NumPy", "order_index": 1 },
+      { "title": "Matplotlib / Seaborn", "order_index": 2 }
+    ]},
+    { "title": "Data Visualization", "order_index": 4, "subtopics": [
+      { "title": "Tableau", "order_index": 0 },
+      { "title": "Power BI", "order_index": 1 },
+      { "title": "Google Looker Studio", "order_index": 2 }
+    ]},
+    { "title": "Data Cleaning", "order_index": 5, "subtopics": [
+      { "title": "Handling Missing Values", "order_index": 0 },
+      { "title": "Outlier Detection", "order_index": 1 },
+      { "title": "Data Normalization", "order_index": 2 }
+    ]},
+    { "title": "Business Acumen", "order_index": 6, "subtopics": [
+      { "title": "KPIs and Metrics", "order_index": 0 },
+      { "title": "A/B Testing", "order_index": 1 },
+      { "title": "Storytelling with Data", "order_index": 2 }
+    ]}
+  ]
+}

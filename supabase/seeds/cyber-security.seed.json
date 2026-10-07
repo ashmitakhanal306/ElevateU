@@ -1,0 +1,38 @@
+{
+  "slug": "cyber-security",
+  "title": "Cyber Security",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Networking Fundamentals", "order_index": 0, "subtopics": [
+      { "title": "TCP/IP Model", "order_index": 0 },
+      { "title": "DNS, HTTP, TLS", "order_index": 1 },
+      { "title": "Firewalls & VPNs", "order_index": 2 }
+    ]},
+    { "title": "Security Concepts", "order_index": 1, "subtopics": [
+      { "title": "CIA Triad", "order_index": 0 },
+      { "title": "Authentication vs Authorization", "order_index": 1 },
+      { "title": "Cryptography Basics", "order_index": 2 }
+    ]},
+    { "title": "Web Security", "order_index": 2, "subtopics": [
+      { "title": "OWASP Top 10", "order_index": 0 },
+      { "title": "SQL Injection", "order_index": 1 },
+      { "title": "XSS", "order_index": 2 },
+      { "title": "CSRF", "order_index": 3 }
+    ]},
+    { "title": "Penetration Testing", "order_index": 3, "subtopics": [
+      { "title": "Recon & Enumeration", "order_index": 0 },
+      { "title": "Metasploit", "order_index": 1 },
+      { "title": "Burp Suite", "order_index": 2 }
+    ]},
+    { "title": "Incident Response", "order_index": 4, "subtopics": [
+      { "title": "Log Analysis", "order_index": 0 },
+      { "title": "SIEM Tools", "order_index": 1 },
+      { "title": "Forensic Investigation", "order_index": 2 }
+    ]},
+    { "title": "Certifications Path", "order_index": 5, "subtopics": [
+      { "title": "CompTIA Security+", "order_index": 0 },
+      { "title": "CEH", "order_index": 1 },
+      { "title": "OSCP", "order_index": 2 }
+    ]}
+  ]
+}

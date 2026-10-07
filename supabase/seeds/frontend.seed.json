@@ -1,0 +1,68 @@
+{
+  "slug": "frontend",
+  "title": "Frontend",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Internet", "order_index": 0, "subtopics": [
+      { "title": "How does the internet work?", "order_index": 0 },
+      { "title": "What is HTTP?", "order_index": 1 },
+      { "title": "DNS and how it works", "order_index": 2 },
+      { "title": "Domain Name", "order_index": 3 },
+      { "title": "Hosting", "order_index": 4 }
+    ]},
+    { "title": "HTML", "order_index": 1, "subtopics": [
+      { "title": "Learn the basics", "order_index": 0 },
+      { "title": "Semantic HTML", "order_index": 1 },
+      { "title": "Forms and Validations", "order_index": 2 },
+      { "title": "Accessibility", "order_index": 3 },
+      { "title": "SEO Basics", "order_index": 4 }
+    ]},
+    { "title": "CSS", "order_index": 2, "subtopics": [
+      { "title": "Learn the basics", "order_index": 0 },
+      { "title": "Layouts — Flexbox", "order_index": 1 },
+      { "title": "Layouts — Grid", "order_index": 2 },
+      { "title": "Responsive Design", "order_index": 3 },
+      { "title": "CSS Variables", "order_index": 4 }
+    ]},
+    { "title": "JavaScript", "order_index": 3, "subtopics": [
+      { "title": "Syntax and Basic Constructs", "order_index": 0 },
+      { "title": "DOM Manipulation", "order_index": 1 },
+      { "title": "Fetch API / Ajax", "order_index": 2 },
+      { "title": "ES6+ Features", "order_index": 3 },
+      { "title": "Hoisting, Event Bubbling, Scope", "order_index": 4 },
+      { "title": "Promises and Async/Await", "order_index": 5 }
+    ]},
+    { "title": "Version Control", "order_index": 4, "subtopics": [
+      { "title": "Git Basics", "order_index": 0 },
+      { "title": "GitHub", "order_index": 1 }
+    ]},
+    { "title": "Package Managers", "order_index": 5, "subtopics": [
+      { "title": "npm", "order_index": 0 },
+      { "title": "yarn", "order_index": 1 }
+    ]},
+    { "title": "Frameworks", "order_index": 6, "subtopics": [
+      { "title": "React", "order_index": 0 },
+      { "title": "Vue.js", "order_index": 1 },
+      { "title": "Angular", "order_index": 2 }
+    ]},
+    { "title": "CSS Frameworks", "order_index": 7, "subtopics": [
+      { "title": "Tailwind CSS", "order_index": 0 },
+      { "title": "Bootstrap", "order_index": 1 }
+    ]},
+    { "title": "Testing", "order_index": 8, "subtopics": [
+      { "title": "Jest", "order_index": 0 },
+      { "title": "Cypress", "order_index": 1 },
+      { "title": "Vitest", "order_index": 2 }
+    ]},
+    { "title": "Web Performance", "order_index": 9, "subtopics": [
+      { "title": "Core Web Vitals", "order_index": 0 },
+      { "title": "Lazy Loading", "order_index": 1 },
+      { "title": "Code Splitting", "order_index": 2 }
+    ]},
+    { "title": "TypeScript", "order_index": 10, "subtopics": [
+      { "title": "Types and Interfaces", "order_index": 0 },
+      { "title": "Generics", "order_index": 1 },
+      { "title": "Type Utilities", "order_index": 2 }
+    ]}
+  ]
+}

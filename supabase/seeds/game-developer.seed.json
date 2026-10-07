@@ -1,0 +1,38 @@
+{
+  "slug": "game-developer",
+  "title": "Game Developer",
+  "category": "Engineering",
+  "topics": [
+    { "title": "Game Development Basics", "order_index": 0, "subtopics": [
+      { "title": "Game Loop", "order_index": 0 },
+      { "title": "Game Engines Overview", "order_index": 1 },
+      { "title": "2D vs 3D", "order_index": 2 }
+    ]},
+    { "title": "Unity", "order_index": 1, "subtopics": [
+      { "title": "C# Basics for Unity", "order_index": 0 },
+      { "title": "Scene & GameObject", "order_index": 1 },
+      { "title": "Physics & Colliders", "order_index": 2 },
+      { "title": "UI System", "order_index": 3 }
+    ]},
+    { "title": "Game Design", "order_index": 2, "subtopics": [
+      { "title": "Game Mechanics", "order_index": 0 },
+      { "title": "Level Design", "order_index": 1 },
+      { "title": "Player Experience", "order_index": 2 }
+    ]},
+    { "title": "Graphics & Rendering", "order_index": 3, "subtopics": [
+      { "title": "Shaders Basics", "order_index": 0 },
+      { "title": "Lighting", "order_index": 1 },
+      { "title": "Animations", "order_index": 2 }
+    ]},
+    { "title": "Audio", "order_index": 4, "subtopics": [
+      { "title": "Sound Effects", "order_index": 0 },
+      { "title": "Background Music", "order_index": 1 },
+      { "title": "Audio Mixer", "order_index": 2 }
+    ]},
+    { "title": "Publishing", "order_index": 5, "subtopics": [
+      { "title": "Build Settings", "order_index": 0 },
+      { "title": "Platform Export", "order_index": 1 },
+      { "title": "Steam / App Stores", "order_index": 2 }
+    ]}
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "engineering-manager",
+  "title": "Engineering Manager",
+  "category": "Management",
+  "topics": [
+    { "title": "Leadership Fundamentals", "order_index": 0, "subtopics": [
+      { "title": "1-on-1 Meetings", "order_index": 0 },
+      { "title": "Giving & Receiving Feedback", "order_index": 1 },
+      { "title": "Mentoring Engineers", "order_index": 2 }
+    ]},
+    { "title": "Team Management", "order_index": 1, "subtopics": [
+      { "title": "Hiring & Interviewing", "order_index": 0 },
+      { "title": "Onboarding", "order_index": 1 },
+      { "title": "Performance Reviews", "order_index": 2 }
+    ]},
+    { "title": "Project Management", "order_index": 2, "subtopics": [
+      { "title": "Agile / Scrum", "order_index": 0 },
+      { "title": "Sprint Planning", "order_index": 1 },
+      { "title": "Estimation & Prioritization", "order_index": 2 }
+    ]},
+    { "title": "Technical Leadership", "order_index": 3, "subtopics": [
+      { "title": "Architecture Reviews", "order_index": 0 },
+      { "title": "Technical Debt Management", "order_index": 1 },
+      { "title": "Code Review Culture", "order_index": 2 }
+    ]},
+    { "title": "Stakeholder Management", "order_index": 4, "subtopics": [
+      { "title": "Executive Communication", "order_index": 0 },
+      { "title": "Cross-team Collaboration", "order_index": 1 },
+      { "title": "OKRs & Goal Setting", "order_index": 2 }
+    ]}
+  ]
+}

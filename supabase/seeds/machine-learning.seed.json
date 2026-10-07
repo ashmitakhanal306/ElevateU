@@ -1,0 +1,44 @@
+{
+  "slug": "machine-learning",
+  "title": "Machine Learning",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Mathematics Foundations", "order_index": 0, "subtopics": [
+      { "title": "Linear Algebra", "order_index": 0 },
+      { "title": "Calculus", "order_index": 1 },
+      { "title": "Probability & Statistics", "order_index": 2 }
+    ]},
+    { "title": "Python for ML", "order_index": 1, "subtopics": [
+      { "title": "Scikit-Learn", "order_index": 0 },
+      { "title": "Pandas", "order_index": 1 },
+      { "title": "NumPy", "order_index": 2 }
+    ]},
+    { "title": "Supervised Learning", "order_index": 2, "subtopics": [
+      { "title": "Linear Regression", "order_index": 0 },
+      { "title": "Logistic Regression", "order_index": 1 },
+      { "title": "Decision Trees", "order_index": 2 },
+      { "title": "Random Forest", "order_index": 3 },
+      { "title": "SVM", "order_index": 4 }
+    ]},
+    { "title": "Unsupervised Learning", "order_index": 3, "subtopics": [
+      { "title": "K-Means Clustering", "order_index": 0 },
+      { "title": "PCA", "order_index": 1 },
+      { "title": "Autoencoders", "order_index": 2 }
+    ]},
+    { "title": "Deep Learning", "order_index": 4, "subtopics": [
+      { "title": "Neural Networks", "order_index": 0 },
+      { "title": "Backpropagation", "order_index": 1 },
+      { "title": "Convolutional Networks", "order_index": 2 }
+    ]},
+    { "title": "Model Evaluation", "order_index": 5, "subtopics": [
+      { "title": "Cross Validation", "order_index": 0 },
+      { "title": "Precision / Recall / F1", "order_index": 1 },
+      { "title": "ROC-AUC", "order_index": 2 }
+    ]},
+    { "title": "MLOps", "order_index": 6, "subtopics": [
+      { "title": "Experiment Tracking (MLflow)", "order_index": 0 },
+      { "title": "Model Versioning", "order_index": 1 },
+      { "title": "Model Serving", "order_index": 2 }
+    ]}
+  ]
+}

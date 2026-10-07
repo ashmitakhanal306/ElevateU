@@ -1,0 +1,37 @@
+{
+  "slug": "bi-analyst",
+  "title": "BI Analyst",
+  "category": "Data & AI",
+  "topics": [
+    { "title": "Business Intelligence Basics", "order_index": 0, "subtopics": [
+      { "title": "What is BI?", "order_index": 0 },
+      { "title": "OLAP vs OLTP", "order_index": 1 },
+      { "title": "Data Warehousing Concepts", "order_index": 2 }
+    ]},
+    { "title": "SQL for BI", "order_index": 1, "subtopics": [
+      { "title": "Complex JOINs", "order_index": 0 },
+      { "title": "Window Functions", "order_index": 1 },
+      { "title": "CTEs and Subqueries", "order_index": 2 }
+    ]},
+    { "title": "Data Modeling", "order_index": 2, "subtopics": [
+      { "title": "Star Schema", "order_index": 0 },
+      { "title": "Snowflake Schema", "order_index": 1 },
+      { "title": "Dimensional Modeling", "order_index": 2 }
+    ]},
+    { "title": "BI Tools", "order_index": 3, "subtopics": [
+      { "title": "Power BI", "order_index": 0 },
+      { "title": "Tableau", "order_index": 1 },
+      { "title": "Looker / Metabase", "order_index": 2 }
+    ]},
+    { "title": "DAX & Calculated Fields", "order_index": 4, "subtopics": [
+      { "title": "Measures vs Calculated Columns", "order_index": 0 },
+      { "title": "Time Intelligence Functions", "order_index": 1 },
+      { "title": "Context & Filters", "order_index": 2 }
+    ]},
+    { "title": "Storytelling with Data", "order_index": 5, "subtopics": [
+      { "title": "Choosing the Right Chart", "order_index": 0 },
+      { "title": "Dashboard Design Principles", "order_index": 1 },
+      { "title": "Executive Reporting", "order_index": 2 }
+    ]}
+  ]
+}
