@@ -10,6 +10,8 @@ import PageLoader from '../components/ui/PageLoader';
 // Static Imports (Kept synchronous as they are the entry portals)
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
+import { usePrefetchRoutes } from '../hooks/usePrefetchRoutes';
+import { routeImporters } from './routePrefetchers';
 
 // ─── Lazy-Loaded Public Views ────────────────────────────────────────────────
 const HomePage = React.lazy(() => import('../pages/HomePage'));
@@ -63,6 +65,10 @@ function ProtectedRoute({ children }) {
  * to optimize initial bundle delivery performance.
  */
 export default function AppRoutes() {
+  // Silently pre-download all route bundles during browser idle time
+  // so that navigating between pages feels instant anywhere in the app.
+  usePrefetchRoutes(routeImporters);
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
