@@ -11,11 +11,11 @@ import PageLoader from '../components/ui/PageLoader';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 
-// Lazy-Loaded Public Views
+// ─── Lazy-Loaded Public Views ────────────────────────────────────────────────
 const HomePage = React.lazy(() => import('../pages/HomePage'));
 const NotFound = React.lazy(() => import('../pages/NotFound'));
 
-// Lazy-Loaded Protected Views
+// ─── Lazy-Loaded Protected Views ────────────────────────────────────────────
 const Dashboard = React.lazy(() => import('../pages/Dashboard'));
 const StudentProfile = React.lazy(() => import('../pages/StudentProfile'));
 const SkillAssessment = React.lazy(() => import('../pages/SkillAssessment'));
@@ -28,7 +28,7 @@ const ResumeAnalysis = React.lazy(() => import('../pages/ResumeAnalysis'));
 const CoursesAndJobs = React.lazy(() => import('../pages/CoursesAndJobs'));
 const LearningRoadmap = React.lazy(() => import('../pages/LearningRoadmap'));
 
-// Lazy-Loaded Marketing Pages
+// ─── Lazy-Loaded Marketing Pages ─────────────────────────────────────────────
 const AboutPage = React.lazy(() => import('../pages/marketing/AboutPage'));
 const CareersPage = React.lazy(() => import('../pages/marketing/CareersPage'));
 const BlogPage = React.lazy(() => import('../pages/marketing/BlogPage'));

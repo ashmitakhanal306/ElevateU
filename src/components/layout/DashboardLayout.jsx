@@ -4,6 +4,8 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import ChatWidget from '../chatbot/ChatWidget';
 import ErrorBoundary from '../ErrorBoundary';
+import { usePrefetchRoutes } from '../../hooks/usePrefetchRoutes';
+import { routeImporters } from '../../routes/routePrefetchers';
 
 /**
  * DashboardLayout component.
@@ -13,6 +15,10 @@ import ErrorBoundary from '../ErrorBoundary';
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+
+  // Silently pre-download all route bundles during browser idle time
+  // so that switching tabs feels instant after the first visit.
+  usePrefetchRoutes(routeImporters);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
