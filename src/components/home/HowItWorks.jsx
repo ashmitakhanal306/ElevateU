@@ -77,7 +77,7 @@ export default function HowItWorks() {
           </div>
 
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8 relative z-10"
+            className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 relative z-10"
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -88,13 +88,13 @@ export default function HowItWorks() {
               return (
                 <motion.div 
                   key={index} 
-                  className="flex flex-col items-center text-center group"
+                  className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center group"
                   variants={itemVariants}
                 >
-                  <div className="relative mb-10 flex justify-center items-center">
+                  <div className="relative md:mb-10 mr-6 md:mr-0 flex justify-center items-center shrink-0">
                     {/* Icon Container */}
-                    <div className="relative z-10 w-20 h-20 bg-primary border-[3px] border-primary/80 rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary/40 transition-all duration-300">
-                      <Icon className="w-8 h-8 text-bg-surface" />
+                    <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 bg-primary border-[3px] border-primary/80 rounded-2xl md:rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary/40 transition-all duration-300">
+                      <Icon className="w-6 h-6 md:w-8 md:h-8 text-bg-surface" />
                       {/* Step Number Badge */}
                       <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-white text-xs font-black flex items-center justify-center border-2 border-bg-page shadow-md">
                         {step.num}
@@ -102,19 +102,21 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   
-                  <h3 className="font-bold text-text-primary text-2xl mb-4">
-                    {step.title}
-                  </h3>
-                  <p className="text-lg text-text-secondary leading-relaxed">
-                    {step.description}
-                  </p>
+                  <div className="pt-2 md:pt-0">
+                    <h3 className="font-bold text-text-primary text-xl md:text-2xl mb-2 md:mb-4">
+                      {step.title}
+                    </h3>
+                    <p className="text-base md:text-lg text-text-secondary leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })}
           </motion.div>
           
           {/* Mobile connecting line (Vertical) */}
-          <div className="md:hidden absolute top-[10%] bottom-[10%] left-1/2 w-1.5 -translate-x-1/2 bg-border rounded-full z-0 overflow-hidden">
+          <div className="md:hidden absolute top-[5%] bottom-[10%] left-8 w-1.5 -translate-x-1/2 bg-border rounded-full z-0 overflow-hidden">
             <motion.div 
               className="w-full h-full bg-primary rounded-full origin-top"
               initial={{ scaleY: 0 }}
