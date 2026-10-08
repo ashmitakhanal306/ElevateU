@@ -19,7 +19,6 @@ import {
   addRoadmapSelection,
   fetchActiveRoadmapDetail,
   toggleSubtopicProgress,
-  computeRoadmapProgress,
 } from '../services/roadmapService';
 
 // ─── Category colour map ──────────────────────────────────────────────────────
@@ -206,8 +205,17 @@ function DetailSection({ userId }) {
       const data = await fetchActiveRoadmapDetail(userId);
       setDetail(data);
       if (data) {
-        const p = await computeRoadmapProgress(userId, data.roadmap.id);
-        setProgress(p);
+        // Calculate progress instantly using the data we already fetched
+        let total = 0;
+        let completed = 0;
+        data.topics.forEach(t => {
+          t.subtopics.forEach(s => {
+            total++;
+            if (s.status === 'completed') completed++;
+          });
+        });
+        setProgress(total === 0 ? 0 : Math.round((completed / total) * 100));
+
         // Auto-expand first topic
         if (data.topics.length > 0) {
           setExpandedIds(new Set([data.topics[0].id]));
@@ -241,23 +249,35 @@ function DetailSection({ userId }) {
       // Update local state optimistically
       setDetail((prev) => {
         if (!prev) return prev;
-        return {
-          ...prev,
-          topics: prev.topics.map((t) => {
-            if (t.id !== topicId) return t;
-            return {
-              ...t,
-              subtopics: t.subtopics.map((s) =>
-                s.id === subtopic.id ? { ...s, status: newStatus } : s
-              ),
-            };
-          }),
-        };
-      });
+        
+        let total = 0;
+        let completed = 0;
+        
+        const newTopics = prev.topics.map((t) => {
+          if (t.id !== topicId) {
+            t.subtopics.forEach(s => {
+              total++;
+              if (s.status === 'completed') completed++;
+            });
+            return t;
+          }
+          
+          return {
+            ...t,
+            subtopics: t.subtopics.map((s) => {
+              const updatedStatus = s.id === subtopic.id ? newStatus : s.status;
+              total++;
+              if (updatedStatus === 'completed') completed++;
+              return { ...s, status: updatedStatus };
+            }),
+          };
+        });
+        
+        // Instantly update progress state
+        setProgress(total === 0 ? 0 : Math.round((completed / total) * 100));
 
-      // Recompute progress
-      const newProgress = await computeRoadmapProgress(userId, detail.roadmap.id);
-      setProgress(newProgress);
+        return { ...prev, topics: newTopics };
+      });
     } catch (err) {
       console.error(err);
     } finally {
