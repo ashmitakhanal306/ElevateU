@@ -41,9 +41,15 @@ export async function analyzeResume(file) {
 
     const prompt = `
     You are an expert ATS (Applicant Tracking System) and career coach.
-    Analyze the provided resume document.
-    Return ONLY a JSON object that strictly matches this exact schema, with no additional text or markdown formatting:
+    First, determine if the provided document is actually a resume or CV. 
+    If it is NOT a resume (e.g., a random document, image, or unrelated text), return ONLY this JSON:
     {
+      "isResume": false
+    }
+
+    If it IS a resume, analyze it and return ONLY a JSON object that strictly matches this exact schema, with no additional text or markdown formatting:
+    {
+      "isResume": true,
       "atsScore": number (0-100),
       "scoreBreakdown": {
         "formatting": number (0-100),
@@ -69,12 +75,23 @@ export async function analyzeResume(file) {
 
     // Parse the JSON response
     const result = JSON.parse(response.text);
+
+    // Check if the AI determined it wasn't a resume
+    if (result.isResume === false) {
+      throw new Error("The uploaded document does not appear to be a resume. Please upload a valid resume or CV.");
+    }
+
     result.fileName = file.name;
     
     return result;
 
   } catch (error) {
     console.error("Error analyzing resume with Gemini:", error);
+    // If the error was our custom validation error, pass it through. 
+    // Otherwise, throw a generic error.
+    if (error.message.includes("does not appear to be a resume")) {
+      throw error;
+    }
     throw new Error("Failed to analyze resume. Make sure you are uploading a valid PDF.");
   }
 }
