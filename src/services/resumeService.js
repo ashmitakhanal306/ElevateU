@@ -87,11 +87,23 @@ export async function analyzeResume(file) {
 
   } catch (error) {
     console.error("Error analyzing resume with Gemini:", error);
-    // If the error was our custom validation error, pass it through. 
-    // Otherwise, throw a generic error.
-    if (error.message.includes("does not appear to be a resume")) {
+    
+    if (error.message && error.message.includes("does not appear to be a resume")) {
       throw error;
     }
-    throw new Error("Failed to analyze resume. Make sure you are uploading a valid PDF.");
+
+    let userMessage = "An unexpected error occurred while analyzing your resume. Please try again.";
+    
+    if (error.message) {
+      if (error.message.includes("503") || error.message.includes("UNAVAILABLE")) {
+        userMessage = "Our AI servers are currently experiencing high demand. Please wait a moment and try again.";
+      } else if (error.message.includes("500") || error.message.includes("INTERNAL")) {
+        userMessage = "The AI service encountered an internal issue. Please try uploading your resume again.";
+      } else if (error.message.includes("429") || error.message.includes("quota")) {
+        userMessage = "We have reached our AI request limit for now. Please try again a bit later.";
+      }
+    }
+
+    throw new Error(userMessage);
   }
 }
