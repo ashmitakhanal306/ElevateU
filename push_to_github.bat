@@ -11,8 +11,8 @@ echo NOTE: Use a Personal Access Token as the password.
 echo Get one at: https://github.com/settings/tokens
 echo (Classic token with 'repo' scope)
 echo.
-set GIT="C:\Users\HP\AppData\Local\PortableGit\cmd\git.exe"
-cd /d "C:\Users\HP\OneDrive\Documents\ElevateU"
+set GIT="C:\Users\shiva\AppData\Local\Programs\Git\cmd\git.exe"
+cd /d "c:\Users\shiva\Downloads\ElevateU"
 echo Current status:
 %GIT% status
 echo.

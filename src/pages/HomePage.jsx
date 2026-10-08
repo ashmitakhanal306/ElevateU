@@ -45,19 +45,19 @@ export default function HomePage() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
-          <div className="flex items-center gap-2 pl-4 border-l border-border">
+          <div className="flex items-center gap-2 pl-2 sm:pl-4 border-l border-border">
             {isAuthenticated ? (
-              <Button variant="primary" onClick={() => navigate('/dashboard')}>
-                Go to Dashboard
+              <Button variant="primary" onClick={() => navigate('/dashboard')} className="text-sm px-3 py-1.5 sm:px-4 sm:py-2">
+                Dashboard
               </Button>
             ) : (
               <>
-                <Button variant="ghost" onClick={() => navigate('/login')}>
+                <Button variant="ghost" onClick={() => navigate('/login')} className="hidden sm:flex">
                   Log in
                 </Button>
-                <Button variant="primary" onClick={() => navigate('/signup')}>
+                <Button variant="primary" onClick={() => navigate('/signup')} className="text-sm px-3 py-1.5 sm:px-4 sm:py-2">
                   Sign up
                 </Button>
               </>

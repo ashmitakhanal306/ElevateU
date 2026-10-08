@@ -79,7 +79,7 @@ export default function HeroSection() {
 
       {/* Left Column: Text Content */}
       <motion.div 
-        className="lg:w-1/2 flex flex-col items-start text-left z-10 w-full mb-20 lg:mb-0"
+        className="lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left z-10 w-full mb-12 lg:mb-0"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -91,7 +91,7 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.h1 
-          className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tight text-text-primary leading-[1.05] mb-8"
+          className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-text-primary leading-[1.05] mb-6 sm:mb-8 text-center lg:text-left w-full"
           variants={itemVariants}
         >
           Elevate Your Skills.<br />
@@ -101,7 +101,7 @@ export default function HeroSection() {
         </motion.h1>
         
         <motion.p 
-          className="text-xl text-text-secondary mb-10 max-w-xl leading-relaxed"
+          className="text-lg sm:text-xl text-text-secondary mb-10 max-w-xl leading-relaxed text-center lg:text-left"
           variants={itemVariants}
         >
           ElevateU bridges the gap between learning and your dream career. Assess your skills, get AI-powered career recommendations, and follow personalized roadmaps designed for your success.
@@ -121,7 +121,7 @@ export default function HeroSection() {
 
         {/* Inline Stats */}
         <motion.div 
-          className="flex items-center gap-8 text-base text-text-secondary"
+          className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-8 text-sm sm:text-base text-text-secondary w-full"
           variants={itemVariants}
         >
           <div className="flex items-center gap-2">
@@ -204,7 +204,7 @@ export default function HeroSection() {
 
           {/* Floating Accent Card 1 */}
           <motion.div 
-            className="absolute -left-10 top-12 z-20"
+            className="absolute -left-2 sm:-left-10 top-12 z-20 hidden sm:flex"
             variants={floatVariants2} 
             animate="animate"
           >
@@ -221,7 +221,7 @@ export default function HeroSection() {
 
           {/* Floating Accent Card 2 */}
           <motion.div 
-            className="absolute -right-12 bottom-20 z-20"
+            className="absolute -right-2 sm:-right-12 bottom-20 z-20 hidden sm:flex"
             variants={floatVariants3} 
             animate="animate"
           >
