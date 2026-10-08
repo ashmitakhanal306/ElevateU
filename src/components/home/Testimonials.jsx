@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -57,6 +57,25 @@ export default function Testimonials() {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const intervalId = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        
+        // If we've reached the end of the scroll container
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scroll('right');
+        }
+      }
+    }, 4000); // Auto slide every 4 seconds
+
+    return () => clearInterval(intervalId);
+  }, [shouldReduceMotion]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
