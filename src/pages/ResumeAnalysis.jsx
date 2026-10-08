@@ -175,7 +175,7 @@ export default function ResumeAnalysis() {
       }, 300);
     } catch (err) {
       clearInterval(interval);
-      setError('An error occurred during analysis.');
+      setError(err.message || 'An error occurred during analysis.');
       setStatus('uploading');
     }
   };
