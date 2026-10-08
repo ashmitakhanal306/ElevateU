@@ -99,13 +99,9 @@ export default function ResumeAnalysis() {
     setError('');
     
     // Check type
-    const validTypes = [
-      'application/pdf', 
-      'application/msword', 
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ];
-    if (!validTypes.includes(f.type) && !f.name.match(/\.(pdf|doc|docx)$/i)) {
-      setError('Invalid file type. Please upload a .pdf, .doc, or .docx file.');
+    const validTypes = ['application/pdf'];
+    if (!validTypes.includes(f.type) && !f.name.match(/\.(pdf)$/i)) {
+      setError('Invalid file type. Please upload a .pdf file.');
       return false;
     }
     
@@ -263,14 +259,14 @@ export default function ResumeAnalysis() {
                 Drag and drop your resume here
               </h3>
               <p className="text-sm text-text-secondary mb-6">
-                Supports .pdf, .doc, and .docx (Max 5MB)
+                Supports .pdf (Max 5MB)
               </p>
               
               <Input 
                 type="file" 
                 ref={fileInputRef} 
                 onChange={handleFileChange} 
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+                accept=".pdf,application/pdf" 
                 className="hidden" 
               />
               <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
