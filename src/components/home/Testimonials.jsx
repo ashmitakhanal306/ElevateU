@@ -124,7 +124,7 @@ export default function Testimonials() {
           {TESTIMONIALS.map((testimonial, idx) => (
             <Card 
               key={idx}
-              className="min-w-[320px] sm:min-w-[450px] max-w-[450px] flex-shrink-0 snap-start p-8 sm:p-10 flex flex-col justify-between hover:shadow-xl transition-shadow bg-bg-page border-border"
+              className="w-[280px] sm:w-[400px] md:w-[450px] flex-shrink-0 snap-start p-6 sm:p-10 flex flex-col justify-between hover:shadow-xl transition-shadow bg-bg-page border-border"
             >
               <div>
                 <div className="flex gap-1.5 mb-8">
@@ -135,7 +135,7 @@ export default function Testimonials() {
                     />
                   ))}
                 </div>
-                <p className="text-text-primary text-xl italic mb-10 leading-relaxed">
+                <p className="text-text-primary text-lg sm:text-xl italic mb-10 leading-relaxed">
                   "{testimonial.quote}"
                 </p>
               </div>
