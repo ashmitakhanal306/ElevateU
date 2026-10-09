@@ -24,6 +24,15 @@ export default function DashboardLayout() {
     setIsSidebarOpen((prev) => !prev);
   };
 
+  React.useEffect(() => {
+    if (!isSidebarOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsSidebarOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isSidebarOpen]);
+
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };

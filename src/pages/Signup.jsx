@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { UserPlus, Check, X, LogIn, Mail, MailCheck, RefreshCw } from 'lucide-react';
+import { UserPlus, Check, X, LogIn, Mail, MailCheck, RefreshCw, ShieldCheck } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useAuth } from '../hooks/useAuth';
 import { signup as signupService, loginWithGoogle } from '../services/authService';
@@ -35,7 +38,6 @@ function GoogleIcon() {
 }
 
 // ─── Inline Spinner ────────────────────────────────────────────────────────────
-
 function Spinner() {
   return (
     <svg
@@ -58,26 +60,19 @@ function Spinner() {
   );
 }
 
-// ─── Password Strength Helper ──────────────────────────────────────────────────
-
-function getPasswordStrength(pass) {
-  if (!pass) return null;
-  const hasMinLength = pass.length >= 8;
-  const hasNumber = /\d/.test(pass);
-  const hasSpecial = /[^a-zA-Z0-9]/.test(pass);
-
-  if (!hasMinLength) {
-    return { label: 'Weak', colorClass: 'text-danger' };
-  }
-  if (hasNumber && hasSpecial) {
-    return { label: 'Strong', colorClass: 'text-success' };
-  }
-  return { label: 'Fair', colorClass: 'text-warning' };
-}
-
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-// ─── Main Component ────────────────────────────────────────────────────────────
+// ─── Zod Schema ────────────────────────────────────────────────────────────
+const signupSchema = z.object({
+  name: z.string().min(1, 'Full name is required'),
+  email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/\d/, 'Password must contain at least one number')
+    .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 export default function Signup() {
   const { login, isAuthenticated } = useAuth();
@@ -90,83 +85,42 @@ export default function Signup() {
     }
   }, [isAuthenticated, navigate]);
 
-  // ── Form field state ─────────────────────────────────────────────────────
-  const [name, setName]                 = useState('');
-  const [email, setEmail]               = useState(location.state?.email || '');
-  const [password, setPassword]         = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // ── Form State (react-hook-form) ─────────────────────────────────────────
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: '',
+      email: location.state?.email || '',
+      password: '',
+      confirmPassword: '',
+    },
+    mode: 'onTouched'
+  });
+
+  // Watch password to show strength / match check
+  const watchedPassword = watch('password');
+  const watchedConfirm = watch('confirmPassword');
 
   // ── UI state ─────────────────────────────────────────────────────────────
-  const [errors, setErrors]         = useState({});
+  const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading]   = useState(false);
   const [alreadyExists, setAlreadyExists] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [googleError, setGoogleError]     = useState('');
-  // Stores the email address that needs to be confirmed
   const [confirmationEmail, setConfirmationEmail] = useState('');
 
-  // ─── Validation ──────────────────────────────────────────────────────────
-
-  const validateEmail = (val) => {
-    if (!val.trim()) return 'Email is required';
-    if (!EMAIL_REGEX.test(val.trim())) return 'Enter a valid email address';
-    return '';
-  };
-
-  const handleEmailBlur = () => {
-    const err = validateEmail(email);
-    setErrors((prev) => ({ ...prev, email: err }));
-  };
-
-  const handleEmailChange = (e) => {
-    const val = e.target.value;
-    setEmail(val);
-    if (errors.email) {
-      const freshErr = validateEmail(val);
-      setErrors((prev) => ({ ...prev, email: freshErr }));
-    }
-  };
-
-  const validate = () => {
-    const errs = {};
-
-    if (!name.trim()) {
-      errs.name = 'Full name is required';
-    }
-
-    const emailErr = validateEmail(email);
-    if (emailErr) {
-      errs.email = emailErr;
-    }
-
-    if (!password) {
-      errs.password = 'Password is required';
-    } else if (password.length < 8) {
-      errs.password = 'Password must be at least 8 characters';
-    }
-
-    if (!confirmPassword) {
-      errs.confirmPassword = 'Please confirm your password';
-    } else if (password !== confirmPassword) {
-      errs.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
   // ─── Handlers ─────────────────────────────────────────────────────────────
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validate()) return;
-
+  const onSubmit = async (data) => {
     setIsLoading(true);
-    setErrors({});
+    setFormError('');
     setAlreadyExists(false);
 
-    const result = await signupService(name, email, password);
+    const result = await signupService(data.name, data.email, data.password);
 
     setIsLoading(false);
 
@@ -175,12 +129,12 @@ export default function Signup() {
       navigate('/dashboard');
     } else if (result.needsEmailConfirmation) {
       // Email confirmation required — show the confirmation screen
-      setConfirmationEmail(result.email || email);
+      setConfirmationEmail(result.email || data.email);
     } else {
       if (result.alreadyRegistered) {
         setAlreadyExists(true);
       }
-      setErrors({ form: result.error || 'Account creation failed. Please try again.' });
+      setFormError(result.error || 'Account creation failed. Please try again.');
     }
   };
 
@@ -196,14 +150,6 @@ export default function Signup() {
     }
   };
 
-  const clearError = (field) => {
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const passwordStrength = getPasswordStrength(password);
-
   // ── Email Confirmation Screen ─────────────────────────────────────────────
   if (confirmationEmail) {
     return (
@@ -216,12 +162,11 @@ export default function Signup() {
             <img src={logoSrc} alt="ElevateU Logo" className="h-16 w-auto mx-auto object-contain" />
           </div>
 
-          {/* Animated envelope icon */}
           <div className="w-24 h-24 rounded-full bg-secondary/10 border-2 border-secondary/30 flex items-center justify-center mx-auto mb-6 animate-bounce" style={{ animationDuration: '2s' }}>
             <MailCheck className="h-12 w-12 text-secondary" />
           </div>
 
-          <h1 className="text-2xl font-black tracking-tight text-text-primary mb-2">
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary mb-2">
             Check your inbox!
           </h1>
           <p className="text-text-secondary text-sm mb-6 leading-relaxed">
@@ -232,15 +177,15 @@ export default function Signup() {
 
           <div className="bg-bg-surface border border-border rounded-2xl p-5 mb-6 text-left space-y-3">
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">1</div>
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
               <p className="text-sm text-text-secondary">Open your email at <span className="text-text-primary font-semibold">{confirmationEmail}</span></p>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">2</div>
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
               <p className="text-sm text-text-secondary">Click <span className="text-text-primary font-semibold">"Confirm your email"</span> in the message from ElevateU</p>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">3</div>
+              <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
               <p className="text-sm text-text-secondary">Return here and sign in with your email and password</p>
             </div>
           </div>
@@ -268,210 +213,213 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">
-      <div className="pointer-events-none absolute top-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
+    <div className="min-h-screen flex transition-colors duration-300">
+      
+      {/* Left side: Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-bg-page px-4 py-12 relative overflow-hidden">
+        <div className="pointer-events-none absolute top-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
 
-      <div className="w-full max-w-md relative z-10">
-
-        {/* ── Brand header above the card ── */}
-        <div className="text-center mb-8">
-          <div className="mb-4 relative inline-block">
-            <img src={logoSrc} alt="ElevateU Logo" className="h-20 w-auto mx-auto object-contain" />
-            <p className="mt-2 text-xs font-semibold text-text-secondary tracking-wide">
-              Elevate Your Skills. Define Your Future.
-            </p>
-          </div>
-          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Create your account
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Start your personalised career journey today
-          </p>
-        </div>
-
-        {/* ── Main card ── */}
-        <Card className="p-6 sm:p-8 space-y-5">
-
-          {/* Google Sign-up Option */}
-          <Button
-            variant="outline"
-            onClick={handleGoogleSignup}
-            disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
-          >
-            {googleLoading ? (
-              <>
-                <Spinner />
-                Connecting…
-              </>
-            ) : (
-              <>
-                <GoogleIcon />
-                Sign up with Google
-              </>
-            )}
-          </Button>
-
-          {googleError && (
-            <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2 text-center">
-              {googleError}
-            </p>
-          )}
-
-          <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-border"></div>
-            <span className="flex-shrink mx-4 text-xs text-text-secondary uppercase">Or sign up with email</span>
-            <div className="flex-grow border-t border-border"></div>
-          </div>
-
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-
-            {/* Name */}
-            <Input
-              label="Full name"
-              type="text"
-              placeholder="Aditi Sharma"
-              value={name}
-              onChange={(e) => { setName(e.target.value); clearError('name'); }}
-              error={errors.name}
-              autoComplete="name"
-            />
-
-            {/* Email */}
-            <Input
-              label="Email address"
-              type="email"
-              placeholder="aditi@example.com"
-              value={email}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
-              error={errors.email}
-              autoComplete="email"
-            />
-
-            {/* Password */}
-            <div>
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Min. 8 characters"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); clearError('password'); }}
-                error={errors.password}
-                autoComplete="new-password"
-              />
-              {password && passwordStrength && (
-                <div className="flex items-center justify-between text-xs mt-1.5 px-1 font-medium">
-                  <span className="text-text-secondary">Password strength:</span>
-                  <span className={`font-bold ${passwordStrength.colorClass}`}>
-                    {passwordStrength.label}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <Input
-                label="Confirm password"
-                type="password"
-                placeholder="Re-enter password"
-                value={confirmPassword}
-                onChange={(e) => { setConfirmPassword(e.target.value); clearError('confirmPassword'); }}
-                error={errors.confirmPassword}
-                autoComplete="new-password"
-              />
-              {password && confirmPassword && (
-                <div className="flex items-center gap-1 text-xs font-semibold mt-1.5 px-1">
-                  {password === confirmPassword ? (
-                    <span className="flex items-center gap-1 text-success">
-                      <Check className="h-3.5 w-3.5" /> Passwords match
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-danger">
-                      <X className="h-3.5 w-3.5" /> Passwords don't match
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {alreadyExists ? (
-              <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
-                <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
-                  <LogIn className="h-4 w-4 shrink-0" />
-                  Account Already Exists
-                </div>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  An account with <strong className="text-text-primary">{email}</strong> is already registered. Please sign in instead.
-                </p>
-                <Button
-                  type="button"
-                  variant="primary"
-                  size="md"
-                  className="w-full gap-2 text-xs font-semibold"
-                  onClick={() => navigate('/login', { state: { email } })}
-                >
-                  <LogIn className="h-4 w-4" />
-                  Sign In with {email || 'this email'}
-                </Button>
-              </div>
-            ) : errors.form ? (
-              <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
-                {errors.form}
+        <div className="w-full max-w-md relative z-10">
+          {/* ── Brand header above the card ── */}
+          <div className="text-center mb-8">
+            <div className="mb-4 relative inline-block">
+              <img src={logoSrc} alt="ElevateU Logo" className="h-20 w-auto mx-auto object-contain" />
+              <p className="mt-2 text-xs font-semibold text-text-secondary tracking-wide">
+                Elevate Your Skills. Define Your Future.
               </p>
-            ) : null}
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Create your account
+            </h1>
+            <p className="mt-1 text-sm text-text-secondary">
+              Start your personalised career journey today
+            </p>
+          </div>
 
+          {/* ── Main card ── */}
+          <Card className="p-6 sm:p-8 space-y-5 shadow-2xl shadow-primary/5 border-0">
+            {/* Google Sign-up Option */}
             <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="w-full mt-2 gap-2"
-              disabled={isLoading}
+              variant="outline"
+              onClick={handleGoogleSignup}
+              disabled={googleLoading}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
             >
-              {isLoading ? (
+              {googleLoading ? (
                 <>
                   <Spinner />
-                  Creating account…
+                  Connecting…
                 </>
               ) : (
                 <>
-                  <UserPlus className="h-4 w-4" />
-                  Create account
+                  <GoogleIcon />
+                  Sign up with Google
                 </>
               )}
             </Button>
 
-          </form>
+            {googleError && (
+              <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2 text-center">
+                {googleError}
+              </p>
+            )}
 
-          {/* Divider + login link */}
-          <div className="text-center border-t border-border pt-5">
-            <p className="text-xs text-text-secondary">
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="text-secondary font-bold hover:underline transition-colors"
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-border"></div>
+              <span className="flex-shrink mx-4 text-xs text-text-secondary uppercase">Or sign up with email</span>
+              <div className="flex-grow border-t border-border"></div>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+              {/* Name */}
+              <Input
+                label="Full name"
+                type="text"
+                placeholder="Aditi Sharma"
+                {...register('name')}
+                error={errors.name?.message}
+                autoComplete="name"
+              />
+
+              {/* Email */}
+              <Input
+                label="Email address"
+                type="email"
+                placeholder="aditi@example.com"
+                {...register('email')}
+                error={errors.email?.message}
+                autoComplete="email"
+              />
+
+              {/* Password */}
+              <div>
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Min. 8 chars, 1 number, 1 symbol"
+                  {...register('password')}
+                  error={errors.password?.message}
+                  autoComplete="new-password"
+                />
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <Input
+                  label="Confirm password"
+                  type="password"
+                  placeholder="Re-enter password"
+                  {...register('confirmPassword')}
+                  error={errors.confirmPassword?.message}
+                  autoComplete="new-password"
+                />
+                {watchedPassword && watchedConfirm && !errors.confirmPassword && (
+                  <div className="flex items-center gap-1 text-xs font-semibold mt-1.5 px-1">
+                    {watchedPassword === watchedConfirm ? (
+                      <span className="flex items-center gap-1 text-success">
+                        <Check className="h-3.5 w-3.5" /> Passwords match
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-danger">
+                        <X className="h-3.5 w-3.5" /> Passwords don't match
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {alreadyExists ? (
+                <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
+                  <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
+                    <LogIn className="h-4 w-4 shrink-0" />
+                    Account Already Exists
+                  </div>
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    An account with <strong className="text-text-primary">{watch('email')}</strong> is already registered. Please sign in instead.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="md"
+                    className="w-full gap-2 text-xs font-semibold"
+                    onClick={() => navigate('/login')}
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Sign In
+                  </Button>
+                </div>
+              ) : formError ? (
+                <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
+                  {formError}
+                </p>
+              ) : null}
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="w-full mt-2 gap-2"
+                disabled={isLoading}
               >
-                Sign in instead →
-              </Link>
-            </p>
+                {isLoading ? (
+                  <>
+                    <Spinner />
+                    Creating account…
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-4 w-4" />
+                    Create account
+                  </>
+                )}
+              </Button>
+            </form>
+
+            {/* Divider + login link */}
+            <div className="text-center border-t border-border pt-5">
+              <p className="text-xs text-text-secondary">
+                Already have an account?{' '}
+                <Link
+                  to="/login"
+                  className="text-secondary font-bold hover:underline transition-colors"
+                >
+                  Sign in instead →
+                </Link>
+              </p>
+            </div>
+          </Card>
+
+          {/* Terms note */}
+          <p className="mt-4 text-center text-xs text-text-secondary px-4">
+            By creating an account you agree to our{' '}
+            <span className="text-secondary font-semibold cursor-pointer hover:underline">
+              Terms of Service
+            </span>{' '}
+            and{' '}
+            <span className="text-secondary font-semibold cursor-pointer hover:underline">
+              Privacy Policy
+            </span>.
+          </p>
+        </div>
+      </div>
+      
+      {/* Right side: Brand Graphic */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-gradient-to-br from-brand-2 to-brand relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-black/10 to-transparent" />
+        
+        <div className="relative z-10 text-center p-12 text-white max-w-xl">
+          <div className="mb-8 flex justify-center">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-3xl shadow-2xl">
+              <ShieldCheck className="h-16 w-16 text-blue-200" />
+            </div>
           </div>
-
-        </Card>
-
-        {/* Terms note */}
-        <p className="mt-4 text-center text-xs text-text-secondary px-4">
-          By creating an account you agree to our{' '}
-          <span className="text-secondary font-semibold cursor-pointer hover:underline">
-            Terms of Service
-          </span>{' '}
-          and{' '}
-          <span className="text-secondary font-semibold cursor-pointer hover:underline">
-            Privacy Policy
-          </span>.
-        </p>
-
+          <h2 className="text-4xl font-extrabold mb-6 tracking-tight text-white">Your Journey Starts Here</h2>
+          <p className="text-lg text-blue-100 leading-relaxed">
+            Create an account to uncover skill gaps, access tailored learning roadmaps, and land your dream job faster.
+          </p>
+        </div>
       </div>
     </div>
   );

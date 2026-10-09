@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, Check, AlertTriangle, FileText, Target, Briefcase, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, Check, AlertTriangle, FileText, Target } from 'lucide-react';
 import { getBotReply } from '../../services/chatbotService';
+import ReactMarkdown from 'react-markdown';
 
 const SUGGESTIONS = [
   "Check my resume for ATS keywords",
@@ -135,6 +136,7 @@ export default function ChatWidget() {
               onClick={() => setIsOpen(false)}
               className="p-1.5 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-colors"
               title="Close chat"
+              aria-label="Close chat"
             >
               <X className="h-5 w-5" />
             </button>
@@ -156,7 +158,7 @@ export default function ChatWidget() {
                   {!isUser && friendlyAgent && msg.agent && (
                     <div className="flex items-center gap-1 mb-1 px-1">
                       <span className="text-xs">{friendlyAgent.icon}</span>
-                      <span className="text-[10px] font-semibold text-text-secondary">
+                      <span className="text-xs font-semibold text-text-secondary">
                         {friendlyAgent.label}
                       </span>
                     </div>
@@ -165,13 +167,26 @@ export default function ChatWidget() {
                   <div 
                     className={`max-w-[90%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                       isUser 
-                        ? 'bg-primary text-white rounded-tr-sm shadow-sm' 
+                        ? 'bg-primary text-on-primary rounded-tr-sm shadow-sm' 
                         : msg.isBlocked
                           ? 'bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 rounded-tl-sm'
                           : 'bg-bg-surface border border-border text-text-primary rounded-tl-sm shadow-sm'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap">{msg.text}</div>
+                    <div className="text-sm">
+                      <ReactMarkdown
+                        components={{
+                          p: ({node: _n, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                          ul: ({node: _n, ...props}) => <ul className="list-disc pl-5 mb-2 space-y-1" {...props} />,
+                          ol: ({node: _n, ...props}) => <ol className="list-decimal pl-5 mb-2 space-y-1" {...props} />,
+                          li: ({node: _n, ...props}) => <li {...props} />,
+                          strong: ({node: _n, ...props}) => <strong className="font-bold text-inherit" {...props} />,
+                          a: ({node: _n, ...props}) => <a className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
 
                     {/* Interactive Data Cards */}
                     {msg.dataCard && (
@@ -185,17 +200,17 @@ export default function ChatWidget() {
                                 <FileText className="h-3.5 w-3.5" />
                                 {msg.dataCard.title}
                               </span>
-                              <span className="px-2 py-0.5 rounded-full bg-primary text-white font-bold text-xs">
+                              <span className="px-2 py-0.5 rounded-full bg-primary text-on-primary font-bold text-xs">
                                 {msg.dataCard.score}/100
                               </span>
                             </div>
                             <p className="text-xs text-text-secondary mb-2">
                               <span className="font-semibold text-text-primary">Priority fix:</span> {msg.dataCard.topIssue}
                             </p>
-                            <p className="text-[10px] text-text-secondary mb-1.5 font-medium">Add these keywords:</p>
+                            <p className="text-xs text-text-secondary mb-1.5 font-medium">Add these keywords:</p>
                             <div className="flex flex-wrap gap-1">
                               {msg.dataCard.missingKeywords.map(kw => (
-                                <span key={kw} className="text-[10px] bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 px-1.5 py-0.5 rounded font-semibold">
+                                <span key={kw} className="text-xs bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 px-1.5 py-0.5 rounded font-semibold">
                                   + {kw}
                                 </span>
                               ))}
@@ -218,10 +233,10 @@ export default function ChatWidget() {
                             <div className="w-full bg-emerald-200 dark:bg-emerald-950 h-2 rounded-full overflow-hidden mb-2">
                               <div className="bg-emerald-500 h-full rounded-full transition-all duration-700" style={{ width: `${msg.dataCard.readinessScore}%` }} />
                             </div>
-                            <p className="text-[10px] text-text-secondary mb-1.5 font-medium">Skills to learn next:</p>
+                            <p className="text-xs text-text-secondary mb-1.5 font-medium">Skills to learn next:</p>
                             <div className="flex flex-wrap gap-1">
                               {msg.dataCard.missingSkills.map(sk => (
-                                <span key={sk} className="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-medium">
+                                <span key={sk} className="text-xs bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-medium">
                                   {sk}
                                 </span>
                               ))}
@@ -232,14 +247,14 @@ export default function ChatWidget() {
                         {/* Opportunity Listings Card */}
                         {msg.dataCard.type === 'OPPORTUNITY_LIST' && (
                           <div className="space-y-2 mt-1">
-                            <p className="text-[10px] font-semibold text-text-secondary mb-1">Top matches for you:</p>
+                            <p className="text-xs font-semibold text-text-secondary mb-1">Top matches for you:</p>
                             {msg.dataCard.items.slice(0, 2).map(item => (
                               <div key={item.id} className="bg-bg-page border border-border p-2.5 rounded-xl flex items-center justify-between">
                                 <div>
                                   <h4 className="font-bold text-xs text-text-primary">{item.title}</h4>
-                                  <p className="text-[11px] text-text-secondary">{item.company} · {item.location}</p>
+                                  <p className="text-xs text-text-secondary">{item.company} · {item.location}</p>
                                 </div>
-                                <span className="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-1 rounded-md shrink-0 ml-2">
+                                <span className="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded-md shrink-0 ml-2">
                                   {item.matchPercent ? `${item.matchPercent}% match` : 'Good fit'}
                                 </span>
                               </div>
@@ -333,7 +348,8 @@ export default function ChatWidget() {
               <button
                 onClick={() => handleSend(inputValue)}
                 disabled={!inputValue.trim() || isTyping}
-                className="p-2.5 bg-primary text-white rounded-xl hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 h-[44px] w-[44px] flex items-center justify-center shadow-md"
+                className="p-2.5 bg-primary text-on-primary rounded-xl hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 h-[44px] w-[44px] flex items-center justify-center shadow-md"
+                aria-label="Send message"
               >
                 <Send className="h-5 w-5 ml-0.5" />
               </button>

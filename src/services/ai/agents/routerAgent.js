@@ -18,7 +18,7 @@ export const AGENT_TYPES = {
  * @param {Array<Object>} history - Recent message history.
  * @returns {string} Selected AGENT_TYPE
  */
-export function routeMessage(userMessage, history = []) {
+export function routeMessage(userMessage, _history = []) {
   const msg = userMessage.toLowerCase();
 
   // Resume / CV / ATS intent

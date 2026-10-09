@@ -7,9 +7,16 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        heading: ['"Plus Jakarta Sans"', '"Sora"', 'sans-serif'],
+      },
       colors: {
         // Colors mapping to CSS variables in index.css (supporting light/dark mode)
+        brand: 'var(--color-brand)',
+        'brand-2': 'var(--color-brand-2)',
         primary: 'var(--color-primary)',
+        'on-primary': 'var(--color-on-primary)',
+        'primary-soft': 'var(--color-primary-soft)',
         secondary: 'var(--color-secondary)',
         accent: 'var(--color-accent)',
         success: 'var(--color-success)',
@@ -21,6 +28,8 @@ export default {
         'bg-page': 'var(--color-bg-page)',
         'bg-surface': 'var(--color-bg-surface)',
         'header-bg': 'var(--color-header-bg)',
+        ring: 'var(--color-ring)',
+        'surface-raised': 'var(--color-surface-raised)',
       },
       // z-45 is used by the Sidebar mobile backdrop (sits between Navbar z-40 and Sidebar panel z-50)
       zIndex: {

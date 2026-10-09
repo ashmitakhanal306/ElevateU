@@ -27,7 +27,8 @@ const CareerRecommendations = React.lazy(() => import('../pages/CareerRecommenda
 const CareerDetail = React.lazy(() => import('../pages/CareerDetail'));
 const SkillGapAnalysis = React.lazy(() => import('../pages/SkillGapAnalysis'));
 const ResumeAnalysis = React.lazy(() => import('../pages/ResumeAnalysis'));
-const CoursesAndJobs = React.lazy(() => import('../pages/CoursesAndJobs'));
+const CoursesPage = React.lazy(() => import('../pages/CoursesPage'));
+const JobsPage = React.lazy(() => import('../pages/JobsPage'));
 const LearningRoadmap = React.lazy(() => import('../pages/LearningRoadmap'));
 
 // ─── Lazy-Loaded Marketing Pages ─────────────────────────────────────────────
@@ -112,7 +113,8 @@ export default function AppRoutes() {
           <Route path="/skill-gap" element={<SkillGapAnalysis />} />
           <Route path="/roadmap" element={<LearningRoadmap />} />
           <Route path="/resume-analysis" element={<ResumeAnalysis />} />
-          <Route path="/courses" element={<CoursesAndJobs />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
         </Route>
 
         {/* Catch-all fallback */}

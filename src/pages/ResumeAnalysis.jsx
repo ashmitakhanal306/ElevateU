@@ -47,7 +47,7 @@ function ScoreRing({ value, size = 120, stroke = 12 }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-black text-text-primary leading-none">{value}</span>
+        <span className="text-3xl font-bold text-text-primary leading-none">{value}</span>
       </div>
     </div>
   );
@@ -217,7 +217,7 @@ export default function ResumeAnalysis() {
         <div key={idx} className="flex gap-3 items-start p-3 bg-bg-page border border-border rounded-lg">
           <Icon className={`h-5 w-5 mt-0.5 shrink-0 ${color}`} />
           <div>
-            <Badge variant={issue.severity === 'high' ? 'danger' : issue.severity === 'medium' ? 'warning' : 'info'} className="mb-1 text-[10px] px-1.5 py-0.5">
+            <Badge variant={issue.severity === 'high' ? 'danger' : issue.severity === 'medium' ? 'warning' : 'info'} className="mb-1 text-xs px-1.5 py-0.5">
               {issue.severity} priority
             </Badge>
             <p className="text-sm text-text-primary font-medium">{issue.message}</p>

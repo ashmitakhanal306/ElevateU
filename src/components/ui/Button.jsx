@@ -26,7 +26,7 @@ export default function Button({
 
   // Theme-aware variant styles utilizing the color design tokens
   const variants = {
-    primary: 'bg-primary hover:bg-primary/90 text-white shadow-sm ring-offset-bg-page focus:ring-primary',
+    primary: 'bg-primary hover:bg-primary/90 text-on-primary shadow-sm ring-offset-bg-page focus:ring-primary',
     secondary: 'bg-secondary hover:bg-secondary/90 text-white shadow-sm ring-offset-bg-page focus:ring-secondary',
     outline: 'border border-border bg-bg-surface hover:bg-bg-page text-text-primary ring-offset-bg-surface focus:ring-secondary',
     ghost: 'text-text-secondary hover:text-text-primary hover:bg-bg-page ring-offset-bg-surface focus:ring-secondary',

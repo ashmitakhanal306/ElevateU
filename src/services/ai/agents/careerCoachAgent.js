@@ -14,10 +14,10 @@ Guidelines:
 - Focus on practical, industry-aligned technical and soft skills.
 `;
 
-export async function handleCareerCoachTask({ userMessage, memory, generateFn }) {
+export async function handleCareerCoachTask({ userMessage, memory: _m, generateFn }) {
   // Execute relevant domain tools for career & skills
   const gapResult = await executeTool('calculate_skill_gaps', { roleId: 'frontend-dev' });
-  const roadmapResult = await executeTool('fetch_learning_roadmap', { roleId: 'frontend-dev' });
+  await executeTool('fetch_learning_roadmap', { roleId: 'frontend-dev' });
 
   if (generateFn) {
     const contents = [

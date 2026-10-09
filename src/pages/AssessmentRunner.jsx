@@ -5,6 +5,7 @@ import { Clock, ArrowRight, ArrowLeft } from 'lucide-react';
 import { getAssessmentById, submitAssessment } from '../services/assessmentService';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import PageHeader from '../components/ui/PageHeader';
 
 export default function AssessmentRunner() {
   const { assessmentId } = useParams();
@@ -144,22 +145,23 @@ export default function AssessmentRunner() {
     <div className="max-w-3xl mx-auto space-y-6 pt-4">
       <SEO title="Skill Assessment" noIndex={true} />
       
-      {/* Header: Title, Autosave Note & Timer */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-bg-surface p-4 rounded-xl border border-border shadow-sm">
-        <div>
-          <h1 className="font-bold text-lg text-text-primary">{assessment.title}</h1>
-          <p className="text-xs text-text-secondary flex items-center gap-1.5 mt-0.5 font-medium">
+      <PageHeader 
+        title={assessment.title}
+        description={
+          <span className="flex items-center gap-1.5 mt-0.5">
             <span className="h-1.5 w-1.5 rounded-full bg-success inline-block shrink-0" />
             Your progress is saved automatically
-          </p>
-        </div>
-        <div className={`flex items-center gap-2 font-mono font-bold text-lg px-3 py-1.5 rounded-lg border self-start sm:self-auto ${
-          timeLeft < 60 ? 'bg-danger/10 text-danger border-danger/20' : 'bg-secondary/10 text-secondary border-secondary/20'
-        }`}>
-          <Clock className="h-5 w-5" />
-          {m}:{s}
-        </div>
-      </div>
+          </span>
+        }
+        actions={
+          <div className={`flex items-center gap-2 font-mono font-bold text-lg px-3 py-1.5 rounded-lg border self-start sm:self-auto ${
+            timeLeft < 60 ? 'bg-danger/10 text-danger border-danger/20' : 'bg-secondary/10 text-secondary border-secondary/20'
+          }`}>
+            <Clock className="h-5 w-5" />
+            {m}:{s}
+          </div>
+        }
+      />
 
       {/* Progress Bar */}
       <div className="space-y-2">
@@ -176,8 +178,8 @@ export default function AssessmentRunner() {
       </div>
 
       {/* Question Card */}
-      <Card className="p-6 sm:p-8 space-y-6">
-        <h2 className="text-xl font-bold text-text-primary leading-snug">
+      <Card className="p-6 sm:p-8">
+        <h2 className="text-xl font-bold text-text-primary leading-snug mb-5">
           {currentQuestion.text}
         </h2>
         
@@ -185,28 +187,26 @@ export default function AssessmentRunner() {
           {currentQuestion.options.map((opt, idx) => {
             const isSelected = answers[currentQuestion.id] === idx;
             return (
-              <Button
+              <label
                 key={idx}
-                variant="outline"
-                onClick={() => handleSelect(idx)}
-                className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 h-auto font-normal active:scale-100 ${
+                className={`flex items-center gap-3 w-full text-left p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer active:scale-[0.99] ${
                   isSelected 
                     ? 'border-secondary bg-secondary/5 shadow-sm' 
                     : 'border-border bg-bg-page hover:border-secondary/40'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  {/* Custom radio button */}
-                  <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                    isSelected ? 'border-secondary' : 'border-text-secondary/50'
-                  }`}>
-                    {isSelected && <div className="h-2.5 w-2.5 rounded-full bg-secondary" />}
-                  </div>
-                  <span className={`text-sm sm:text-base font-medium ${isSelected ? 'text-text-primary' : 'text-text-secondary'}`}>
-                    {opt}
-                  </span>
-                </div>
-              </Button>
+                <input
+                  type="radio"
+                  name={`question-${currentQuestion.id}`}
+                  value={idx}
+                  checked={isSelected}
+                  onChange={() => handleSelect(idx)}
+                  className="w-5 h-5 cursor-pointer text-secondary shrink-0 focus:ring-secondary focus:ring-offset-bg-surface bg-bg-surface border-border"
+                />
+                <span className={`text-sm sm:text-base font-medium ${isSelected ? 'text-text-primary' : 'text-text-secondary'}`}>
+                  {opt}
+                </span>
+              </label>
             );
           })}
         </div>

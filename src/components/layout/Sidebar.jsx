@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, User, ClipboardCheck, Compass, 
-  BarChart3, FileText, BookOpen, Map, X 
+  BarChart3, FileText, BookOpen, Map, X, Briefcase 
 } from 'lucide-react';
 
 /**
@@ -19,24 +19,24 @@ export default function Sidebar({ isOpen, onClose }) {
     {
       label: 'Discover',
       items: [
-        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/profile', label: 'Student Profile', icon: User },
+        { path: '/profile', label: 'Profile', icon: User },
         { path: '/assessment', label: 'Skill Assessment', icon: ClipboardCheck },
+        { path: '/career-recommendations', label: 'Career Matches', icon: Compass },
       ],
     },
     {
       label: 'Improve',
       items: [
-        { path: '/career-recommendations', label: 'Career Matches', icon: Compass },
-        { path: '/skill-gap', label: 'Skill Gap Analysis', icon: BarChart3 },
-        { path: '/resume-analysis', label: 'Resume Analysis', icon: FileText },
+        { path: '/skill-gap', label: 'Skill Gaps', icon: BarChart3 },
+        { path: '/roadmap', label: 'Learning Roadmap', icon: Map },
+        { path: '/courses', label: 'Courses', icon: BookOpen },
       ],
     },
     {
       label: 'Apply',
       items: [
-        { path: '/courses', label: 'Courses & Jobs', icon: BookOpen },
-        { path: '/roadmap', label: 'Learning Roadmap', icon: Map },
+        { path: '/resume-analysis', label: 'Resume Analysis', icon: FileText },
+        { path: '/jobs', label: 'Jobs', icon: Briefcase },
       ],
     },
   ];
@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen, onClose }) {
   const linkClasses = ({ isActive }) => {
     const base = 'flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 select-none';
     if (isActive) {
-      return `${base} bg-primary/10 text-primary dark:bg-accent/15 dark:text-accent`;
+      return `${base} bg-primary-soft text-primary dark:bg-accent/15 dark:text-accent`;
     }
     return `${base} text-text-secondary hover:text-text-primary hover:bg-bg-page`;
   };
@@ -82,11 +82,24 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Scrollable Navigation List with Grouped Sections */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin">
+          <div className="space-y-1">
+            <NavLink
+              to="/dashboard"
+              onClick={onClose}
+              className={linkClasses}
+            >
+              <LayoutDashboard className="h-5 w-5 shrink-0" />
+              <span>Dashboard</span>
+            </NavLink>
+          </div>
+
           {navGroups.map((group) => (
             <div key={group.label}>
-              <p className="px-4 mb-2 text-[11px] font-bold uppercase tracking-widest text-text-secondary/60">
-                {group.label}
-              </p>
+              {group.label && (
+                <p className="px-4 mb-2 text-xs font-bold uppercase tracking-widest text-text-secondary/60">
+                  {group.label}
+                </p>
+              )}
               <div className="space-y-1">
                 {group.items.map((item) => {
                   const Icon = item.icon;

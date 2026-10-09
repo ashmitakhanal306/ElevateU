@@ -13,7 +13,7 @@ Guidelines:
 - Present listings clearly with role title, company name, location, and key match reasons.
 `;
 
-export async function handleOpportunityMatcherTask({ userMessage, memory, generateFn }) {
+export async function handleOpportunityMatcherTask({ userMessage, memory: _memory, generateFn }) {
   const oppsResult = await executeTool('search_opportunities', { query: 'React' });
 
   if (generateFn) {

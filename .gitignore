@@ -7,19 +7,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Production build outputs
 dist
 dist-ssr
-*.local
+
+# Test & coverage results
+coverage
 test-results
 playwright-report
+blob-report
+.lighthouseci
+
+# Temporary & scratch files
 scratch
+*.local
+push_to_github.bat
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj

@@ -39,7 +39,7 @@ export default function HeroSection() {
   return (
     <section className="relative flex flex-col lg:flex-row items-center justify-between px-6 sm:px-10 py-20 lg:py-32 max-w-7xl mx-auto overflow-hidden min-h-[calc(100vh-80px)] bg-bg-page">
       {/* Background Gradients (Decorative) */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-primary-soft rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* Left Column: Text Content */}
@@ -69,7 +69,7 @@ export default function HeroSection() {
           className="text-lg sm:text-xl text-text-secondary mb-10 max-w-xl leading-relaxed text-center lg:text-left"
           variants={itemVariants}
         >
-          ElevateU bridges the gap between learning and your dream career. Assess your skills, get AI-powered career recommendations, and follow personalized roadmaps designed for your success.
+          Assess your skills, get AI-powered career matches, and follow a personalized roadmap to your dream role.
         </motion.p>
         
         <motion.div 
@@ -90,17 +90,17 @@ export default function HeroSection() {
           variants={itemVariants}
         >
           <div className="flex items-center gap-2">
-            <span className="text-xl font-black text-text-primary">AI-Powered</span>
+            <span className="text-xl font-bold text-text-primary">AI-Powered</span>
             <span className="font-medium">Assessments</span>
           </div>
           <div className="w-1.5 h-1.5 rounded-full bg-border" />
           <div className="flex items-center gap-2">
-            <span className="text-xl font-black text-text-primary">Free</span>
+            <span className="text-xl font-bold text-text-primary">Free</span>
             <span className="font-medium">to Start</span>
           </div>
           <div className="w-1.5 h-1.5 rounded-full bg-border" />
           <div className="flex items-center gap-2">
-            <span className="text-xl font-black text-text-primary">24/7</span>
+            <span className="text-xl font-bold text-text-primary">24/7</span>
             <span className="font-medium">AI Mentor</span>
           </div>
         </motion.div>
@@ -114,6 +114,10 @@ export default function HeroSection() {
         transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="relative w-full max-w-lg">
+          {/* 
+            TODO: Swap in the actual image once it is ready:
+            <img src="/src/assets/dashboard-preview.png" alt="Dashboard Preview" className="w-full h-auto rounded-xl shadow-2xl" />
+          */}
           {/* Main Browser Mockup — Polished Dashboard Preview */}
           <div>
             <Card className="w-full bg-bg-surface border-border p-5 shadow-2xl shadow-primary/20 relative z-10">
@@ -122,7 +126,7 @@ export default function HeroSection() {
                 <div className="w-3 h-3 rounded-full bg-danger/80" />
                 <div className="w-3 h-3 rounded-full bg-warning/80" />
                 <div className="w-3 h-3 rounded-full bg-success/80" />
-                <span className="ml-3 text-[11px] text-text-secondary font-medium">ElevateU Dashboard</span>
+                <span className="ml-3 text-xs text-text-secondary font-medium">ElevateU Dashboard</span>
               </div>
 
               {/* Dashboard Content */}
@@ -130,28 +134,28 @@ export default function HeroSection() {
                 {/* Header Row */}
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-[11px] text-text-secondary font-medium">Welcome back</p>
+                    <p className="text-xs text-text-secondary font-medium">Welcome back</p>
                     <p className="text-sm font-bold text-text-primary">Your Career Overview</p>
                   </div>
-                  <Badge variant="success" className="px-2.5 py-1 text-[10px]">On Track</Badge>
+                  <Badge variant="success" className="px-2.5 py-1 text-xs">On Track</Badge>
                 </div>
 
                 {/* Stat Cards Row */}
                 <div className="grid grid-cols-3 gap-3">
                   <div className="p-3 rounded-xl bg-primary/5 border border-primary/10 text-center">
                     <BookOpen className="w-4 h-4 text-primary mx-auto mb-1.5" />
-                    <p className="text-lg font-black text-text-primary leading-none">12</p>
-                    <p className="text-[10px] text-text-secondary mt-1">Skills</p>
+                    <p className="text-lg font-bold text-text-primary leading-none">12</p>
+                    <p className="text-xs text-text-secondary mt-1">Skills</p>
                   </div>
                   <div className="p-3 rounded-xl bg-secondary/5 border border-secondary/10 text-center">
                     <Target className="w-4 h-4 text-secondary mx-auto mb-1.5" />
-                    <p className="text-lg font-black text-text-primary leading-none">3</p>
-                    <p className="text-[10px] text-text-secondary mt-1">Career Matches</p>
+                    <p className="text-lg font-bold text-text-primary leading-none">3</p>
+                    <p className="text-xs text-text-secondary mt-1">Career Matches</p>
                   </div>
                   <div className="p-3 rounded-xl bg-accent/5 border border-accent/10 text-center">
                     <TrendingUp className="w-4 h-4 text-accent mx-auto mb-1.5" />
-                    <p className="text-lg font-black text-text-primary leading-none">78%</p>
-                    <p className="text-[10px] text-text-secondary mt-1">Readiness</p>
+                    <p className="text-lg font-bold text-text-primary leading-none">78%</p>
+                    <p className="text-xs text-text-secondary mt-1">Readiness</p>
                   </div>
                 </div>
 
@@ -165,7 +169,7 @@ export default function HeroSection() {
                       { name: 'System Design', pct: 45, color: 'bg-accent' },
                     ].map((skill) => (
                       <div key={skill.name}>
-                        <div className="flex justify-between text-[10px] mb-1">
+                        <div className="flex justify-between text-xs mb-1">
                           <span className="text-text-secondary font-medium">{skill.name}</span>
                           <span className="text-text-primary font-bold">{skill.pct}%</span>
                         </div>
@@ -208,7 +212,7 @@ export default function HeroSection() {
               </div>
               <div>
                 <p className="text-sm text-text-secondary font-medium">Skill Level</p>
-                <p className="text-base font-black text-text-primary">Advanced</p>
+                <p className="text-base font-bold text-text-primary">Advanced</p>
               </div>
             </Card>
           </motion.div>
@@ -224,7 +228,7 @@ export default function HeroSection() {
               <p className="text-sm font-bold text-text-primary">Course Progress</p>
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 rounded-full border-[5px] border-border flex items-center justify-center border-t-primary border-r-primary">
-                  <span className="text-xs font-black">75%</span>
+                  <span className="text-xs font-bold">75%</span>
                 </div>
                 <p className="text-sm text-text-secondary font-medium">Almost there!</p>
               </div>

@@ -75,7 +75,7 @@ const sanitizeAssessment = (assessment) => {
   return {
     ...assessment,
     questions: assessment.questions.map((q) => {
-      const { correctIndex, ...rest } = q;
+      const { correctIndex: _c, ...rest } = q;
       return rest;
     }),
   };

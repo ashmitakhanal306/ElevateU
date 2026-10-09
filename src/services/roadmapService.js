@@ -43,7 +43,7 @@ export async function fetchUserSelectedIds(userId) {
     try {
       const stored = localStorage.getItem(key) || '[]';
       return new Set(JSON.parse(stored));
-    } catch (e) {
+    } catch {
       return new Set();
     }
   }
@@ -120,7 +120,7 @@ export async function fetchUserRoadmaps(userId) {
           }
         };
       });
-    } catch (e) {
+    } catch {
       return [];
     }
   }
@@ -205,7 +205,7 @@ export async function fetchActiveRoadmapDetail(userId) {
     let progressMap = {};
     try {
       progressMap = JSON.parse(localStorage.getItem(progressKey) || '{}');
-    } catch (e) {}
+    } catch {}
 
     const subtopicsByTopic = {};
     (subtopics || []).forEach((s) => {
@@ -337,7 +337,7 @@ export async function toggleSubtopicProgress(userId, subtopicId, currentStatus) 
       const progressMap = JSON.parse(localStorage.getItem(progressKey) || '{}');
       progressMap[subtopicId] = newStatus;
       localStorage.setItem(progressKey, JSON.stringify(progressMap));
-    } catch (e) {}
+    } catch {}
     return newStatus;
   }
 
@@ -404,7 +404,7 @@ export async function computeRoadmapProgress(userId, roadmapId) {
     try {
       const progressMap = JSON.parse(localStorage.getItem(progressKey) || '{}');
       completed = subtopicIds.filter(sid => progressMap[sid] === 'completed').length;
-    } catch (e) {}
+    } catch {}
   } else {
     const { count: dbCount, error: compErr } = await supabase
       .from('user_subtopic_progress')

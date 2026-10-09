@@ -20,17 +20,8 @@ export default function StudentCommunityPage() {
       subtitle="Connect with peers, share resources, and grow together."
     >
       <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between bg-bg-page border border-border p-8 rounded-2xl mb-12">
-          <div className="flex gap-12 mb-6 md:mb-0">
-            <div className="text-center">
-              <div className="text-3xl font-black text-primary mb-1">12,000+</div>
-              <div className="text-text-secondary">Active Members</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-black text-secondary mb-1">500+</div>
-              <div className="text-text-secondary">Discussions this month</div>
-            </div>
-          </div>
+        <div className="flex flex-col items-center justify-center bg-bg-page border border-border p-8 rounded-2xl mb-12 text-center">
+          <p className="text-xl text-text-secondary mb-6">Join peers who are navigating the same career transitions as you.</p>
           <Button variant="primary" size="lg" className="px-10">
             Join the Community
           </Button>

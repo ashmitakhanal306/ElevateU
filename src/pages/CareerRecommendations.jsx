@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, TrendingDown, Minus, Briefcase, IndianRupee } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, IndianRupee } from 'lucide-react';
 import { getRecommendations } from '../services/careerService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';

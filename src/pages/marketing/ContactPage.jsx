@@ -4,7 +4,7 @@ import MarketingPageLayout from '../../components/layout/MarketingPageLayout';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 export default function ContactPage() {
   return (
@@ -55,32 +55,12 @@ export default function ContactPage() {
             <h3 className="text-lg font-bold text-text-primary mb-6">Contact Information</h3>
             <div className="space-y-6 text-text-secondary">
               <div className="flex items-start gap-4">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="p-2 bg-primary-soft rounded-lg text-primary">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="font-semibold text-text-primary">Email</div>
-                  <div>support@elevateu.in</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="font-semibold text-text-primary">Phone</div>
-                  <div>+91 98765 43210</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="font-semibold text-text-primary">Office</div>
-                  <div>4th Floor, Cyber Hub, DLF Phase 2, Gurugram, Haryana 122002</div>
+                  <div>hello@elevateu.in</div>
                 </div>
               </div>
             </div>

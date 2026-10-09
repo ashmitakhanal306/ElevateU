@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import AppRoutes from './routes/AppRoutes';
 import { onAuthStateChange } from './services/authService';
 import { useAuthStore } from './store/authStore';
@@ -25,8 +26,10 @@ export default function App() {
   }, [login]);
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <AppRoutes />
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <AppRoutes />
+      </BrowserRouter>
+    </MotionConfig>
   );
 }

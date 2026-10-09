@@ -14,7 +14,7 @@ Guidelines:
 - Highlight critical formatting and keyword recommendations.
 `;
 
-export async function handleResumeSpecialistTask({ userMessage, memory, generateFn }) {
+export async function handleResumeSpecialistTask({ userMessage, memory: _memory, generateFn }) {
   const atsResult = await executeTool('analyze_resume_ats', { jobDescription: 'Frontend Engineer' });
 
   if (generateFn) {

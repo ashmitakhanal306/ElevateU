@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from '../ui/ThemeToggle';
-import Button from '../ui/Button';
+
 import { useNavigate } from 'react-router-dom';
 // Vite requires static assets inside src/ to be imported as ES modules.
 // If logo.png doesn't exist yet, the onError fallback below renders the "EU" badge instead.
@@ -19,6 +19,7 @@ import logoSrc from '../../assets/logo.png';
 export default function Navbar({ onMenuToggle }) {
   const { user, isAuthenticated, logout } = useAuth();
   const [logoFailed, setLogoFailed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -50,7 +51,7 @@ export default function Navbar({ onMenuToggle }) {
               onError={() => setLogoFailed(true)}
             />
           ) : (
-            <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-secondary text-white font-extrabold text-xs shadow-sm shrink-0">
+            <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-gradient-to-tr from-brand to-brand-2 text-white font-extrabold text-xs shadow-sm shrink-0">
               EU
             </div>
           )}
@@ -65,34 +66,44 @@ export default function Navbar({ onMenuToggle }) {
         <ThemeToggle />
         
         {isAuthenticated && (
-          <div className="flex items-center gap-3 pl-3 border-l border-border transition-colors duration-300">
-            {/* User Avatar with Initials — links to profile */}
-            <div
-              onClick={() => navigate('/profile')}
-              className="h-9 w-9 rounded-full bg-secondary/15 text-secondary border border-secondary/20 flex items-center justify-center font-bold text-xs select-none shadow-inner cursor-pointer hover:ring-2 hover:ring-secondary/30 transition-all duration-200"
-              title={user?.name || 'Your Profile'}
-            >
-              {user?.initials || (user?.name ? user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?')}
-            </div>
-
-            {/* Logout controls (Desktop vs Mobile buttons) */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:inline-flex gap-1.5"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Sign Out
-            </Button>
-            
+          <div className="flex items-center gap-3 pl-3 border-l border-border transition-colors duration-300 relative">
             <button
-              onClick={handleLogout}
-              className="sm:hidden p-2 rounded-xl text-text-secondary hover:bg-bg-page hover:text-danger focus:outline-none transition-colors duration-200"
-              aria-label="Sign out"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="h-9 w-9 rounded-full bg-secondary/15 text-secondary border border-secondary/20 flex items-center justify-center font-bold text-xs select-none shadow-inner cursor-pointer hover:ring-2 hover:ring-secondary/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary"
+              title={user?.name || 'Your Profile'}
+              aria-label="User menu"
+              aria-expanded={menuOpen}
             >
-              <LogOut className="h-5 w-5" />
+              {user?.name ? (
+                user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+              ) : (
+                <User className="h-4 w-4" />
+              )}
             </button>
+
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div className="absolute top-12 right-0 w-48 bg-bg-surface border border-border rounded-xl shadow-lg z-50 overflow-hidden flex flex-col py-1">
+                  <button
+                    onClick={() => { setMenuOpen(false); navigate('/profile'); }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:bg-bg-page hover:text-text-primary text-left"
+                  >
+                    <User className="h-4 w-4" /> Profile
+                  </button>
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:bg-bg-page hover:text-text-primary">
+                    <ThemeToggle /> <span className="ml-1">Theme</span>
+                  </div>
+                  <div className="border-t border-border my-1" />
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-danger hover:bg-danger/10 text-left"
+                  >
+                    <LogOut className="h-4 w-4" /> Log out
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

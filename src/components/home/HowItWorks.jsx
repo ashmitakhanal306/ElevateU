@@ -57,7 +57,7 @@ export default function HowItWorks() {
     <section id="how-it-works" className="py-32 px-6 sm:px-10 bg-bg-page border-y border-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 max-w-3xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl font-black text-text-primary tracking-tight mb-6">
+          <h2 className="text-4xl sm:text-5xl font-bold text-text-primary tracking-tight mb-6">
             How it works
           </h2>
           <p className="text-xl text-text-secondary">
@@ -93,10 +93,10 @@ export default function HowItWorks() {
                 >
                   <div className="relative md:mb-10 mr-6 md:mr-0 flex justify-center items-center shrink-0">
                     {/* Icon Container */}
-                    <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 bg-primary border-[3px] border-primary/80 rounded-2xl md:rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary/40 transition-all duration-300">
+                    <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 bg-brand border-[3px] border-brand/80 rounded-2xl md:rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-brand/40 transition-all duration-300">
                       <Icon className="w-6 h-6 md:w-8 md:h-8 text-bg-surface" />
                       {/* Step Number Badge */}
-                      <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-white text-xs font-black flex items-center justify-center border-2 border-bg-page shadow-md">
+                      <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-brand text-white text-xs font-bold flex items-center justify-center border-2 border-bg-page shadow-md">
                         {step.num}
                       </span>
                     </div>

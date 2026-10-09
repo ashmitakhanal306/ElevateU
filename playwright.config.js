@@ -18,8 +18,36 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'desktop-light',
+      use: { 
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+        colorScheme: 'light',
+      },
+    },
+    {
+      name: 'desktop-dark',
+      use: { 
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+        colorScheme: 'dark',
+      },
+    },
+    {
+      name: 'mobile-light',
+      use: { 
+        viewport: { width: 375, height: 667 },
+        colorScheme: 'light',
+        isMobile: true,
+      },
+    },
+    {
+      name: 'mobile-dark',
+      use: { 
+        viewport: { width: 375, height: 667 },
+        colorScheme: 'dark',
+        isMobile: true,
+      },
     },
   ],
   webServer: {

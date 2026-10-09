@@ -35,7 +35,7 @@ export default function HelpCenterPage() {
             return (
               <Card key={idx} className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-border group">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                  <div className="p-3 bg-primary-soft rounded-xl text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>

@@ -63,7 +63,7 @@ export default function CareerDetail() {
       <Card className="p-8 border-t-4 border-t-secondary relative overflow-hidden">
         
         {/* Large faint background score text */}
-        <div className="absolute -right-4 -bottom-8 text-9xl font-black text-border/40 select-none pointer-events-none">
+        <div className="absolute -right-4 -bottom-8 text-9xl font-bold text-border/40 select-none pointer-events-none">
           {matchPercent}%
         </div>
 
@@ -80,7 +80,7 @@ export default function CareerDetail() {
             </p>
             <div className="flex flex-wrap items-center gap-6 pt-2 text-sm font-semibold text-text-primary">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-primary/10 rounded-lg"><IndianRupee className="h-4 w-4 text-primary" /></div>
+                <div className="p-1.5 bg-primary-soft rounded-lg"><IndianRupee className="h-4 w-4 text-primary" /></div>
                 {avgSalaryRange}
               </div>
               <div className="flex items-center gap-2">

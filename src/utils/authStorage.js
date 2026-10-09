@@ -54,7 +54,7 @@ export function isEmailRegistered(email) {
     const clean = email.trim().toLowerCase();
     const existing = JSON.parse(localStorage.getItem(REGISTERED_EMAILS_KEY) || '[]');
     return existing.includes(clean);
-  } catch (err) {
+  } catch {
     return false;
   }
 }

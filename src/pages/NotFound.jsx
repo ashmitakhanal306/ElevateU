@@ -15,11 +15,11 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-page px-6 py-12 transition-colors duration-300"><Card className="max-w-md w-full p-8 text-center border-border shadow-2xl bg-bg-surface">
         {/* Animated Icon Container */}
-        <div className="mx-auto w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-8 animate-pulse">
+        <div className="mx-auto w-20 h-20 bg-primary-soft text-primary rounded-full flex items-center justify-center mb-8 animate-pulse">
           <Compass className="w-10 h-10" />
         </div>
 
-        <h1 className="text-7xl font-black tracking-tight text-primary mb-2">
+        <h1 className="text-7xl font-bold tracking-tight text-primary mb-2">
           404
         </h1>
         <h2 className="text-2xl font-bold text-text-primary mb-4">

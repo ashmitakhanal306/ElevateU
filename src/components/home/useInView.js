@@ -40,6 +40,7 @@ export function useInView(options = { threshold: 0.1, triggerOnce: true }) {
         observer.unobserve(currentRef);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options.threshold, options.triggerOnce]);
 
   return { ref, inView };

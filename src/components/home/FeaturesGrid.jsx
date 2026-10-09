@@ -72,7 +72,7 @@ export default function FeaturesGrid() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20 max-w-2xl mx-auto">
           <Badge variant="warning" className="mb-6 px-4 py-1.5 text-sm">Why ElevateU</Badge>
-          <h2 className="text-4xl sm:text-5xl font-black text-text-primary tracking-tight mb-6">
+          <h2 className="text-4xl sm:text-5xl font-bold text-text-primary tracking-tight mb-6">
             Everything you need to accelerate your career
           </h2>
           <p className="text-xl text-text-secondary">

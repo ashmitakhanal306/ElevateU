@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import SEO from '../components/SEO';
 import {
-  CheckCircle2, Circle, BookOpen,
+  CheckCircle2, Circle,
   ChevronDown, ChevronUp, Loader2,
   PlusCircle, LayoutGrid, Map, CheckCheck
 } from 'lucide-react';
@@ -12,6 +12,7 @@ import Badge from '../components/ui/Badge';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import ErrorState from '../components/ui/ErrorState';
+import PageHeader from '../components/ui/PageHeader';
 import { useAuth } from '../hooks/useAuth';
 import {
   fetchAllRoadmaps,
@@ -145,7 +146,7 @@ function BrowseSection({ userId, onAdded }) {
                 <h3 className="font-bold text-text-primary text-base leading-tight">{rm.title}</h3>
                 <Badge
                   variant={CATEGORY_VARIANTS[rm.category] || 'secondary'}
-                  className="mt-1.5 text-[10px] uppercase tracking-wider"
+                  className="mt-1.5 text-xs uppercase tracking-wider"
                 >
                   {rm.category}
                 </Badge>
@@ -309,19 +310,25 @@ function DetailSection({ userId }) {
     );
   }
 
+  const totalCount = detail.topics.reduce((acc, t) => acc + t.subtopics.length, 0);
+  const completedCount = detail.topics.reduce((acc, t) => acc + t.subtopics.filter(s => s.status === 'completed').length, 0);
+
   return (
     <div className="space-y-8">
       {/* Journey Progress Card */}
       <Card className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-gradient-to-br from-bg-surface to-bg-page border-border shadow-sm">
         <div>
-          <h2 className="text-lg font-bold text-text-primary">Journey Progress</h2>
-          <p className="text-sm text-text-secondary mt-1 max-w-md">
-            Roadmap: <span className="font-semibold text-text-primary">{detail.roadmap.title}</span>
-            {' · '}
-            <Badge variant={CATEGORY_VARIANTS[detail.roadmap.category] || 'secondary'} className="text-[10px]">
+          <h2 className="text-lg font-bold text-text-primary">
+            You are {progress}% through the {detail.roadmap.title} path
+          </h2>
+          <div className="flex items-center gap-3 mt-2">
+            <Badge variant={CATEGORY_VARIANTS[detail.roadmap.category] || 'secondary'} className="text-xs">
               {detail.roadmap.category}
             </Badge>
-          </p>
+            <span className="text-sm font-semibold text-text-secondary">
+              {completedCount}/{totalCount} completed
+            </span>
+          </div>
         </div>
         <div className="w-full md:w-auto flex-1 flex md:justify-end">
           <ProgressBar progress={progress} />
@@ -368,7 +375,7 @@ function DetailSection({ userId }) {
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
                         <Badge
                           variant={allDone ? 'success' : anyDone ? 'info' : 'secondary'}
-                          className="text-[10px] uppercase tracking-wider"
+                          className="text-xs uppercase tracking-wider"
                         >
                           {allDone ? 'Completed' : anyDone ? 'In Progress' : 'Not Started'}
                         </Badge>
@@ -463,15 +470,10 @@ export default function LearningRoadmap() {
     <div className="space-y-8 pt-4 max-w-5xl mx-auto pb-12">
       <SEO title="Learning Roadmap" noIndex={true} />
 
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary mb-2">
-          Learning Roadmap
-        </h1>
-        <p className="text-sm text-text-secondary">
-          Browse available roadmaps, add them to your profile, and track your progress.
-        </p>
-      </div>
+      <PageHeader 
+        title="Learning Roadmap" 
+        description="Browse available roadmaps, add them to your profile, and track your progress."
+      />
 
       {/* Tabs */}
       <div className="flex gap-1 bg-bg-surface border border-border rounded-xl p-1 w-fit">

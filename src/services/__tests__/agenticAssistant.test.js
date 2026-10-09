@@ -1,9 +1,25 @@
-import { describe, it, expect } from 'vitest';
-import { validateInputGuardrails, validateOutputGuardrails } from '../ai/securityGuardrails';
+import { describe, it, expect, vi } from 'vitest';
+import { validateInputGuardrails } from '../ai/securityGuardrails';
 import { routeMessage, AGENT_TYPES } from '../ai/agents/routerAgent';
 import { memoryManager } from '../ai/memoryManager';
 import { mcpServer } from '../mcp/elevateuMcpServer';
 import { getBotReply } from '../chatbotService';
+import * as geminiClient from '../ai/geminiClient';
+import * as resumeService from '../resumeService';
+import * as profileService from '../profileService';
+
+vi.spyOn(geminiClient, 'generateContent').mockResolvedValue(null);
+vi.spyOn(resumeService, 'analyzeResume').mockResolvedValue({
+  success: true,
+  atsScore: 85,
+  keywordMatches: ['React', 'JavaScript'],
+  improvements: ['Add more metrics']
+});
+vi.spyOn(profileService, 'getProfile').mockResolvedValue({
+  personal: { fullName: 'Test User' },
+  skills: [],
+  interests: []
+});
 
 describe('Kaggle 5-Day Agentic AI Suite - ElevateU Assistant', () => {
 

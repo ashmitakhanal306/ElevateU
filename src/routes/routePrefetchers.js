@@ -18,7 +18,8 @@ export const routeImporters = [
   () => import('../pages/CareerDetail'),
   () => import('../pages/SkillGapAnalysis'),
   () => import('../pages/ResumeAnalysis'),
-  () => import('../pages/CoursesAndJobs'),
+  () => import('../pages/CoursesPage'),
+  () => import('../pages/JobsPage'),
   () => import('../pages/LearningRoadmap'),
 
   // ── Public pages ───────────────────────────────────────────────────────────

@@ -5,54 +5,7 @@ import { CheckCircle2, XCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-
-/**
- * Animated SVG Circular Progress Ring.
- * Reused styling concept from the Dashboard.
- */
-function CircularScoreRing({ value, size = 160, stroke = 12 }) {
-  const [fill, setFill] = React.useState(0);
-  React.useEffect(() => {
-    const t = setTimeout(() => setFill(value), 100);
-    return () => clearTimeout(t);
-  }, [value]);
-
-  const radius = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const dashOffset = circumference - (fill / 100) * circumference;
-
-  let colorClass = 'stroke-secondary';
-  if (value >= 80) colorClass = 'stroke-success';
-  else if (value < 50) colorClass = 'stroke-warning';
-
-  return (<div className="relative inline-flex items-center justify-center">
-      <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none"
-          stroke="var(--color-border)"
-          strokeWidth={stroke}
-        />
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none"
-          className={colorClass}
-          strokeWidth={stroke}
-          strokeDasharray={circumference}
-          strokeDashoffset={dashOffset}
-          strokeLinecap="round"
-          style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)' }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-black text-text-primary leading-none">{value}%</span>
-        <span className="text-xs font-semibold text-text-secondary mt-1 uppercase tracking-wide">
-          Score
-        </span>
-      </div>
-    </div>
-  );
-}
+import PageHeader from '../components/ui/PageHeader';
 
 export default function AssessmentResults() {
   const location = useLocation();
@@ -72,20 +25,34 @@ export default function AssessmentResults() {
     skillLevel === 'Advanced' ? 'success' :
     skillLevel === 'Intermediate' ? 'warning' : 'info';
 
+  let colorClass = 'bg-secondary';
+  if (score >= 80) colorClass = 'bg-success';
+  else if (score < 50) colorClass = 'bg-warning';
+
   return (
     <div className="max-w-2xl mx-auto space-y-6 pt-4">
       <SEO title="Assessment Results" noIndex={true} />
       
-      {/* Header Info */}
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Assessment Complete</h1>
-        <p className="text-text-secondary">{assessment.title}</p>
-      </div>
+      <PageHeader 
+        title="Assessment Complete"
+        description={assessment.title}
+      />
 
-      <Card className="p-8 flex flex-col items-center justify-center text-center space-y-6">
+      <Card className="p-8 flex flex-col items-center justify-center text-center space-y-8">
         
-        {/* Score Ring */}
-        <CircularScoreRing value={score} />
+        {/* Score Progress Bar */}
+        <div className="w-full max-w-md space-y-3">
+          <div className="flex justify-between items-baseline text-sm font-bold uppercase tracking-wide text-text-secondary">
+            <span>Score</span>
+            <span className={`text-3xl ${colorClass.replace('bg-', 'text-')}`}>{score}%</span>
+          </div>
+          <div className="h-4 w-full bg-border rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all duration-1000 ease-out ${colorClass}`}
+              style={{ width: `${score}%` }}
+            />
+          </div>
+        </div>
 
         {/* Summary text */}
         <div className="space-y-3">

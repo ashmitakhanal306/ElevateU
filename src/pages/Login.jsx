@@ -259,340 +259,361 @@ export default function Login() {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-page px-4 py-12 transition-colors duration-300 relative overflow-hidden">
-      <div className="pointer-events-none absolute top-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
+    <div className="min-h-screen flex transition-colors duration-300">
+      {/* Left side: Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-bg-page px-4 py-12 relative overflow-hidden">
+        <div className="pointer-events-none absolute top-[10%] left-[5%] w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[10%] right-[5%] w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
 
-      <div className="w-full max-w-md relative z-10">
+        <div className="w-full max-w-md relative z-10">
 
-        {/* ── Brand header above the card ── */}
-        <div className="text-center mb-8">
-          <div className="mb-4 relative inline-block">
-            <img src={logoSrc} alt="ElevateU Logo" className="h-20 w-auto mx-auto object-contain" />
-            <p className="mt-2 text-xs font-semibold text-text-secondary tracking-wide">
-              Elevate Your Skills. Define Your Future.
+          {/* ── Brand header above the card ── */}
+          <div className="text-center mb-8">
+            <div className="mb-4 relative inline-block">
+              <img src={logoSrc} alt="ElevateU Logo" className="h-20 w-auto mx-auto object-contain" />
+              <p className="mt-2 text-xs font-semibold text-text-secondary tracking-wide">
+                Elevate Your Skills. Define Your Future.
+              </p>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Welcome back
+            </h1>
+            <p className="mt-1 text-sm text-text-secondary">
+              Sign in to continue your career journey
             </p>
           </div>
-          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Welcome back
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Sign in to continue your career journey
-          </p>
-        </div>
 
-        {/* ── Main card ── */}
-        <Card className="overflow-hidden">
+          {/* ── Main card ── */}
+          <Card className="overflow-hidden shadow-2xl shadow-primary/5 border-0">
 
-          {/* Tab bar */}
-          <div className="flex border-b border-border">
-            {TABS.map((tab) => (
-              <Button
-                key={tab.id}
-                variant="ghost"
-                onClick={() => switchTab(tab.id)}
-                className={`flex-1 py-3.5 text-xs font-bold tracking-wide uppercase transition-all duration-200 rounded-none h-auto focus:ring-0 active:scale-100
-                  ${activeTab === tab.id
-                    ? 'text-secondary border-b-2 border-secondary -mb-px bg-secondary/5'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-page'
-                  }`}
-              >
-                {tab.label}
-              </Button>
-            ))}
-          </div>
-
-          {/* ── Tab panels ── */}
-          <div className="p-6 sm:p-8 space-y-5">
-
-            {/* ── EMAIL TAB ─────────────────────────────────────────────── */}
-            {activeTab === 'email' && (
-              <form onSubmit={handleEmailLogin} noValidate className="space-y-4">
-
-                <Input
-                  label="Email address"
-                  type="email"
-                  placeholder="aditi@example.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (emailErrors.email) setEmailErrors((p) => ({ ...p, email: '' }));
-                  }}
-                  error={emailErrors.email}
-                  autoComplete="email"
-                />
-
-                <Input
-                  label="Password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (emailErrors.password) setEmailErrors((p) => ({ ...p, password: '' }));
-                  }}
-                  error={emailErrors.password}
-                  autoComplete="current-password"
-                />
-
-                {userNotFound ? (
-                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-3 text-left">
-                    <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
-                      <AlertCircle className="h-4 w-4 shrink-0" />
-                      Account Not Found
-                    </div>
-                    <p className="text-xs text-text-secondary leading-relaxed">
-                      No account exists for <strong className="text-text-primary">{email}</strong>. Please create a new account to sign up.
-                    </p>
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="md"
-                      className="w-full gap-2 text-xs font-semibold"
-                      onClick={() => navigate('/signup', { state: { email } })}
-                    >
-                      <UserPlus className="h-4 w-4" />
-                      Create New Account
-                    </Button>
-                  </div>
-                ) : emailNotConfirmed ? (
-                  <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
-                    <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
-                      <MailCheck className="h-4 w-4 shrink-0" />
-                      Email Not Confirmed Yet
-                    </div>
-                    <p className="text-xs text-text-secondary leading-relaxed">
-                      Your account exists but you haven't confirmed your email.
-                      Please check <strong className="text-text-primary">{email}</strong> for the confirmation link we sent you when you signed up.
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      Can't find it? Check your spam/junk folder.
-                    </p>
-                  </div>
-                ) : emailErrors.form ? (
-                  <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
-                    {emailErrors.form}
-                  </p>
-                ) : null}
-
+            {/* Tab bar */}
+            <div className="flex border-b border-border">
+              {TABS.map((tab) => (
                 <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="w-full mt-2 gap-2"
-                  disabled={emailLoading}
+                  key={tab.id}
+                  variant="ghost"
+                  onClick={() => switchTab(tab.id)}
+                  className={`flex-1 py-3.5 text-xs font-bold tracking-wide uppercase transition-all duration-200 rounded-none h-auto focus:ring-0 active:scale-100
+                    ${activeTab === tab.id
+                      ? 'text-secondary border-b-2 border-secondary -mb-px bg-secondary/5'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-bg-page'
+                    }`}
                 >
-                  {emailLoading ? (
-                    <>
-                      <Spinner />
-                      Signing in…
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="h-4 w-4" />
-                      Sign in with Email
-                    </>
-                  )}
+                  {tab.label}
                 </Button>
-              </form>
-            )}
+              ))}
+            </div>
 
-            {/* ── PHONE OTP TAB ─────────────────────────────────────────── */}
-            {activeTab === 'phone' && (
-              <div className="space-y-4">
+            {/* ── Tab panels ── */}
+            <div className="p-6 sm:p-8 space-y-5">
 
-                {!otpSent ? (
-                  /* Step 1 — Enter phone number */
-                  <form onSubmit={handleSendOtp} noValidate className="space-y-4">
-                    <Input
-                      label="Phone number"
-                      type="tel"
-                      placeholder="98765 43210"
-                      value={phone}
-                      onChange={(e) => {
-                        setPhone(e.target.value);
-                        if (phoneErrors.phone) setPhoneErrors((p) => ({ ...p, phone: '' }));
-                      }}
-                      error={phoneErrors.phone || getPhoneHint(phone)}
-                      autoComplete="tel"
-                    />
+              {/* ── EMAIL TAB ─────────────────────────────────────────────── */}
+              {activeTab === 'email' && (
+                <form onSubmit={handleEmailLogin} noValidate className="space-y-4">
 
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      size="lg"
-                      className="w-full gap-2"
-                      disabled={sendLoading || !isPhoneValid(phone)}
-                    >
-                      {sendLoading ? (
-                        <>
-                          <Spinner />
-                          Sending OTP…
-                        </>
-                      ) : (
-                        <>
-                          <Phone className="h-4 w-4" />
-                          Send OTP
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                ) : (
-                  /* Step 2 — Enter OTP code */
-                  <form onSubmit={handleVerifyOtp} noValidate className="space-y-4">
+                  <Input
+                    label="Email address"
+                    type="email"
+                    placeholder="aditi@example.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailErrors.email) setEmailErrors((p) => ({ ...p, email: '' }));
+                    }}
+                    error={emailErrors.email}
+                    autoComplete="email"
+                  />
 
-                    <div className="flex items-center justify-between bg-success/10 border border-success/20 text-success rounded-lg px-3 py-2.5 text-xs font-semibold">
-                      <span className="flex items-center gap-1.5">
-                        <ShieldCheck className="h-4 w-4 shrink-0" />
-                        OTP sent to +91 {getCleanPhoneDigits(phone)}
-                      </span>
-                    </div>
+                  <Input
+                    label="Password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (emailErrors.password) setEmailErrors((p) => ({ ...p, password: '' }));
+                    }}
+                    error={emailErrors.password}
+                    autoComplete="current-password"
+                  />
 
-                    <Input
-                      label="6-digit OTP code"
-                      type="text"
-                      placeholder="123456"
-                      maxLength={6}
-                      value={otp}
-                      onChange={(e) => {
-                        setOtp(e.target.value.replace(/\D/g, ''));
-                        if (phoneErrors.otp) setPhoneErrors((p) => ({ ...p, otp: '' }));
-                      }}
-                      error={phoneErrors.otp}
-                      autoComplete="one-time-code"
-                    />
-
-                    <div className="flex items-center justify-between text-xs text-text-secondary bg-bg-page border border-border rounded-lg px-3 py-2">
-                      <span>💡 <strong>Demo tip:</strong> use <span className="font-mono font-bold text-secondary">123456</span></span>
-                      {resendTimer > 0 ? (
-                        <span className="text-text-secondary">Resend in {resendTimer}s</span>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={handleSendOtp}
-                          className="text-secondary font-bold hover:underline inline-flex items-center gap-1"
-                        >
-                          <RefreshCw className="h-3 w-3" /> Resend OTP
-                        </button>
-                      )}
-                    </div>
-
-                    {phoneErrors.form && (
-                      <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
-                        {phoneErrors.form}
+                  {userNotFound ? (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-3 text-left">
+                      <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                        <AlertCircle className="h-4 w-4 shrink-0" />
+                        Account Not Found
+                      </div>
+                      <p className="text-xs text-text-secondary leading-relaxed">
+                        No account exists for <strong className="text-text-primary">{email}</strong>. Please create a new account to sign up.
                       </p>
-                    )}
-
-                    <div className="flex gap-3">
                       <Button
                         type="button"
-                        variant="outline"
-                        size="lg"
-                        className="flex-1"
-                        onClick={() => { setOtpSent(false); setOtp(''); setPhoneErrors({}); }}
+                        variant="primary"
+                        size="md"
+                        className="w-full gap-2 text-xs font-semibold"
+                        onClick={() => navigate('/signup', { state: { email } })}
                       >
-                        Change number
+                        <UserPlus className="h-4 w-4" />
+                        Create New Account
                       </Button>
+                    </div>
+                  ) : emailNotConfirmed ? (
+                    <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 space-y-3 text-left">
+                      <div className="flex items-center gap-2 text-sky-400 font-bold text-sm">
+                        <MailCheck className="h-4 w-4 shrink-0" />
+                        Email Not Confirmed Yet
+                      </div>
+                      <p className="text-xs text-text-secondary leading-relaxed">
+                        Your account exists but you haven't confirmed your email.
+                        Please check <strong className="text-text-primary">{email}</strong> for the confirmation link we sent you when you signed up.
+                      </p>
+                      <p className="text-xs text-text-secondary">
+                        Can't find it? Check your spam/junk folder.
+                      </p>
+                    </div>
+                  ) : emailErrors.form ? (
+                    <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
+                      {emailErrors.form}
+                    </p>
+                  ) : null}
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="w-full mt-2 gap-2"
+                    disabled={emailLoading}
+                  >
+                    {emailLoading ? (
+                      <>
+                        <Spinner />
+                        Signing in…
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4" />
+                        Sign in with Email
+                      </>
+                    )}
+                  </Button>
+                </form>
+              )}
+
+              {/* ── PHONE OTP TAB ─────────────────────────────────────────── */}
+              {activeTab === 'phone' && (
+                <div className="space-y-4">
+
+                  {!otpSent ? (
+                    /* Step 1 — Enter phone number */
+                    <form onSubmit={handleSendOtp} noValidate className="space-y-4">
+                      <Input
+                        label="Phone number"
+                        type="tel"
+                        placeholder="98765 43210"
+                        value={phone}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          if (phoneErrors.phone) setPhoneErrors((p) => ({ ...p, phone: '' }));
+                        }}
+                        error={phoneErrors.phone || getPhoneHint(phone)}
+                        autoComplete="tel"
+                      />
 
                       <Button
                         type="submit"
                         variant="primary"
                         size="lg"
-                        className="flex-1 gap-2"
-                        disabled={verifyLoading}
+                        className="w-full gap-2"
+                        disabled={sendLoading || !isPhoneValid(phone)}
                       >
-                        {verifyLoading ? (
+                        {sendLoading ? (
                           <>
                             <Spinner />
-                            Verifying…
+                            Sending OTP…
                           </>
                         ) : (
                           <>
-                            <ArrowRight className="h-4 w-4" />
-                            Verify
+                            <Phone className="h-4 w-4" />
+                            Send OTP
                           </>
                         )}
                       </Button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            )}
-
-            {/* ── GOOGLE TAB ────────────────────────────────────────────── */}
-            {activeTab === 'google' && (
-              <div className="space-y-4 text-center">
-                <p className="text-sm text-text-secondary pb-1">
-                  Sign in instantly using your Google account.
-                </p>
-
-                {googleError && (
-                  <div className="text-xs font-medium text-warning bg-warning/10 border border-warning/20 rounded-lg px-3 py-2 text-left space-y-1">
-                    <p className="font-bold">{googleError}</p>
-                  </div>
-                )}
-
-                <Button
-                  variant="outline"
-                  onClick={handleGoogleLogin}
-                  disabled={googleLoading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
-                >
-                  {googleLoading ? (
-                    <>
-                      <Spinner />
-                      Connecting…
-                    </>
+                    </form>
                   ) : (
-                    <>
-                      <GoogleIcon />
-                      Continue with Google
-                    </>
+                    /* Step 2 — Enter OTP code */
+                    <form onSubmit={handleVerifyOtp} noValidate className="space-y-4">
+
+                      <div className="flex items-center justify-between bg-success/10 border border-success/20 text-success rounded-lg px-3 py-2.5 text-xs font-semibold">
+                        <span className="flex items-center gap-1.5">
+                          <ShieldCheck className="h-4 w-4 shrink-0" />
+                          OTP sent to +91 {getCleanPhoneDigits(phone)}
+                        </span>
+                      </div>
+
+                      <Input
+                        label="6-digit OTP code"
+                        type="text"
+                        placeholder="123456"
+                        maxLength={6}
+                        value={otp}
+                        onChange={(e) => {
+                          setOtp(e.target.value.replace(/\D/g, ''));
+                          if (phoneErrors.otp) setPhoneErrors((p) => ({ ...p, otp: '' }));
+                        }}
+                        error={phoneErrors.otp}
+                        autoComplete="one-time-code"
+                      />
+
+                      <div className="flex items-center justify-between text-xs text-text-secondary bg-bg-page border border-border rounded-lg px-3 py-2">
+                        <span>💡 <strong>Demo tip:</strong> use <span className="font-mono font-bold text-secondary">123456</span></span>
+                        {resendTimer > 0 ? (
+                          <span className="text-text-secondary">Resend in {resendTimer}s</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleSendOtp}
+                            className="text-secondary font-bold hover:underline inline-flex items-center gap-1"
+                          >
+                            <RefreshCw className="h-3 w-3" /> Resend OTP
+                          </button>
+                        )}
+                      </div>
+
+                      {phoneErrors.form && (
+                        <p className="text-xs font-medium text-danger bg-danger/10 border border-danger/20 rounded-lg px-3 py-2">
+                          {phoneErrors.form}
+                        </p>
+                      )}
+
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          className="flex-1"
+                          onClick={() => { setOtpSent(false); setOtp(''); setPhoneErrors({}); }}
+                        >
+                          Change number
+                        </Button>
+
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="lg"
+                          className="flex-1 gap-2"
+                          disabled={verifyLoading}
+                        >
+                          {verifyLoading ? (
+                            <>
+                              <Spinner />
+                              Verifying…
+                            </>
+                          ) : (
+                            <>
+                              <ArrowRight className="h-4 w-4" />
+                              Verify
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </form>
                   )}
-                </Button>
-
-                {/* Quick tab switcher guidance */}
-                <div className="border-t border-border pt-3 mt-2">
-                  <p className="text-xs text-text-secondary mb-2">Or use one of our active login options:</p>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => switchTab('email')}
-                      className="flex-1 text-xs gap-1"
-                    >
-                      <Mail className="h-3.5 w-3.5" /> Sign in with Email
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => switchTab('phone')}
-                      className="flex-1 text-xs gap-1"
-                    >
-                      <Phone className="h-3.5 w-3.5" /> Sign in with Phone
-                    </Button>
-                  </div>
                 </div>
+              )}
 
-              </div>
-            )}
+              {/* ── GOOGLE TAB ────────────────────────────────────────────── */}
+              {activeTab === 'google' && (
+                <div className="space-y-4 text-center">
+                  <p className="text-sm text-text-secondary pb-1">
+                    Sign in instantly using your Google account.
+                  </p>
 
-          </div>{/* end tab panels */}
+                  {googleError && (
+                    <div className="text-xs font-medium text-warning bg-warning/10 border border-warning/20 rounded-lg px-3 py-2 text-left space-y-1">
+                      <p className="font-bold">{googleError}</p>
+                    </div>
+                  )}
 
-          {/* Divider + signup link */}
-          <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-0 text-center border-t border-border">
-            <p className="mt-4 text-xs text-text-secondary">
-              Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="text-secondary font-bold hover:underline transition-colors"
-              >
-                Create one free →
-              </Link>
-            </p>
+                  <Button
+                    variant="outline"
+                    onClick={handleGoogleLogin}
+                    disabled={googleLoading}
+                    className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-page text-text-primary text-sm font-semibold transition-all duration-200 h-auto"
+                  >
+                    {googleLoading ? (
+                      <>
+                        <Spinner />
+                        Connecting…
+                      </>
+                    ) : (
+                      <>
+                        <GoogleIcon />
+                        Continue with Google
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Quick tab switcher guidance */}
+                  <div className="border-t border-border pt-3 mt-2">
+                    <p className="text-xs text-text-secondary mb-2">Or use one of our active login options:</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => switchTab('email')}
+                        className="flex-1 text-xs gap-1"
+                      >
+                        <Mail className="h-3.5 w-3.5" /> Sign in with Email
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => switchTab('phone')}
+                        className="flex-1 text-xs gap-1"
+                      >
+                        <Phone className="h-3.5 w-3.5" /> Sign in with Phone
+                      </Button>
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+            </div>{/* end tab panels */}
+
+            {/* Divider + signup link */}
+            <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-0 text-center border-t border-border">
+              <p className="mt-4 text-xs text-text-secondary">
+                Don't have an account?{' '}
+                <Link
+                  to="/signup"
+                  className="text-secondary font-bold hover:underline transition-colors"
+                >
+                  Create one free →
+                </Link>
+              </p>
+            </div>
+
+          </Card>{/* end card */}
+        </div>
+      </div>
+      
+      {/* Right side: Brand Graphic */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-gradient-to-br from-brand to-brand-2 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-black/10 to-transparent" />
+        
+        <div className="relative z-10 text-center p-12 text-white max-w-xl">
+          <div className="mb-8 flex justify-center">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-3xl shadow-2xl">
+              <ShieldCheck className="h-16 w-16 text-blue-200" />
+            </div>
           </div>
-
-        </Card>{/* end card */}
+          <h2 className="text-4xl font-extrabold mb-6 tracking-tight text-white">Unlock Your Potential</h2>
+          <p className="text-lg text-blue-100 leading-relaxed">
+            Join thousands of students building their careers with AI-powered insights, personalized learning roadmaps, and real-world opportunities.
+          </p>
+        </div>
       </div>
     </div>
   );

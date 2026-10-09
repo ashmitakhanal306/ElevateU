@@ -1,8 +1,6 @@
 import dummyCareers from '../data/dummyCareers.js';
 import { getProfile } from './profileService.js';
-import { getAssessments } from './assessmentService.js';
 import { supabase } from '../config/supabaseClient';
-import { computeRoadmapProgress } from './roadmapService';
 import { useAuthStore } from '../store/authStore';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -202,7 +200,7 @@ export async function getSkillGapAnalysis(roadmapId) {
               completedSubtopicIds.add(sid);
             }
           });
-        } catch (e) {}
+        } catch { }
       } else {
         const { data: progress, error: progErr } = await supabase
           .from('user_subtopic_progress')

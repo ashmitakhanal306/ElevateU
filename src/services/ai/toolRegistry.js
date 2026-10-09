@@ -3,7 +3,7 @@
  * Exposes ElevateU domain capabilities as structured tools executable by AI Agents.
  */
 
-import { getProfile, updateProfile } from '../profileService';
+import { getProfile } from '../profileService';
 import { analyzeResume } from '../resumeService';
 import { getRecommendations, getSkillGapAnalysis } from '../careerService';
 

@@ -12,7 +12,7 @@ Guidelines:
 - Provide encouraging feedback and suggestions for improvement.
 `;
 
-export async function handleInterviewPrepTask({ userMessage, memory, generateFn }) {
+export async function handleInterviewPrepTask({ userMessage, memory: _memory, generateFn }) {
   if (generateFn) {
     const contents = [
       { role: 'user', parts: [{ text: userMessage }] }

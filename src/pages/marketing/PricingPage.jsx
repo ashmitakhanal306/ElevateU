@@ -91,7 +91,7 @@ export default function PricingPage() {
               <p className="text-text-secondary mb-6 h-12">{tier.description}</p>
               
               <div className="mb-8">
-                <span className="text-4xl font-black text-text-primary">₹{isYearly ? tier.priceYearly : tier.priceMonthly}</span>
+                <span className="text-4xl font-bold text-text-primary">₹{isYearly ? tier.priceYearly : tier.priceMonthly}</span>
                 <span className="text-text-secondary">/mo</span>
                 {isYearly && tier.priceYearly > 0 && (
                   <p className="text-sm text-success mt-1">Billed annually</p>
