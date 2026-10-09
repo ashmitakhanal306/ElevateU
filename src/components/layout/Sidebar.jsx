@@ -14,16 +14,31 @@ import {
  * @param {Function} props.onClose - Call to close the drawer menu
  */
 export default function Sidebar({ isOpen, onClose }) {
-  // Navigation elements pairing pathways with Lucide Icons
-  const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/profile', label: 'Student Profile', icon: User },
-    { path: '/assessment', label: 'Skill Assessment', icon: ClipboardCheck },
-    { path: '/career-recommendations', label: 'Career Recommendations', icon: Compass },
-    { path: '/skill-gap', label: 'Skill Gap Analysis', icon: BarChart3 },
-    { path: '/resume-analysis', label: 'Resume Analysis', icon: FileText },
-    { path: '/courses', label: 'Courses & Jobs', icon: BookOpen },
-    { path: '/roadmap', label: 'Learning Roadmap', icon: Map },
+  // Navigation items grouped into logical sections matching the user journey
+  const navGroups = [
+    {
+      label: 'Discover',
+      items: [
+        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { path: '/profile', label: 'Student Profile', icon: User },
+        { path: '/assessment', label: 'Skill Assessment', icon: ClipboardCheck },
+      ],
+    },
+    {
+      label: 'Improve',
+      items: [
+        { path: '/career-recommendations', label: 'Career Matches', icon: Compass },
+        { path: '/skill-gap', label: 'Skill Gap Analysis', icon: BarChart3 },
+        { path: '/resume-analysis', label: 'Resume Analysis', icon: FileText },
+      ],
+    },
+    {
+      label: 'Apply',
+      items: [
+        { path: '/courses', label: 'Courses & Jobs', icon: BookOpen },
+        { path: '/roadmap', label: 'Learning Roadmap', icon: Map },
+      ],
+    },
   ];
 
   // Dynamic CSS classes for active links targeting color tokens
@@ -65,22 +80,31 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Scrollable Navigation List */}
-        <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 scrollbar-thin">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={linkClasses}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
+        {/* Scrollable Navigation List with Grouped Sections */}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin">
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <p className="px-4 mb-2 text-[11px] font-bold uppercase tracking-widest text-text-secondary/60">
+                {group.label}
+              </p>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      onClick={onClose}
+                      className={linkClasses}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
       </aside>
     </>

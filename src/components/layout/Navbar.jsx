@@ -66,12 +66,13 @@ export default function Navbar({ onMenuToggle }) {
         
         {isAuthenticated && (
           <div className="flex items-center gap-3 pl-3 border-l border-border transition-colors duration-300">
-            {/* User Avatar with Initials */}
+            {/* User Avatar with Initials — links to profile */}
             <div
-              className="h-9 w-9 rounded-full bg-secondary/15 text-secondary border border-secondary/20 flex items-center justify-center font-bold text-xs select-none shadow-inner"
-              title={user?.name}
+              onClick={() => navigate('/profile')}
+              className="h-9 w-9 rounded-full bg-secondary/15 text-secondary border border-secondary/20 flex items-center justify-center font-bold text-xs select-none shadow-inner cursor-pointer hover:ring-2 hover:ring-secondary/30 transition-all duration-200"
+              title={user?.name || 'Your Profile'}
             >
-              {user?.initials || 'AM'}
+              {user?.initials || (user?.name ? user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?')}
             </div>
 
             {/* Logout controls (Desktop vs Mobile buttons) */}

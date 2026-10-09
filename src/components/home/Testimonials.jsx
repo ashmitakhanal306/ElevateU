@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -58,24 +58,8 @@ export default function Testimonials() {
     }
   };
 
-  useEffect(() => {
-    if (shouldReduceMotion) return;
 
-    const intervalId = setInterval(() => {
-      if (scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        
-        // If we've reached the end of the scroll container
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
-          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          scroll('right');
-        }
-      }
-    }, 4000); // Auto slide every 4 seconds
 
-    return () => clearInterval(intervalId);
-  }, [shouldReduceMotion]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -110,7 +94,10 @@ export default function Testimonials() {
               Success Stories
             </h2>
             <p className="text-xl text-text-secondary">
-              Hear from students who defined their future with ElevateU.
+              See how ElevateU can help shape your career path.
+            </p>
+            <p className="text-sm text-text-secondary/60 mt-2 italic">
+              * Illustrative scenarios based on platform capabilities
             </p>
           </motion.div>
           <motion.div variants={itemVariants} className="flex items-center gap-3">

@@ -39,7 +39,7 @@ const FEATURES = [
     title: '24/7 AI Chatbot',
     description: 'Never get stuck again. Your personal AI mentor is available around the clock.',
     icon: MessageCircle,
-    variant: 'danger'
+    variant: 'secondary'
   }
 ];
 
@@ -101,7 +101,7 @@ export default function FeaturesGrid() {
             return (
               <motion.div key={index} variants={itemVariants}>
                 <Card 
-                  className={`p-8 h-full shadow-lg hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-3 hover:scale-[1.04] bg-bg-page border-2 border-border border-t-4 ${topBorders[feature.variant]}`}
+                  className={`p-8 h-full shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-bg-page border-2 border-border border-t-4 ${topBorders[feature.variant]}`}
                 >
                   <div className="mb-8 inline-flex">
                     <Badge variant={feature.variant} className="p-5 rounded-[2rem]">

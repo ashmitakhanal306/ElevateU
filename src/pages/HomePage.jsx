@@ -44,6 +44,13 @@ export default function HomePage() {
           <img src={logoSrc} alt="ElevateU Logo" className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
         </div>
 
+        {/* Center Links (hidden on small screens) */}
+        <div className="hidden md:flex items-center gap-8">
+          <a href="#features" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">Features</a>
+          <a href="#how-it-works" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">How it Works</a>
+          <span onClick={() => navigate('/pricing')} className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 cursor-pointer">Pricing</span>
+        </div>
+
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />

@@ -1,37 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useInView, useReducedMotion, animate } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { Brain, Route, BookOpen, Shield } from 'lucide-react';
 
-const STATS = [
-  { label: 'Students Guided', value: 10000, prefix: '', suffix: '+' },
-  { label: 'Career Paths Mapped', value: 500, prefix: '', suffix: '+' },
-  { label: 'Courses Curated', value: 1200, prefix: '', suffix: '+' },
-  { label: 'Assessment Accuracy', value: 95, prefix: '', suffix: '%' },
+const FEATURES = [
+  { label: 'AI-Powered Assessments', description: 'Adaptive skill tests', icon: Brain },
+  { label: 'Personalized Roadmaps', description: 'Step-by-step career paths', icon: Route },
+  { label: 'Curated Learning', description: 'Courses & job matches', icon: BookOpen },
+  { label: 'Resume Analysis', description: 'AI-driven feedback', icon: Shield },
 ];
-
-function CountUp({ target, inView }) {
-  const [count, setCount] = useState(0);
-  const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (shouldReduceMotion) {
-      setCount(target);
-      return;
-    }
-
-    if (inView) {
-      const controls = animate(0, target, {
-        duration: 2,
-        ease: "easeOut",
-        onUpdate(value) {
-          setCount(Math.floor(value));
-        }
-      });
-      return () => controls.stop();
-    }
-  }, [inView, target, shouldReduceMotion]);
-
-  return <>{count.toLocaleString()}</>;
-}
 
 export default function StatsStrip() {
   const ref = useRef(null);
@@ -63,27 +39,33 @@ export default function StatsStrip() {
       className="bg-gradient-to-r from-primary to-secondary py-16 px-6 sm:px-10 overflow-hidden"
     >
       <motion.div 
-        className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 divide-y sm:divide-y-0 sm:divide-x divide-bg-page/20"
+        className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
         variants={containerVariants}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
       >
-        {STATS.map((stat, index) => (
-          <motion.div 
-            key={index} 
-            className="flex flex-col items-center justify-center text-center pt-8 sm:pt-0 first:pt-0"
-            variants={itemVariants}
-          >
-            <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black text-warning mb-3 tracking-tight">
-              {stat.prefix}
-              <CountUp target={stat.value} inView={inView} />
-              {stat.suffix}
-            </h3>
-            <p className="text-base font-bold text-bg-page uppercase tracking-widest drop-shadow-sm">
-              {stat.label}
-            </p>
-          </motion.div>
-        ))}
+        {FEATURES.map((feature, index) => {
+          const Icon = feature.icon;
+          return (
+            <motion.div 
+              key={index} 
+              className="flex items-center gap-4 text-left"
+              variants={itemVariants}
+            >
+              <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                <Icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">
+                  {feature.label}
+                </h3>
+                <p className="text-sm text-white/70">
+                  {feature.description}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </section>
   );

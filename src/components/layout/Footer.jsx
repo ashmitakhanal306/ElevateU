@@ -33,10 +33,10 @@ export default function Footer() {
               ElevateU bridges the gap between learning and your dream career with AI-powered skill assessments and personalized roadmaps.
             </p>
             <div className="flex items-center gap-3">
-              <SocialIcon icon={LinkedInIcon} href="#" />
-              <SocialIcon icon={SiX} href="#" />
-              <SocialIcon icon={SiInstagram} href="#" />
-              <SocialIcon icon={SiYoutube} href="#" />
+              <SocialIcon icon={LinkedInIcon} href="https://linkedin.com" />
+              <SocialIcon icon={SiX} href="https://x.com" />
+              <SocialIcon icon={SiInstagram} href="https://instagram.com" />
+              <SocialIcon icon={SiYoutube} href="https://youtube.com" />
             </div>
           </div>
 
@@ -46,8 +46,8 @@ export default function Footer() {
             <ul className="space-y-3">
               <FooterLink to="/#features">Features</FooterLink>
               <FooterLink to="/#how-it-works">How it works</FooterLink>
-              <FooterLink to="/assessment">Skill Assessments</FooterLink>
-              <FooterLink to="/career-recommendations">Career Recommendations</FooterLink>
+              <FooterLink to="/#features">Skill Assessments</FooterLink>
+              <FooterLink to="/#features">Career Recommendations</FooterLink>
               <FooterLink to="/pricing">Pricing</FooterLink>
             </ul>
           </div>
@@ -60,7 +60,6 @@ export default function Footer() {
               <FooterLink to="/careers">Careers</FooterLink>
               <FooterLink to="/blog">Blog</FooterLink>
               <FooterLink to="/contact">Contact us</FooterLink>
-              <FooterLink to="/about">Press</FooterLink>
             </ul>
           </div>
 
@@ -103,7 +102,7 @@ export default function Footer() {
               <p className="text-sm text-blue-200 mb-4">Stay updated with the latest in tech and hiring.</p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input type="email" placeholder="Enter your email" className="w-full sm:w-64 bg-white/10 border-white/20 text-white placeholder-white/50" />
-                <Button variant="primary" onClick={() => {}} className="whitespace-nowrap">Subscribe</Button>
+                <Button variant="primary" onClick={() => alert('Thanks for subscribing! We\'ll keep you updated.')} className="whitespace-nowrap">Subscribe</Button>
               </div>
             </div>
 
