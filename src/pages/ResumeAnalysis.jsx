@@ -359,7 +359,7 @@ export default function ResumeAnalysis() {
             </p>
             <div className="h-2 w-full bg-border rounded-full overflow-hidden">
               <div 
-                className="h-full bg-secondary rounded-full transition-all duration-300 ease-out"
+                className="h-full bg-accent rounded-full transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>

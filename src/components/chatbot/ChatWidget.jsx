@@ -126,7 +126,7 @@ export default function ChatWidget() {
                   ElevateU Assistant
                 </h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
                   <span className="text-white/90 text-xs font-medium">Online · Career AI</span>
                 </div>
               </div>
@@ -205,23 +205,23 @@ export default function ChatWidget() {
 
                         {/* Skill Gap Readiness Card */}
                         {msg.dataCard.type === 'SKILL_GAP' && (
-                          <div className="bg-emerald-500/5 rounded-xl p-3 border border-emerald-500/20">
+                          <div className="bg-secondary/5 rounded-xl p-3 border border-secondary/20">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="font-bold text-xs text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                              <span className="font-bold text-xs text-secondary dark:text-secondary flex items-center gap-1">
                                 <Target className="h-3.5 w-3.5" />
                                 Role Readiness
                               </span>
-                              <span className="font-bold text-xs text-emerald-600">
+                              <span className="font-bold text-xs text-secondary">
                                 {msg.dataCard.readinessScore}% Ready
                               </span>
                             </div>
-                            <div className="w-full bg-emerald-200 dark:bg-emerald-950 h-2 rounded-full overflow-hidden mb-2">
-                              <div className="bg-emerald-500 h-full rounded-full transition-all duration-700" style={{ width: `${msg.dataCard.readinessScore}%` }} />
+                            <div className="w-full bg-secondary/20 dark:bg-secondary/10 h-2 rounded-full overflow-hidden mb-2">
+                              <div className="bg-secondary h-full rounded-full transition-all duration-700" style={{ width: `${msg.dataCard.readinessScore}%` }} />
                             </div>
                             <p className="text-[10px] text-text-secondary mb-1.5 font-medium">Skills to learn next:</p>
                             <div className="flex flex-wrap gap-1">
                               {msg.dataCard.missingSkills.map(sk => (
-                                <span key={sk} className="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-medium">
+                                <span key={sk} className="text-[10px] bg-secondary/10 dark:bg-secondary/10 text-secondary px-2 py-0.5 rounded-full font-medium">
                                   {sk}
                                 </span>
                               ))}
@@ -264,13 +264,13 @@ export default function ChatWidget() {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleHitlAction(msg.id, msg.hitlAction.id, true)}
-                              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-center gap-1"
+                              className="flex-1 bg-accent hover:bg-accent/80 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-center gap-1"
                             >
                               <Check className="h-3.5 w-3.5" /> Yes, confirm
                             </button>
                             <button
                               onClick={() => handleHitlAction(msg.id, msg.hitlAction.id, false)}
-                              className="flex-1 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-text-primary text-xs font-medium py-1.5 px-3 rounded-lg transition-colors"
+                              className="flex-1 bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-text-primary text-xs font-medium py-1.5 px-3 rounded-lg transition-colors"
                             >
                               Cancel
                             </button>

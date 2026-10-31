@@ -248,7 +248,7 @@ export default function Signup() {
           <Link
             to="/login"
             state={{ email: confirmationEmail }}
-            className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl bg-secondary text-white font-bold text-sm hover:opacity-90 transition-opacity duration-200 mb-3"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl bg-accent text-white font-bold text-sm hover:opacity-90 transition-opacity duration-200 mb-3"
           >
             <Mail className="h-4 w-4" />
             Go to Sign In
@@ -451,7 +451,7 @@ export default function Signup() {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="text-secondary font-bold hover:underline transition-colors"
+                className="text-accent font-bold hover:underline transition-colors"
               >
                 Sign in instead →
               </Link>

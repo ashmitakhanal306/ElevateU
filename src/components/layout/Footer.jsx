@@ -28,8 +28,8 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <img src={logoSrc} alt="ElevateU Logo" className="h-10 w-auto object-contain" />
             </div>
-            <p className="text-slate-50 font-bold mb-2">Elevate Your Skills. Define Your Future.</p>
-            <p className="text-blue-200 mb-6 max-w-sm leading-relaxed">
+            <p className="text-white font-bold mb-2">Elevate Your Skills. Define Your Future.</p>
+            <p className="text-orange-200 mb-6 max-w-sm leading-relaxed">
               ElevateU bridges the gap between learning and your dream career with AI-powered skill assessments and personalized roadmaps.
             </p>
             <div className="flex items-center gap-3">
@@ -82,7 +82,7 @@ export default function Footer() {
           <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-10">
             
             {/* Contact Strip */}
-            <div className="flex flex-col gap-4 text-blue-200">
+            <div className="flex flex-col gap-4 text-orange-200">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-accent" />
                 <span>support@elevateu.in</span>
@@ -99,8 +99,8 @@ export default function Footer() {
 
             {/* Newsletter */}
             <div className="w-full lg:w-auto bg-white/10 p-6 rounded-2xl border border-white/20 shadow-lg">
-              <h4 className="text-slate-50 font-bold mb-2">Get career tips in your inbox</h4>
-              <p className="text-sm text-blue-200 mb-4">Stay updated with the latest in tech and hiring.</p>
+              <h4 className="text-white font-bold mb-2">Get career tips in your inbox</h4>
+              <p className="text-sm text-orange-200 mb-4">Stay updated with the latest in tech and hiring.</p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input type="email" placeholder="Enter your email" className="w-full sm:w-64 bg-white/10 border-white/20 text-white placeholder-white/50" />
                 <Button variant="primary" onClick={() => {}} className="whitespace-nowrap">Subscribe</Button>
@@ -111,7 +111,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section: Legal */}
-        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-blue-200">
+        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-orange-200">
           <p>© 2026 ElevateU Career Advisory Pvt. Ltd. All rights reserved.</p>
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
             <Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link>
@@ -132,7 +132,7 @@ function SocialIcon({ icon: Icon, href }) {
   return (
     <a 
       href={href} 
-      className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 border border-white/20 text-blue-200 hover:bg-accent/20 hover:text-accent hover:border-accent/40 transition-all duration-300"
+      className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 border border-white/20 text-orange-200 hover:bg-accent/20 hover:text-accent hover:border-accent/40 transition-all duration-300"
       aria-label="Social Link"
     >
       <Icon className="w-4 h-4" />
@@ -145,7 +145,7 @@ function FooterLink({ to, children }) {
     <li>
       <Link 
         to={to} 
-        className="text-blue-200 hover:text-accent transition-colors duration-200"
+        className="text-orange-200 hover:text-accent transition-colors duration-200"
       >
         {children}
       </Link>

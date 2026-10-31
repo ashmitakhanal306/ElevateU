@@ -77,7 +77,7 @@ function CircularProgressRing({ value, size = 104, stroke = 10 }) {
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none"
-          stroke="var(--color-secondary)"
+          stroke="var(--color-accent)"
           strokeWidth={stroke}
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}

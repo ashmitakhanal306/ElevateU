@@ -191,7 +191,7 @@ export default function CoursesAndJobs() {
           onClick={() => setActiveTab('courses')}
           className={`flex items-center gap-2 py-4 px-6 font-semibold text-sm transition-colors border-b-2 rounded-none h-auto focus:ring-0 active:scale-100 ${
             activeTab === 'courses' 
-              ? 'border-secondary text-secondary bg-secondary/5' 
+              ? 'border-accent text-accent bg-accent/5' 
               : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-bg-page/50'
           }`}
         >
@@ -202,7 +202,7 @@ export default function CoursesAndJobs() {
           onClick={() => setActiveTab('jobs')}
           className={`flex items-center gap-2 py-4 px-6 font-semibold text-sm transition-colors border-b-2 rounded-none h-auto focus:ring-0 active:scale-100 ${
             activeTab === 'jobs' 
-              ? 'border-secondary text-secondary bg-secondary/5' 
+              ? 'border-accent text-accent bg-accent/5' 
               : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-bg-page/50'
           }`}
         >

@@ -35,11 +35,11 @@ function ProgressBar({ progress }) {
     <div className="flex flex-col gap-2 w-full max-w-md">
       <div className="flex justify-between items-center text-sm font-semibold">
         <span className="text-text-primary">Journey Progress</span>
-        <span className="text-secondary">{progress}%</span>
+        <span className="text-accent">{progress}%</span>
       </div>
       <div className="h-3 w-full bg-border rounded-full overflow-hidden">
         <div
-          className="h-full bg-secondary rounded-full transition-all duration-700 ease-out"
+          className="h-full bg-accent rounded-full transition-all duration-700 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -462,7 +462,7 @@ export default function LearningRoadmap() {
             onClick={() => setActiveTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
               activeTab === id
-                ? 'bg-secondary text-white shadow-sm'
+                ? 'bg-accent text-white shadow-sm'
                 : 'text-text-secondary hover:text-text-primary hover:bg-bg-page'
             }`}
           >

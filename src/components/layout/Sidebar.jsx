@@ -30,7 +30,7 @@ export default function Sidebar({ isOpen, onClose }) {
   const linkClasses = ({ isActive }) => {
     const base = 'flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 select-none';
     if (isActive) {
-      return `${base} bg-primary/10 text-primary dark:bg-accent/15 dark:text-accent`;
+      return `${base} bg-accent/10 text-accent font-bold`;
     }
     return `${base} text-text-secondary hover:text-text-primary hover:bg-bg-page`;
   };

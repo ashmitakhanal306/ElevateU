@@ -4,16 +4,16 @@
 
 /* ─── Design Token: Light Mode CSS Variables ─────────────────────────────── */
 :root {
-  --color-primary: #1E3A8A;
-  --color-secondary: #2563EB;
-  --color-accent: #06B6D4;
-  --color-success: #10B981;
+  --color-primary: #212936;
+  --color-secondary: #879783;
+  --color-accent: #C77357;
+  --color-success: #879783;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
-  --color-text-primary: #0F172A;
-  --color-text-secondary: #64748B; /* slate-500 from palette */
-  --color-border: #E2E8F0;
-  --color-bg-page: #F1F5F9;
+  --color-text-primary: #212936;
+  --color-text-secondary: #5A6578;
+  --color-border: #E0DDD6;
+  --color-bg-page: #F7F4ED;
   --color-bg-surface: #FFFFFF;
   --color-header-bg: #FFFFFF;
 }
@@ -21,18 +21,18 @@
 /* ─── Design Token: Dark Mode CSS Variables ──────────────────────────────── */
 /* Applied when ThemeContext adds 'dark' class to <html> */
 html.dark {
-  --color-primary: #1E3A8A;
-  --color-secondary: #2563EB;
-  --color-accent: #22D3EE;
-  --color-success: #34D399;
+  --color-primary: #212936;
+  --color-secondary: #879783;
+  --color-accent: #C77357;
+  --color-success: #879783;
   --color-warning: #FBBF24;
   --color-danger: #F87171;
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8; /* slate-400 from palette */
-  --color-border: #334155;
-  --color-bg-page: #0F172A;
-  --color-bg-surface: #1E293B;
-  --color-header-bg: #0F172A;
+  --color-text-primary: #F7F4ED;
+  --color-text-secondary: #A0ABB8;
+  --color-border: #3A3F48;
+  --color-bg-page: #1A1F28;
+  --color-bg-surface: #212936;
+  --color-header-bg: #1A1F28;
 }
 
 /* ─── Base Typography & Background ───────────────────────────────────────── */

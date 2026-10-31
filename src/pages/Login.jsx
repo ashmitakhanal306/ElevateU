@@ -293,7 +293,7 @@ export default function Login() {
                 onClick={() => switchTab(tab.id)}
                 className={`flex-1 py-3.5 text-xs font-bold tracking-wide uppercase transition-all duration-200 rounded-none h-auto focus:ring-0 active:scale-100
                   ${activeTab === tab.id
-                    ? 'text-secondary border-b-2 border-secondary -mb-px bg-secondary/5'
+                    ? 'text-accent border-b-2 border-accent -mb-px bg-accent/5'
                     : 'text-text-secondary hover:text-text-primary hover:bg-bg-page'
                   }`}
               >
@@ -585,7 +585,7 @@ export default function Login() {
               Don't have an account?{' '}
               <Link
                 to="/signup"
-                className="text-secondary font-bold hover:underline transition-colors"
+                className="text-accent font-bold hover:underline transition-colors"
               >
                 Create one free →
               </Link>

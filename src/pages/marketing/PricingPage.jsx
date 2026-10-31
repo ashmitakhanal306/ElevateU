@@ -68,7 +68,7 @@ export default function PricingPage() {
           <span className={`text-sm font-semibold ${!isYearly ? 'text-text-primary' : 'text-text-secondary'}`}>Monthly</span>
           <button 
             onClick={() => setIsYearly(!isYearly)}
-            className="w-14 h-7 bg-primary rounded-full relative p-1 transition-colors"
+            className={`w-14 h-7 ${isYearly ? 'bg-accent' : 'bg-primary'} rounded-full relative p-1 transition-colors`}
           >
             <div className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${isYearly ? 'translate-x-7' : 'translate-x-0'}`} />
           </button>

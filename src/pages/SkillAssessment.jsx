@@ -57,7 +57,7 @@ export default function SkillAssessment() {
             onClick={() => setFilter(tab)}
             className={`px-4 py-3 text-sm font-bold tracking-wide transition-all duration-200 rounded-none h-auto focus:ring-0 active:scale-100 ${
               filter === tab
-                ? 'text-secondary border-b-2 border-secondary -mb-px'
+                ? 'text-accent border-b-2 border-accent -mb-px'
                 : 'text-text-secondary hover:text-text-primary hover:bg-transparent'
             }`}
           >
