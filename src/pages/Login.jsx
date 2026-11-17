@@ -66,7 +66,6 @@ function Spinner() {
 
 const TABS = [
   { id: 'email',  label: 'Email' },
-  { id: 'phone',  label: 'Phone OTP' },
   { id: 'google', label: 'Google' },
 ];
 
@@ -89,6 +88,7 @@ export default function Login() {
   // ── Email tab state ──────────────────────────────────────────────────────
   const [email, setEmail]       = useState(location.state?.email || '');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [emailErrors, setEmailErrors] = useState({});
   const [emailLoading, setEmailLoading] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
@@ -246,6 +246,9 @@ export default function Login() {
       setPhoneErrors({ form: result.error });
     }
   };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const switchTab = (id) => {
     setActiveTab(id);
@@ -324,7 +327,7 @@ export default function Login() {
 
                 <Input
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => {
@@ -334,7 +337,17 @@ export default function Login() {
                   error={emailErrors.password}
                   autoComplete="current-password"
                 />
-
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-secondary cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 text-primary focus:ring-primary border-text-secondary rounded"
+                      checked={showPassword}
+                      onChange={togglePasswordVisibility}
+                    />
+                    Show Password
+                  </label>
+                </div>
                 {userNotFound ? (
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-3 text-left">
                     <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
